@@ -1,0 +1,20 @@
+# Carpetes temporals de MPLAB
+P2B_LSServerControl.X/nbproject/private/
+P2B_LSServerControl.X/dist/
+P2B_LSServerControl.X/build/
+
+# Fitxers de compilació
+*.hex
+*.elf
+*.cof
+*.o
+*.obj
+*.as
+*.lst
+*.map
+*.d
+
+# Fitxers del sistema operatiu
+.DS_Store
+Thumbs.db
+
