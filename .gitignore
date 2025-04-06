@@ -1,7 +1,7 @@
 # Carpetes temporals de MPLAB
-P2B_LSServerControl.X/nbproject/private/
-P2B_LSServerControl.X/dist/
-P2B_LSServerControl.X/build/
+nbproject/private/
+dist/
+build/
 
 # Fitxers de compilació
 *.hex
@@ -24,6 +24,3 @@ Thumbs.db
 
 # CLion / JetBrains IDE config
 .idea/
-
-# MPLAB specifics
-nbproject/
