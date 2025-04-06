@@ -6,6 +6,7 @@
             <name>P2B_LSServerControl</name>
             <creation-uuid>6c8bc3e3-59aa-4e6c-85cb-7531f0c5ef79</creation-uuid>
             <make-project-type>0</make-project-type>
+            <sourceEncoding>UTF-8</sourceEncoding>
             <make-dep-projects/>
             <sourceRootList/>
             <confList>
@@ -14,7 +15,6 @@
                     <type>2</type>
                 </confElem>
             </confList>
-            <sourceEncoding>UTF-8</sourceEncoding>
             <formatting>
                 <project-formatting-style>false</project-formatting-style>
             </formatting>
