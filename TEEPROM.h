@@ -7,7 +7,7 @@
 #define EEPROM_FINISHED 1
 #define EEPROM_ONGOING 0
 
-unsigned char EEPROM_store_log(char *hhmmssDDMMYYYY);
+unsigned char EEPROM_store_log(const char *hhmmssDDMMYYYY);
 unsigned char EEPROM_read_log(unsigned char section, char *hhmmssDDMMYYYY);
 
 #endif
