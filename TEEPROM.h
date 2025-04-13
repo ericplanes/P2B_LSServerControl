@@ -9,6 +9,5 @@
 
 unsigned char EEPROM_StoreLog(char *hhmmssDDMMYYYY);
 unsigned char EEPROM_ReadLog(unsigned char seccio, char *nnmmxss);
-unsigned char EEPROM_ResetLogs();
 
 #endif
