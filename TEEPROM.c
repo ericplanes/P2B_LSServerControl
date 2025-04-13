@@ -7,18 +7,18 @@ unsigned char mem_section = 0;
 unsigned char amouont_of_stored_logs = 0;
 unsigned char pos = 0;
 
-void writeByte(unsigned char position, unsigned char data);
-unsigned char readByte(unsigned char position);
+void write_byte(unsigned char position, unsigned char data);
+unsigned char read_byte(unsigned char position);
 
 /* ---------------------------
    ----- PUBLIC METHODS ------
    --------------------------- */
-unsigned char EEPROM_StoreLog(char *hhmmssDDMMYYYY)
+unsigned char EEPROM_store_log(char *hhmmssDDMMYYYY)
 {
     char buffer = hhmmssDDMMYYYY[pos];
     if (pos < LOG_SIZE)
     {
-        writeByte(pos + (mem_section * LOG_SIZE) + 1, buffer);
+        write_byte(pos + (mem_section * LOG_SIZE) + 1, buffer);
         pos++;
     }
 
@@ -32,14 +32,14 @@ unsigned char EEPROM_StoreLog(char *hhmmssDDMMYYYY)
             mem_section = 0;
             amouont_of_stored_logs = MAX_LOGS;
         }
-        writeByte(0, amouont_of_stored_logs); // Increase amount of stored logs
+        write_byte(0, amouont_of_stored_logs); // Increase amount of stored logs
         return EEPROM_FINISHED;
     }
 
     return EEPROM_ONGOING;
 }
 
-unsigned char EEPROM_ReadLog(unsigned char section, char *hhmmssDDMMYYYY)
+unsigned char EEPROM_read_log(unsigned char section, char *hhmmssDDMMYYYY)
 {
     if (pos < LOG_SIZE)
     {
@@ -57,21 +57,21 @@ unsigned char EEPROM_ReadLog(unsigned char section, char *hhmmssDDMMYYYY)
 /* ---------------------------
    ----- PRIVATE METHODS -----
    --------------------------- */
-unsigned char readByte(unsigned char address)
+unsigned char read_byte(unsigned char address)
 {
     EEADR = address;
     EECON1 = 0x01;
     return EEDATA;
 }
 
-void prepareWriteInfo(unsigned char address, unsigned char data)
+void prepare_write_info(unsigned char address, unsigned char data)
 {
     EECON1bits.WREN = 1; // Enable write
     EEADR = address;     // Set address
     EEDATA = data;       // Set byte to write
 }
 
-void writePreparedInfo()
+void write_prepared_info()
 {
     EECON2 = 0x55;       // Part 1/2 of write sequence
     EECON2 = 0x0AA;      // Part 2/2 of write sequence
@@ -79,10 +79,10 @@ void writePreparedInfo()
     EECON1bits.WREN = 0; // Disable write
 }
 
-void writeByte(unsigned char address, unsigned char data)
+void write_byte(unsigned char address, unsigned char data)
 {
-    prepareWriteInfo(address, data);
+    prepare_write_info(address, data);
     di(); // Disable GIE (Global Interruptions)
-    writePreparedInfo();
+    write_prepared_info();
     ei(); // Enable Global Interruptions
 }
