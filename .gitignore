@@ -21,6 +21,7 @@ Thumbs.db
 
 # Entorn de treball local
 .vscode/
+.clang-format.yaml
 
 # CLion / JetBrains IDE config
 .idea/
