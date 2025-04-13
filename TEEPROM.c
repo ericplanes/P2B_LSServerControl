@@ -25,10 +25,13 @@ static void write_byte(unsigned char address, unsigned char data);
  */
 unsigned char EEPROM_store_log(const char *log_data)
 {
-    write_byte(pos + (mem_section * LOG_SIZE) + 1, log_data[pos]);
-    pos++;
+    if (pos < LOG_SIZE)
+    {
+        write_byte(pos + (mem_section * LOG_SIZE) + 1, log_data[pos]);
+        pos++;
+    }
 
-    if (pos >= LOG_SIZE)
+    if (pos == LOG_SIZE)
     {
         pos = 0;
         mem_section++;
@@ -40,7 +43,7 @@ unsigned char EEPROM_store_log(const char *log_data)
             amount_of_stored_logs = MAX_LOGS;
         }
 
-        write_byte(0, amount_of_stored_logs);
+        write_byte(0, amount_of_stored_logs); // increase amount of stored logs
         return EEPROM_FINISHED;
     }
 
@@ -53,8 +56,11 @@ unsigned char EEPROM_store_log(const char *log_data)
  */
 unsigned char EEPROM_read_log(unsigned char section, char *log_data)
 {
-    log_data[pos] = read_byte(pos + (section * LOG_SIZE) + 1);
-    pos++;
+    if (pos < LOG_SIZE)
+    {
+        log_data[pos] = read_byte(pos + (section * LOG_SIZE) + 1);
+        pos++;
+    }
 
     if (pos >= LOG_SIZE)
     {
@@ -78,17 +84,17 @@ static unsigned char read_byte(unsigned char address)
 
 static void prepare_write_info(unsigned char address, unsigned char data)
 {
-    EECON1bits.WREN = 1;
-    EEADR = address;
-    EEDATA = data;
+    EECON1bits.WREN = 1; // Enable write
+    EEADR = address;     // Set addresss
+    EEDATA = data;       // Set byte to be written
 }
 
 static void write_prepared_info(void)
 {
-    EECON2 = 0x55;
-    EECON2 = 0xAA;
-    EECON1bits.WR = 1;
-    EECON1bits.WREN = 0;
+    EECON2 = 0x55;       // Part 1/2 of write sequence
+    EECON2 = 0xAA;       // Part 2/2 of write sequence
+    EECON1bits.WR = 1;   // Write
+    EECON1bits.WREN = 0; // Disable write
 }
 
 static void write_byte(unsigned char address, unsigned char data)
