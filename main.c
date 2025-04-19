@@ -3,6 +3,7 @@
 #include <xc.h>
 #include <pic18f4321.h>
 #include "Utils.h"
+#include "TADC.h"
 #include "TTimer.h"
 
 #pragma config OSC = HSPLL // PLL because freq is 40MH
@@ -29,9 +30,11 @@ void main()
 {
     // Here we'll init all the tads that we need to init
     TiInit();
+    ADC_Init();
 
     // Here we'll put the motors, so that they're cooperatively called
     while (TRUE)
     {
+        ADC_Motor();
     }
 }
