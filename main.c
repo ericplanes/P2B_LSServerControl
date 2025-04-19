@@ -5,6 +5,7 @@
 #include "Utils.h"
 #include "TADC.h"
 #include "TTimer.h"
+#include "TMenu.h"
 
 #pragma config OSC = HSPLL // PLL because freq is 40MH
 #pragma config PBADEN = DIG
@@ -31,10 +32,12 @@ void main()
     // Here we'll init all the tads that we need to init
     TiInit();
     ADC_Init();
+    Menu_Init();
 
     // Here we'll put the motors, so that they're cooperatively called
     while (TRUE)
     {
         ADC_Motor();
+        Menu_Motor();
     }
 }
