@@ -54,9 +54,9 @@ const char *Menu_GetInitialTimeString(void)
 static void set_default_config(void)
 {
     config.thresholds[0] = 25; // A - Low
-    config.thresholds[1] = 30; // B - Moderate
-    config.thresholds[2] = 35; // C - High
-    config.samplingTime = 30;  // Sampling every 30 seconds
+    config.thresholds[1] = 35; // B - Moderate
+    config.thresholds[2] = 50; // C - High
+    config.samplingTime = 20;  // Sampling every 30 seconds
 
     // Default time: 00:00:00 01/01/2025 → "00000001012025"
     const char *defaultTime = "00000001012025";
