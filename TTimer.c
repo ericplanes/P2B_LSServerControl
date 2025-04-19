@@ -1,7 +1,5 @@
 #include "TTimer.h"
-
-#define TI_FALSE 0
-#define TI_TRUE 1
+#include "Utils.h"
 
 #define TI_MAXTICS 30000 // Max time span to measure (30-40 seconds)
 
@@ -38,7 +36,7 @@ void Timer0_ISR(void)
     {
         for (i = 0; i < TI_NUMTIMERS; i++)
         {
-            if (timers[i].inUse == TI_TRUE)
+            if (timers[i].inUse == TRUE)
                 timers[i].startTics -= globalTics;
         }
         globalTics = 0;
@@ -53,7 +51,7 @@ void TiInit(void)
 {
     for (i = 0; i < TI_NUMTIMERS; i++)
     {
-        timers[i].inUse = TI_FALSE;
+        timers[i].inUse = FALSE;
     }
 
     globalTics = 0;
@@ -77,9 +75,9 @@ char TiGetTimer(void)
 {
     for (char timerId = 0; timerId < TI_NUMTIMERS; timerId++)
     {
-        if (timers[timerId].inUse == TI_FALSE)
+        if (timers[timerId].inUse == FALSE)
         {
-            timers[timerId].inUse = TI_TRUE;
+            timers[timerId].inUse = TRUE;
             return timerId;
         }
     }
