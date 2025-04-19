@@ -12,12 +12,12 @@
  *          PRIVATE VARIABLES
  * ======================================= */
 
-static unsigned char joyX = 0;
-static unsigned char joyY = 0;
-static unsigned char temperature = 0;
+static BYTE joyX = 0;
+static BYTE joyY = 0;
+static BYTE temperature = 0;
 
-static unsigned char channel = 0; // Current channel being read
-static unsigned char state = 0;   // FSM state
+static BYTE channel = 0; // Current channel being read
+static BYTE state = 0;   // FSM state
 
 /* =======================================
  *          PUBLIC FUNCTION BODIES
@@ -82,7 +82,7 @@ void ADC_Motor(void)
 /**
  * Returns latest ADC value for Joystick X (AN0).
  */
-unsigned char ADC_GetJoyX(void)
+BYTE ADC_GetJoyX(void)
 {
     return joyX;
 }
@@ -90,7 +90,7 @@ unsigned char ADC_GetJoyX(void)
 /**
  * Returns latest ADC value for Joystick Y (AN1).
  */
-unsigned char ADC_GetJoyY(void)
+BYTE ADC_GetJoyY(void)
 {
     return joyY;
 }
@@ -98,7 +98,7 @@ unsigned char ADC_GetJoyY(void)
 /**
  * Returns latest ADC value for temperature sensor TMP36 (AN2).
  */
-unsigned char ADC_GetTemp(void)
+BYTE ADC_GetTemp(void)
 {
     return temperature;
 }

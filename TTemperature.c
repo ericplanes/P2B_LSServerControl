@@ -6,7 +6,7 @@
  *          PRIVATE FUNCTION HEADERS
  * ======================================= */
 
-static uint8_t compute_temperature_state(uint8_t value, const uint8_t *thresholds);
+static BYTE compute_temperature_state(BYTE value, const BYTE *thresholds);
 
 /* =======================================
  *          PUBLIC FUNCTION BODIES
@@ -15,10 +15,10 @@ static uint8_t compute_temperature_state(uint8_t value, const uint8_t *threshold
 /**
  * Returns the current room temperature state based on thresholds A, B, C.
  */
-uint8_t Temperature_GetState(void)
+BYTE TEMP_GetState(void)
 {
-    uint8_t temp = ADC_GetTemp();
-    const uint8_t *thresholds = Menu_GetTMPThresholds();
+    BYTE temp = ADC_GetTemp();
+    const BYTE *thresholds = Menu_GetTMPThresholds();
     return compute_temperature_state(temp, thresholds);
 }
 
@@ -29,7 +29,7 @@ uint8_t Temperature_GetState(void)
 /**
  * Classifies the temperature value into one of the four defined states.
  */
-static uint8_t compute_temperature_state(uint8_t value, const uint8_t *thresholds)
+static BYTE compute_temperature_state(BYTE value, const BYTE *thresholds)
 {
     if (value < thresholds[0])
     {

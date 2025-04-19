@@ -3,16 +3,17 @@
 
 #include <xc.h>
 #include <pic18f4321.h>
+#include "Utils.h"
 
 // Main
 void ADC_Init(void);
 void ADC_Motor(void);
 
 // Joystick
-unsigned char ADC_GetJoyX(void);
-unsigned char ADC_GetJoyY(void);
+BYTE ADC_GetJoyX(void);
+BYTE ADC_GetJoyY(void);
 
 // Temperature
-unsigned char ADC_GetTemp(void);
+BYTE ADC_GetTemp(void);
 
 #endif

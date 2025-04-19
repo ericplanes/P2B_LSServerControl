@@ -1,7 +1,7 @@
 #ifndef TTEMPERATURE_H
 #define TTEMPERATURE_H
 
-#include <stdint.h>
+#include "Utils.h"
 
 // Temperature states
 #define TEMP_LOW 0
@@ -10,6 +10,6 @@
 #define TEMP_CRIT 3
 
 // Public function
-uint8_t Temperature_GetState(void);
+BYTE TEMP_GetState(void);
 
 #endif

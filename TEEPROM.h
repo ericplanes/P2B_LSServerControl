@@ -3,11 +3,12 @@
 
 #include <xc.h>         // include processor files - each processor file is guarded.
 #include <pic18f4321.h> // no necessari a MPLAB
+#include "Utils.h"
 
 #define EEPROM_FINISHED 1
 #define EEPROM_ONGOING 0
 
-unsigned char EEPROM_store_log(const char *hhmmssDDMMYYYY);
-unsigned char EEPROM_read_log(unsigned char section, char *hhmmssDDMMYYYY);
+BYTE EEPROM_StoreLog(const BYTE *hhmmssDDMMYYYY);
+BYTE EEPROM_ReadLog(BYTE section, BYTE *hhmmssDDMMYYYY);
 
 #endif

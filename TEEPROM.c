@@ -3,17 +3,17 @@
 #define LOG_SIZE 14
 #define MAX_LOGS 15
 
-static unsigned char mem_section = 0;
-static unsigned char amount_of_stored_logs = 0;
-static unsigned char pos = 0;
+static BYTE mem_section = 0;
+static BYTE amount_of_stored_logs = 0;
+static BYTE pos = 0;
 
 /* =======================================
  *          PRIVATE FUNCTION HEADERS
  * ======================================= */
-static unsigned char read_byte(unsigned char address);
-static void prepare_write_info(unsigned char address, unsigned char data);
+static BYTE read_byte(BYTE address);
+static void prepare_write_info(BYTE address, BYTE data);
 static void write_prepared_info(void);
-static void write_byte(unsigned char address, unsigned char data);
+static void write_byte(BYTE address, BYTE data);
 
 /* =======================================
  *          PUBLIC FUNCTION BODIES
@@ -23,7 +23,7 @@ static void write_byte(unsigned char address, unsigned char data);
  * Stores a new log entry into EEPROM progressively.
  * Returns EEPROM_FINISHED when the log is fully written.
  */
-unsigned char EEPROM_store_log(const char *log_data)
+BYTE EEPROM_StoreLog(const BYTE *log_data)
 {
     if (pos < LOG_SIZE)
     {
@@ -54,7 +54,7 @@ unsigned char EEPROM_store_log(const char *log_data)
  * Reads a log entry from EEPROM progressively.
  * Returns EEPROM_FINISHED when the read is complete.
  */
-unsigned char EEPROM_read_log(unsigned char section, char *log_data)
+BYTE EEPROM_ReadLog(BYTE section, BYTE *log_data)
 {
     if (pos < LOG_SIZE)
     {
@@ -75,14 +75,14 @@ unsigned char EEPROM_read_log(unsigned char section, char *log_data)
  *          PRIVATE FUNCTION BODIES
  * ======================================= */
 
-static unsigned char read_byte(unsigned char address)
+static BYTE read_byte(BYTE address)
 {
     EEADR = address;
     EECON1 = 0x01;
     return EEDATA;
 }
 
-static void prepare_write_info(unsigned char address, unsigned char data)
+static void prepare_write_info(BYTE address, BYTE data)
 {
     EECON1bits.WREN = 1; // Enable write
     EEADR = address;     // Set addresss
@@ -97,7 +97,7 @@ static void write_prepared_info(void)
     EECON1bits.WREN = 0; // Disable write
 }
 
-static void write_byte(unsigned char address, unsigned char data)
+static void write_byte(BYTE address, BYTE data)
 {
     prepare_write_info(address, data);
     di(); // Disable global interrupts
