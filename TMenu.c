@@ -1,4 +1,3 @@
-// Menu is not yet implemented, but since it will read the configuration that is needed, I'll add it here
 #include "TMenu.h"
 
 /* =======================================
@@ -8,7 +7,7 @@
 typedef struct
 {
     char initialTime[15];  // hhmmssDDMMYYYY + '\0'
-    uint8_t samplingTime;  // en segons
+    uint8_t samplingTime;  // in seconds
     uint8_t thresholds[3]; // thresholds A, B, C
 } MenuConfig;
 
@@ -17,16 +16,12 @@ static MenuConfig config;
 /* =======================================
  *          PRIVATE FUNCTION HEADERS
  * ======================================= */
-void set_default_config(void);
+static void set_default_config(void);
 
 /* =======================================
  *          PUBLIC FUNCTION BODIES
  * ======================================= */
 
-/**
- * Initializes menu configuration with default values.
- * These would normally be overwritten by the Java interface.
- */
 void Menu_Init(void)
 {
     set_default_config();
@@ -34,33 +29,40 @@ void Menu_Init(void)
 
 void Menu_Motor(void)
 {
+    // Will be implemented later when Java communication is active
 }
 
-/**
- * Returns a pointer to the temperature threshold array.
- * The array contains:
- * [0] = A (Low threshold)
- * [1] = B (Moderate threshold)
- * [2] = C (High threshold)
- */
-const uint8_t *Menu_GetThresholds(void)
+const uint8_t *Menu_GetTMPThresholds(void)
 {
     return config.thresholds;
 }
 
 uint8_t Menu_GetSamplingTime(void)
 {
-    return config.samplingTime
+    return config.samplingTime;
+}
+
+const char *Menu_GetInitialTimeString(void)
+{
+    return config.initialTime;
 }
 
 /* =======================================
  *        PRIVATE FUNCTION BODIES
  * ======================================= */
 
-void set_default_config(void)
+static void set_default_config(void)
 {
     config.thresholds[0] = 25; // A - Low
     config.thresholds[1] = 30; // B - Moderate
     config.thresholds[2] = 35; // C - High
-    config.samplingTime = 30   // Sampling time 30 seconds
+    config.samplingTime = 30;  // Sampling every 30 seconds
+
+    // Default time: 00:00:00 01/01/2025 → "00000001012025"
+    const char *defaultTime = "00000001012025";
+    for (int i = 0; i < 14; i++)
+    {
+        config.initialTime[i] = defaultTime[i];
+    }
+    config.initialTime[14] = '\0';
 }

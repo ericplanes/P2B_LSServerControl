@@ -3,11 +3,13 @@
 
 #include <stdint.h>
 
-// main
+// Initialization and motor
 void Menu_Init(void);
 void Menu_Motor(void);
 
+// Configuration getters
 const uint8_t *Menu_GetTMPThresholds(void);
 uint8_t Menu_GetSamplingTime(void);
+const char *Menu_GetInitialTimeString(void);
 
 #endif
