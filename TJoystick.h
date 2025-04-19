@@ -1,7 +1,7 @@
 #ifndef TJOYSTICK_H
 #define TJOYSTICK_H
 
-#include <stdint.h>
+#include "Utils.h"
 
 #define JOY_CENTER 0
 #define JOY_UP 1
@@ -10,7 +10,7 @@
 #define JOY_RIGHT 4
 
 void Joystick_Init(void);
-unsigned char Joystick_GetDirection(void);
-unsigned char Joystick_IsButtonPressed(void);
+BYTE Joystick_GetDirection(void);
+BYTE Joystick_IsButtonPressed(void);
 
 #endif

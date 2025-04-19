@@ -1,5 +1,4 @@
 #include "TTimer.h"
-#include "Utils.h"
 
 #define TI_MAXTICS 30000 // Max time span to measure (30-40 seconds)
 
@@ -12,7 +11,7 @@ static void TMR0_set_interruption_1ms();
 typedef struct
 {
     unsigned int startTics;
-    unsigned char inUse;
+    unsigned BYTE inUse;
 } Timer;
 
 static Timer timers[TI_NUMTIMERS];
@@ -71,9 +70,9 @@ void TiInit(void)
     INTCONbits.TMR0IE = 1; // Timer0 interrupt enable
 }
 
-char TiGetTimer(void)
+BYTE TiGetTimer(void)
 {
-    for (char timerId = 0; timerId < TI_NUMTIMERS; timerId++)
+    for (BYTE timerId = 0; timerId < TI_NUMTIMERS; timerId++)
     {
         if (timers[timerId].inUse == FALSE)
         {
@@ -84,12 +83,12 @@ char TiGetTimer(void)
     return NO_TIMERS_AVAILABLE;
 }
 
-void TiResetTics(unsigned char timerId)
+void TiResetTics(BYTE timerId)
 {
     timers[timerId].startTics = globalTics;
 }
 
-unsigned int TiGetTics(unsigned char timerId)
+unsigned int TiGetTics(BYTE timerId)
 {
     return (globalTics - timers[timerId].startTics);
 }

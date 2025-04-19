@@ -1,6 +1,5 @@
 #include "TJoystick.h"
 #include "TADC.h"
-#include "Utils.h"
 
 /* =======================================
  *         PRIVATE CONSTANTS
@@ -17,14 +16,14 @@
  *         PRIVATE VARIABLES
  * ======================================= */
 
-static unsigned char currentDirection = JOY_CENTER;
+static BYTE currentDirection = JOY_CENTER;
 
 /* =======================================
  *        PRIVATE FUNCTION HEADERS
  * ======================================= */
 
-static unsigned char classifyAxis(unsigned char value);
-static unsigned char directionFromAxes(unsigned char x, unsigned char y);
+static BYTE classifyAxis(BYTE value);
+static BYTE directionFromAxes(BYTE x, BYTE y);
 
 /* =======================================
  *        PUBLIC FUNCTION BODIES
@@ -36,22 +35,22 @@ void Joystick_Init(void)
     TRISBbits.TRISB2 = 1;
 }
 
-unsigned char Joystick_GetDirection(void)
+BYTE Joystick_GetDirection(void)
 {
     // Get last values read form ADC
-    unsigned char xAnalog = ADC_GetJoyX();
-    unsigned char yAnalog = ADC_GetJoyY();
+    BYTE xAnalog = ADC_GetJoyX();
+    BYTE yAnalog = ADC_GetJoyY();
 
     // Compute the direction of each axis
-    unsigned char xDirection = classifyAxis(xAnalog);
-    unsigned char yDirection = classifyAxis(yAnalog);
+    BYTE xDirection = classifyAxis(xAnalog);
+    BYTE yDirection = classifyAxis(yAnalog);
 
     // Decide the joystick direction with prio to axis X
     currentDirection = directionFromAxes(xDirection, yDirection);
     return currentDirection;
 }
 
-unsigned char Joystick_IsButtonPressed(void)
+BYTE Joystick_IsButtonPressed(void)
 {
     if (PORTBbits.RB2 == 0)
     {
@@ -64,7 +63,7 @@ unsigned char Joystick_IsButtonPressed(void)
  *        PRIVATE FUNCTION BODIES
  * ======================================= */
 
-static unsigned char classifyAxis(unsigned char value)
+static BYTE classifyAxis(BYTE value)
 {
     if (value < THRESHOLD_LOW)
     {
@@ -77,7 +76,7 @@ static unsigned char classifyAxis(unsigned char value)
     return NEUTRAL;
 }
 
-static unsigned char directionFromAxes(unsigned char x, unsigned char y)
+static BYTE directionFromAxes(BYTE x, BYTE y)
 {
     if (x == HIGH)
     {
