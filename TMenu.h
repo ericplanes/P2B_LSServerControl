@@ -2,6 +2,8 @@
 #define TMENU_H
 
 #include <stdint.h>
+#include <xc.h>         // include processor files - each processor file is guarded.
+#include <pic18f4321.h> // no necessari a MPLAB
 
 // Initialization and motor
 void Menu_Init(void);
