@@ -7,6 +7,7 @@
 #include "TADC.h"
 #include "TTimer.h"
 #include "TMenu.h"
+#include "TJoystick.h"
 
 #pragma config OSC = HSPLL // PLL because freq is 40MH
 #pragma config PBADEN = DIG
@@ -34,6 +35,7 @@ void main()
     TiInit();
     ADC_Init();
     Menu_Init();
+    Joystick_Init();
 
     // Here we'll put the motors, so that they're cooperatively called
     while (TRUE)
