@@ -17,6 +17,19 @@
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
+      <itemPath>TADC.c</itemPath>
+      <itemPath>TADC.h</itemPath>
+      <itemPath>TEEPROM.c</itemPath>
+      <itemPath>TEEPROM.h</itemPath>
+      <itemPath>TJoystick.c</itemPath>
+      <itemPath>TJoystick.h</itemPath>
+      <itemPath>TMenu.c</itemPath>
+      <itemPath>TMenu.h</itemPath>
+      <itemPath>TTemperature.c</itemPath>
+      <itemPath>TTemperature.h</itemPath>
+      <itemPath>TTimer.c</itemPath>
+      <itemPath>TTimer.h</itemPath>
+      <itemPath>Utils.h</itemPath>
     </logicalFolder>
     <itemPath>main.c</itemPath>
   </logicalFolder>

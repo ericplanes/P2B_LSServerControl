@@ -6,9 +6,9 @@
 
 typedef struct
 {
-    char initialTime[15];  // hhmmssDDMMYYYY + '\0'
-    uint8_t samplingTime;  // in seconds
-    uint8_t thresholds[3]; // thresholds A, B, C
+    BYTE initialTime[15]; // hhmmssDDMMYYYY + '\0'
+    BYTE samplingTime;    // in seconds
+    WORD thresholds[3];   // thresholds A, B, C
 } MenuConfig;
 
 static MenuConfig config;
@@ -32,17 +32,17 @@ void Menu_Motor(void)
     // Will be implemented later when Java communication is active
 }
 
-const uint8_t *Menu_GetTMPThresholds(void)
+const WORD *Menu_GetTMPThresholds(void)
 {
     return config.thresholds;
 }
 
-uint8_t Menu_GetSamplingTime(void)
+BYTE Menu_GetSamplingTime(void)
 {
     return config.samplingTime;
 }
 
-const char *Menu_GetInitialTimeString(void)
+const BYTE *Menu_GetInitialTimeString(void)
 {
     return config.initialTime;
 }
@@ -59,7 +59,7 @@ static void set_default_config(void)
     config.samplingTime = 20;  // Sampling every 30 seconds
 
     // Default time: 00:00:00 01/01/2025 → "00000001012025"
-    const char *defaultTime = "00000001012025";
+    const BYTE* defaultTime = "00000001012025";
     for (int i = 0; i < 14; i++)
     {
         config.initialTime[i] = defaultTime[i];

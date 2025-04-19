@@ -14,7 +14,7 @@
 
 static BYTE joyX = 0;
 static BYTE joyY = 0;
-static BYTE temperature = 0;
+static WORD temperature = 0;
 
 static BYTE channel = 0; // Current channel being read
 static BYTE state = 0;   // FSM state
@@ -69,7 +69,7 @@ void ADC_Motor(void)
                 break;
 
             case CHANNEL_TEMP:
-                temperature = ADRESH;
+                temperature = ((ADRESH << 8) | ADRESL); // HHHHHHHH-LLLLLLLL
                 channel = CHANNEL_X;
                 break;
             }
@@ -98,7 +98,7 @@ BYTE ADC_GetJoyY(void)
 /**
  * Returns latest ADC value for temperature sensor TMP36 (AN2).
  */
-BYTE ADC_GetTemp(void)
+WORD ADC_GetTemp(void)
 {
     return temperature;
 }

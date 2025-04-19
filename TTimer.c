@@ -11,7 +11,7 @@ static void TMR0_set_interruption_1ms();
 typedef struct
 {
     unsigned int startTics;
-    unsigned BYTE inUse;
+    BYTE inUse;
 } Timer;
 
 static Timer timers[TI_NUMTIMERS];
