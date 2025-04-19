@@ -14,6 +14,6 @@ BYTE ADC_GetJoyX(void);
 BYTE ADC_GetJoyY(void);
 
 // Temperature
-BYTE ADC_GetTemp(void);
+WORD ADC_GetTemp(void);
 
 #endif
