@@ -10,6 +10,7 @@
 #include "TFan.h"
 #include "TPWM.h"
 #include "TController.h"
+#include "TSerial.h"
 
 #pragma config OSC = HSPLL
 #pragma config PBADEN = DIG
@@ -50,6 +51,7 @@ void main(void)
     FAN_Init();
     PWM_Init();
     CTR_Init();
+    Serial_Init();
 
     // Main loop — cooperative multitasking
     while (TRUE)
