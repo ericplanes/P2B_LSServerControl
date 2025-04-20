@@ -51,17 +51,17 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Source Files Quoted if spaced
-SOURCEFILES_QUOTED_IF_SPACED=TADC.c TEEPROM.c TJoystick.c TMenu.c TTemperature.c TTimer.c TLed.c TFan.c main.c TPWM.c TController.c TI2C.c TRam.c
+SOURCEFILES_QUOTED_IF_SPACED=TADC.c TEEPROM.c TJoystick.c TMenu.c TTemperature.c TTimer.c TLed.c TFan.c TPWM.c TController.c TI2C.c TRam.c main.c TSerial.c
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/TADC.p1 ${OBJECTDIR}/TEEPROM.p1 ${OBJECTDIR}/TJoystick.p1 ${OBJECTDIR}/TMenu.p1 ${OBJECTDIR}/TTemperature.p1 ${OBJECTDIR}/TTimer.p1 ${OBJECTDIR}/TLed.p1 ${OBJECTDIR}/TFan.p1 ${OBJECTDIR}/main.p1 ${OBJECTDIR}/TPWM.p1 ${OBJECTDIR}/TController.p1 ${OBJECTDIR}/TI2C.p1 ${OBJECTDIR}/TRam.p1
-POSSIBLE_DEPFILES=${OBJECTDIR}/TADC.p1.d ${OBJECTDIR}/TEEPROM.p1.d ${OBJECTDIR}/TJoystick.p1.d ${OBJECTDIR}/TMenu.p1.d ${OBJECTDIR}/TTemperature.p1.d ${OBJECTDIR}/TTimer.p1.d ${OBJECTDIR}/TLed.p1.d ${OBJECTDIR}/TFan.p1.d ${OBJECTDIR}/main.p1.d ${OBJECTDIR}/TPWM.p1.d ${OBJECTDIR}/TController.p1.d ${OBJECTDIR}/TI2C.p1.d ${OBJECTDIR}/TRam.p1.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/TADC.p1 ${OBJECTDIR}/TEEPROM.p1 ${OBJECTDIR}/TJoystick.p1 ${OBJECTDIR}/TMenu.p1 ${OBJECTDIR}/TTemperature.p1 ${OBJECTDIR}/TTimer.p1 ${OBJECTDIR}/TLed.p1 ${OBJECTDIR}/TFan.p1 ${OBJECTDIR}/TPWM.p1 ${OBJECTDIR}/TController.p1 ${OBJECTDIR}/TI2C.p1 ${OBJECTDIR}/TRam.p1 ${OBJECTDIR}/main.p1 ${OBJECTDIR}/TSerial.p1
+POSSIBLE_DEPFILES=${OBJECTDIR}/TADC.p1.d ${OBJECTDIR}/TEEPROM.p1.d ${OBJECTDIR}/TJoystick.p1.d ${OBJECTDIR}/TMenu.p1.d ${OBJECTDIR}/TTemperature.p1.d ${OBJECTDIR}/TTimer.p1.d ${OBJECTDIR}/TLed.p1.d ${OBJECTDIR}/TFan.p1.d ${OBJECTDIR}/TPWM.p1.d ${OBJECTDIR}/TController.p1.d ${OBJECTDIR}/TI2C.p1.d ${OBJECTDIR}/TRam.p1.d ${OBJECTDIR}/main.p1.d ${OBJECTDIR}/TSerial.p1.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/TADC.p1 ${OBJECTDIR}/TEEPROM.p1 ${OBJECTDIR}/TJoystick.p1 ${OBJECTDIR}/TMenu.p1 ${OBJECTDIR}/TTemperature.p1 ${OBJECTDIR}/TTimer.p1 ${OBJECTDIR}/TLed.p1 ${OBJECTDIR}/TFan.p1 ${OBJECTDIR}/main.p1 ${OBJECTDIR}/TPWM.p1 ${OBJECTDIR}/TController.p1 ${OBJECTDIR}/TI2C.p1 ${OBJECTDIR}/TRam.p1
+OBJECTFILES=${OBJECTDIR}/TADC.p1 ${OBJECTDIR}/TEEPROM.p1 ${OBJECTDIR}/TJoystick.p1 ${OBJECTDIR}/TMenu.p1 ${OBJECTDIR}/TTemperature.p1 ${OBJECTDIR}/TTimer.p1 ${OBJECTDIR}/TLed.p1 ${OBJECTDIR}/TFan.p1 ${OBJECTDIR}/TPWM.p1 ${OBJECTDIR}/TController.p1 ${OBJECTDIR}/TI2C.p1 ${OBJECTDIR}/TRam.p1 ${OBJECTDIR}/main.p1 ${OBJECTDIR}/TSerial.p1
 
 # Source Files
-SOURCEFILES=TADC.c TEEPROM.c TJoystick.c TMenu.c TTemperature.c TTimer.c TLed.c TFan.c main.c TPWM.c TController.c TI2C.c TRam.c
+SOURCEFILES=TADC.c TEEPROM.c TJoystick.c TMenu.c TTemperature.c TTimer.c TLed.c TFan.c TPWM.c TController.c TI2C.c TRam.c main.c TSerial.c
 
 
 
@@ -152,14 +152,6 @@ ${OBJECTDIR}/TFan.p1: TFan.c  nbproject/Makefile-${CND_CONF}.mk
 	@-${MV} ${OBJECTDIR}/TFan.d ${OBJECTDIR}/TFan.p1.d 
 	@${FIXDEPS} ${OBJECTDIR}/TFan.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
 	
-${OBJECTDIR}/main.p1: main.c  nbproject/Makefile-${CND_CONF}.mk 
-	@${MKDIR} "${OBJECTDIR}" 
-	@${RM} ${OBJECTDIR}/main.p1.d 
-	@${RM} ${OBJECTDIR}/main.p1 
-	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -D__DEBUG=1  -mdebugger=none   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/main.p1 main.c 
-	@-${MV} ${OBJECTDIR}/main.d ${OBJECTDIR}/main.p1.d 
-	@${FIXDEPS} ${OBJECTDIR}/main.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
-	
 ${OBJECTDIR}/TPWM.p1: TPWM.c  nbproject/Makefile-${CND_CONF}.mk 
 	@${MKDIR} "${OBJECTDIR}" 
 	@${RM} ${OBJECTDIR}/TPWM.p1.d 
@@ -191,6 +183,22 @@ ${OBJECTDIR}/TRam.p1: TRam.c  nbproject/Makefile-${CND_CONF}.mk
 	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -D__DEBUG=1  -mdebugger=none   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/TRam.p1 TRam.c 
 	@-${MV} ${OBJECTDIR}/TRam.d ${OBJECTDIR}/TRam.p1.d 
 	@${FIXDEPS} ${OBJECTDIR}/TRam.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+	
+${OBJECTDIR}/main.p1: main.c  nbproject/Makefile-${CND_CONF}.mk 
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/main.p1.d 
+	@${RM} ${OBJECTDIR}/main.p1 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -D__DEBUG=1  -mdebugger=none   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/main.p1 main.c 
+	@-${MV} ${OBJECTDIR}/main.d ${OBJECTDIR}/main.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/main.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+	
+${OBJECTDIR}/TSerial.p1: TSerial.c  nbproject/Makefile-${CND_CONF}.mk 
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/TSerial.p1.d 
+	@${RM} ${OBJECTDIR}/TSerial.p1 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -D__DEBUG=1  -mdebugger=none   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/TSerial.p1 TSerial.c 
+	@-${MV} ${OBJECTDIR}/TSerial.d ${OBJECTDIR}/TSerial.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/TSerial.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
 	
 else
 ${OBJECTDIR}/TADC.p1: TADC.c  nbproject/Makefile-${CND_CONF}.mk 
@@ -257,14 +265,6 @@ ${OBJECTDIR}/TFan.p1: TFan.c  nbproject/Makefile-${CND_CONF}.mk
 	@-${MV} ${OBJECTDIR}/TFan.d ${OBJECTDIR}/TFan.p1.d 
 	@${FIXDEPS} ${OBJECTDIR}/TFan.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
 	
-${OBJECTDIR}/main.p1: main.c  nbproject/Makefile-${CND_CONF}.mk 
-	@${MKDIR} "${OBJECTDIR}" 
-	@${RM} ${OBJECTDIR}/main.p1.d 
-	@${RM} ${OBJECTDIR}/main.p1 
-	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/main.p1 main.c 
-	@-${MV} ${OBJECTDIR}/main.d ${OBJECTDIR}/main.p1.d 
-	@${FIXDEPS} ${OBJECTDIR}/main.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
-	
 ${OBJECTDIR}/TPWM.p1: TPWM.c  nbproject/Makefile-${CND_CONF}.mk 
 	@${MKDIR} "${OBJECTDIR}" 
 	@${RM} ${OBJECTDIR}/TPWM.p1.d 
@@ -296,6 +296,22 @@ ${OBJECTDIR}/TRam.p1: TRam.c  nbproject/Makefile-${CND_CONF}.mk
 	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/TRam.p1 TRam.c 
 	@-${MV} ${OBJECTDIR}/TRam.d ${OBJECTDIR}/TRam.p1.d 
 	@${FIXDEPS} ${OBJECTDIR}/TRam.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+	
+${OBJECTDIR}/main.p1: main.c  nbproject/Makefile-${CND_CONF}.mk 
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/main.p1.d 
+	@${RM} ${OBJECTDIR}/main.p1 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/main.p1 main.c 
+	@-${MV} ${OBJECTDIR}/main.d ${OBJECTDIR}/main.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/main.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+	
+${OBJECTDIR}/TSerial.p1: TSerial.c  nbproject/Makefile-${CND_CONF}.mk 
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/TSerial.p1.d 
+	@${RM} ${OBJECTDIR}/TSerial.p1 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/TSerial.p1 TSerial.c 
+	@-${MV} ${OBJECTDIR}/TSerial.d ${OBJECTDIR}/TSerial.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/TSerial.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
 	
 endif
 

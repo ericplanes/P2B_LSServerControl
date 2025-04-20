@@ -42,6 +42,8 @@
       <itemPath>TI2C.h</itemPath>
       <itemPath>TRam.c</itemPath>
       <itemPath>TRam.h</itemPath>
+      <itemPath>TSerial.c</itemPath>
+      <itemPath>TSerial.h</itemPath>
     </logicalFolder>
     <itemPath>main.c</itemPath>
   </logicalFolder>
