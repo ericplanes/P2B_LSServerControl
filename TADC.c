@@ -69,7 +69,7 @@ void ADC_Motor(void)
                 break;
 
             case CHANNEL_TEMP:
-                temperature = ((ADRESH << 8) | ADRESL); // HHHHHHHH-LLLLLLLL
+                temperature = (WORD)((ADRESH << 8) | ADRESL); // HHHHHHHH-LLLLLLLL
                 channel = CHANNEL_X;
                 break;
             }

@@ -34,13 +34,13 @@ void main()
     // Here we'll init all the tads that we need to init
     TiInit();
     ADC_Init();
-    Menu_Init();
+    MENU_Init();
     Joystick_Init();
 
     // Here we'll put the motors, so that they're cooperatively called
     while (TRUE)
     {
         ADC_Motor();
-        Menu_Motor();
+        MENU_Motor();
     }
 }

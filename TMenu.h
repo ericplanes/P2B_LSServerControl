@@ -6,12 +6,13 @@
 #include "Utils.h"
 
 // Initialization and motor
-void Menu_Init(void);
-void Menu_Motor(void);
+void MENU_Init(void);
+void MENU_Motor(void);
 
 // Configuration getters
-const WORD *Menu_GetTMPThresholds(void);
-BYTE Menu_GetSamplingTime(void);
-const BYTE *Menu_GetInitialTimeString(void);
+BYTE MENU_isConfigured(void);
+const WORD *MENU_GetTMPThresholds(void);
+BYTE MENU_GetSamplingTime(void);
+const BYTE *MENU_GetInitialTimeString(void);
 
 #endif

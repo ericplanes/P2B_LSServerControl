@@ -6,7 +6,7 @@
  *          PRIVATE FUNCTION HEADERS
  * ======================================= */
 
-static BYTE compute_temperature_state(BYTE value, const WORD *thresholds);
+static BYTE compute_temperature_state(WORD value, const WORD *thresholds);
 
 /* =======================================
  *          PUBLIC FUNCTION BODIES
@@ -17,8 +17,8 @@ static BYTE compute_temperature_state(BYTE value, const WORD *thresholds);
  */
 BYTE TEMP_GetState(void)
 {
-    BYTE temp = ADC_GetTemp();
-    const WORD *thresholds = Menu_GetTMPThresholds();
+    WORD temp = ADC_GetTemp();
+    const WORD *thresholds = MENU_GetTMPThresholds();
     return compute_temperature_state(temp, thresholds);
 }
 
@@ -29,7 +29,7 @@ BYTE TEMP_GetState(void)
 /**
  * Classifies the temperature value into one of the four defined states.
  */
-static BYTE compute_temperature_state(BYTE value, const WORD *thresholds)
+static BYTE compute_temperature_state(WORD value, const WORD *thresholds)
 {
     if (value < thresholds[0])
     {
