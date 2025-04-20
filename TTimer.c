@@ -5,7 +5,11 @@
 /* =======================================
  *          PRIVATE FUNCTION HEADERS
  * ======================================= */
-static void TMR0_set_interruption_1ms(void);
+static inline void TMR0_set_interruption_1ms(void)
+{
+    TMR0H = 216;
+    TMR0L = 240;
+}
 
 // Internal timer structure
 typedef struct
@@ -86,14 +90,4 @@ void TiResetTics(BYTE timerId)
 WORD TiGetTics(BYTE timerId)
 {
     return (globalTics - timers[timerId].startTics);
-}
-
-/* =======================================
- *          PRIVATE FUNCTION BODIES
- * ======================================= */
-
-static void TMR0_set_interruption_1ms(void)
-{
-    TMR0H = 216;
-    TMR0L = 240;
 }

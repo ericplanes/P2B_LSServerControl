@@ -31,52 +31,43 @@ void PWM_Init(void)
     timerLED = TiGetTimer();
     TiResetTics(timerLED);
 
-    FAN_SetStateA(FAN_OFF);
-    FAN_SetStateB(FAN_OFF);
+    FAN_SetPowerA(FALSE);
+    FAN_SetPowerB(FALSE);
     LED_SetColor(LED_OFF);
 }
 
 void PWM_Motor(void)
 {
-    STATUS status = CTR_GetStatus();
+    SYS_STATUS status = CTR_GetStatus();
     WORD ticsPWM = TiGetTics(timerPWM);
     WORD ticsLED = TiGetTics(timerLED);
 
     switch (status)
     {
-    case STATUS_LOW:
-        if (ticsPWM < PWM_DUTY_ON_MS)
-            FAN_SetStateA(FAN_ON);
-        else
-            FAN_SetStateA(FAN_OFF);
-
-        FAN_SetStateB(FAN_OFF);
+    case SYS_STATUS_LOW:
+        FAN_SetPowerA(ticsPWM < PWM_DUTY_ON_MS ? TRUE : FALSE);
+        FAN_SetPowerB(FALSE);
         LED_SetColor(LED_GREEN);
         break;
 
-    case STATUS_MOD:
-        if (ticsPWM < PWM_DUTY_ON_MS)
-        {
-            FAN_SetStateA(FAN_ON);
-            FAN_SetStateB(FAN_ON);
-        }
-        else
-        {
-            FAN_SetStateA(FAN_OFF);
-            FAN_SetStateB(FAN_OFF);
-        }
+    case SYS_STATUS_MOD:
+    {
+        BOOL pwm_on = (ticsPWM < PWM_DUTY_ON_MS);
+        FAN_SetPowerA(pwm_on);
+        FAN_SetPowerB(pwm_on);
         LED_SetColor(LED_BLUE);
-        break;
+    }
+    break;
 
-    case STATUS_HIGH:
-        FAN_SetStateA(FAN_ON);
-        FAN_SetStateB(FAN_ON);
+    case SYS_STATUS_HIGH:
+        FAN_SetPowerA(TRUE);
+        FAN_SetPowerB(TRUE);
         LED_SetColor(LED_RED);
         break;
 
-    case STATUS_CRIT:
-        FAN_SetStateA(FAN_OFF);
-        FAN_SetStateB(FAN_OFF);
+    case SYS_STATUS_CRIT:
+        FAN_SetPowerA(FALSE);
+        FAN_SetPowerB(FALSE);
 
         if (ticsLED < CRIT_LED_TOGGLE_MS)
             LED_SetColor(LED_RED);
@@ -87,9 +78,9 @@ void PWM_Motor(void)
             TiResetTics(timerLED);
         break;
 
-    case STATUS_OFF:
-        FAN_SetStateA(FAN_OFF);
-        FAN_SetStateB(FAN_OFF);
+    case SYS_STATUS_OFF:
+        FAN_SetPowerA(FALSE);
+        FAN_SetPowerB(FALSE);
         LED_SetColor(LED_OFF);
         TiResetTics(timerPWM);
         TiResetTics(timerLED);

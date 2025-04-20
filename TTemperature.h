@@ -4,7 +4,7 @@
 #include "Utils.h"
 
 // Public function
-STATUS TEMP_GetState(void);
+SYS_STATUS TEMP_GetState(void);
 WORD TEMP_GetTemperature(void);
 
 #endif

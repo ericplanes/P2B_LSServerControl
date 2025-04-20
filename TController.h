@@ -5,6 +5,6 @@
 
 void CTR_Init(void);
 void CTR_Motor(void);
-STATUS CTR_GetStatus(void);
+SYS_STATUS CTR_GetStatus(void);
 
 #endif

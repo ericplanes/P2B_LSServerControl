@@ -20,7 +20,7 @@
  *         PRIVATE VARIABLES
  * ======================================= */
 
-static STATUS controller_status;
+static SYS_STATUS controller_status;
 static BYTE motor_state;
 
 static BYTE timer_id;
@@ -37,11 +37,11 @@ void CTR_Init(void)
     timer_id = TiGetTimer();
     TiResetTics(timer_id);
 
-    controller_status = STATUS_OFF;
+    controller_status = SYS_STATUS_OFF;
     motor_state = S_WAIT_CONFIG;
 }
 
-STATUS CTR_GetStatus(void)
+SYS_STATUS CTR_GetStatus(void)
 {
     return controller_status;
 }
@@ -70,7 +70,7 @@ void CTR_Motor(void)
         controller_status = TEMP_GetState();
         temperature = TEMP_GetTemperature();
 
-        if (controller_status == STATUS_CRIT)
+        if (controller_status == SYS_STATUS_CRIT)
             motor_state = S_READ_TIME;
         else
             motor_state = S_WRITE_RAM;

@@ -6,7 +6,7 @@
  *          PRIVATE FUNCTION HEADERS
  * ======================================= */
 
-static STATUS compute_temperature_state(WORD value, const WORD *thresholds);
+static SYS_STATUS compute_temperature_state(WORD value, const WORD *thresholds);
 
 /* =======================================
  *          PRIVATE VARIABLES
@@ -21,7 +21,7 @@ static WORD temperature;
 /**
  * Returns the current room temperature state based on thresholds A, B, C.
  */
-STATUS TEMP_GetState(void)
+SYS_STATUS TEMP_GetState(void)
 {
     temperature = ADC_GetTemp();
     const WORD *thresholds = MENU_GetTMPThresholds();
@@ -40,16 +40,16 @@ WORD TEMP_GetTemperature(void)
 /**
  * Classifies the temperature value into one of the four defined states.
  */
-static STATUS compute_temperature_state(WORD value, const WORD *thresholds)
+static SYS_STATUS compute_temperature_state(WORD value, const WORD *thresholds)
 {
     if (value < thresholds[0])
-        return STATUS_LOW;
+        return SYS_STATUS_LOW;
 
     if (value < thresholds[1])
-        return STATUS_MOD;
+        return SYS_STATUS_MOD;
 
     if (value < thresholds[2])
-        return STATUS_HIGH;
+        return SYS_STATUS_HIGH;
 
-    return STATUS_CRIT;
+    return SYS_STATUS_CRIT;
 }
