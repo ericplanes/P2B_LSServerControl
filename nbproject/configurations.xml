@@ -34,6 +34,10 @@
       <itemPath>TLed.h</itemPath>
       <itemPath>TFan.c</itemPath>
       <itemPath>TFan.h</itemPath>
+      <itemPath>TController.h</itemPath>
+      <itemPath>TPWM.c</itemPath>
+      <itemPath>TPWM.h</itemPath>
+      <itemPath>TController.c</itemPath>
     </logicalFolder>
     <itemPath>main.c</itemPath>
   </logicalFolder>
