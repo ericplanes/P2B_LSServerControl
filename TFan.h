@@ -4,7 +4,7 @@
 #include "Utils.h"
 
 void FAN_Init(void);
-void FAN_SetStateA(BOOL on);
-void FAN_SetStateB(BOOL on);
+void FAN_SetPowerA(BOOL enabled);
+void FAN_SetPowerB(BOOL enabled);
 
 #endif

@@ -14,12 +14,12 @@ void FAN_Init(void)
     LATAbits.LATA5 = 0;
 }
 
-void FAN_SetStateA(BOOL on)
+void FAN_SetPowerA(BOOL enabled)
 {
-    LATAbits.LATA4 = (on == TRUE) ? 1 : 0;
+    LATAbits.LATA4 = (enabled == TRUE) ? 1 : 0;
 }
 
-void FAN_SetStateB(BOOL on)
+void FAN_SetPowerB(BOOL enabled)
 {
-    LATAbits.LATA5 = (on == TRUE) ? 1 : 0;
+    LATAbits.LATA5 = (enabled == TRUE) ? 1 : 0;
 }
