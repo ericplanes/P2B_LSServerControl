@@ -30,6 +30,10 @@
       <itemPath>TTimer.c</itemPath>
       <itemPath>TTimer.h</itemPath>
       <itemPath>Utils.h</itemPath>
+      <itemPath>TLed.c</itemPath>
+      <itemPath>TLed.h</itemPath>
+      <itemPath>TFan.c</itemPath>
+      <itemPath>TFan.h</itemPath>
     </logicalFolder>
     <itemPath>main.c</itemPath>
   </logicalFolder>
