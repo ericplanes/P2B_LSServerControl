@@ -1,6 +1,6 @@
 #include "TEEPROM.h"
 
-#define LOG_SIZE 14
+#define LOG_SIZE (TIMESTAMP_SIZE - 1)
 #define MAX_LOGS 15
 
 static BYTE mem_section = 0;
@@ -8,22 +8,44 @@ static BYTE amount_of_stored_logs = 0;
 static BYTE pos = 0;
 
 /* =======================================
- *          PRIVATE FUNCTION HEADERS
+ *          PRIVATE FUNCTION BODIES
  * ======================================= */
-static BYTE read_byte(BYTE address);
-static void prepare_write_info(BYTE address, BYTE data);
-static void write_prepared_info(void);
-static void write_byte(BYTE address, BYTE data);
+
+static BYTE read_byte(BYTE address)
+{
+    EEADR = address;
+    EECON1 = 0x01;
+    return EEDATA;
+}
+
+static void prepare_write_info(BYTE address, BYTE data)
+{
+    EECON1bits.WREN = 1;
+    EEADR = address;
+    EEDATA = data;
+}
+
+static void write_prepared_info(void)
+{
+    EECON2 = 0x55;
+    EECON2 = 0xAA;
+    EECON1bits.WR = 1;
+    EECON1bits.WREN = 0;
+}
+
+static void write_byte(BYTE address, BYTE data)
+{
+    prepare_write_info(address, data);
+    di();
+    write_prepared_info();
+    ei();
+}
 
 /* =======================================
  *          PUBLIC FUNCTION BODIES
  * ======================================= */
 
-/**
- * Stores a new log entry into EEPROM progressively.
- * Returns EEPROM_FINISHED when the log is fully written.
- */
-BYTE EEPROM_StoreLog(const BYTE *log_data)
+BOOL EEPROM_StoreLog(const BYTE *log_data)
 {
     if (pos < LOG_SIZE)
     {
@@ -43,18 +65,14 @@ BYTE EEPROM_StoreLog(const BYTE *log_data)
             amount_of_stored_logs = MAX_LOGS;
         }
 
-        write_byte(0, amount_of_stored_logs); // increase amount of stored logs
-        return EEPROM_FINISHED;
+        write_byte(0, amount_of_stored_logs);
+        return TRUE;
     }
 
-    return EEPROM_ONGOING;
+    return FALSE;
 }
 
-/**
- * Reads a log entry from EEPROM progressively.
- * Returns EEPROM_FINISHED when the read is complete.
- */
-BYTE EEPROM_ReadLog(BYTE section, BYTE *log_data)
+BOOL EEPROM_ReadLog(BYTE section, BYTE *log_data)
 {
     if (pos < LOG_SIZE)
     {
@@ -62,45 +80,17 @@ BYTE EEPROM_ReadLog(BYTE section, BYTE *log_data)
         pos++;
     }
 
-    if (pos >= LOG_SIZE)
+    if (pos == LOG_SIZE)
     {
-        pos = 0;
-        return EEPROM_FINISHED;
+        log_data[pos] = '\0';
+        pos++;
     }
 
-    return EEPROM_ONGOING;
-}
+    if (pos > LOG_SIZE)
+    {
+        pos = 0;
+        return TRUE;
+    }
 
-/* =======================================
- *          PRIVATE FUNCTION BODIES
- * ======================================= */
-
-static BYTE read_byte(BYTE address)
-{
-    EEADR = address;
-    EECON1 = 0x01;
-    return EEDATA;
-}
-
-static void prepare_write_info(BYTE address, BYTE data)
-{
-    EECON1bits.WREN = 1; // Enable write
-    EEADR = address;     // Set addresss
-    EEDATA = data;       // Set byte to be written
-}
-
-static void write_prepared_info(void)
-{
-    EECON2 = 0x55;       // Part 1/2 of write sequence
-    EECON2 = 0xAA;       // Part 2/2 of write sequence
-    EECON1bits.WR = 1;   // Write
-    EECON1bits.WREN = 0; // Disable write
-}
-
-static void write_byte(BYTE address, BYTE data)
-{
-    prepare_write_info(address, data);
-    di(); // Disable global interrupts
-    write_prepared_info();
-    ei(); // Re-enable global interrupts
+    return FALSE;
 }

@@ -6,7 +6,13 @@
  *          PRIVATE FUNCTION HEADERS
  * ======================================= */
 
-static BYTE compute_temperature_state(WORD value, const WORD *thresholds);
+static SYS_STATUS compute_temperature_state(WORD value, const WORD *thresholds);
+
+/* =======================================
+ *          PRIVATE VARIABLES
+ * ======================================= */
+
+static WORD temperature;
 
 /* =======================================
  *          PUBLIC FUNCTION BODIES
@@ -15,11 +21,16 @@ static BYTE compute_temperature_state(WORD value, const WORD *thresholds);
 /**
  * Returns the current room temperature state based on thresholds A, B, C.
  */
-BYTE TEMP_GetState(void)
+SYS_STATUS TEMP_GetState(void)
 {
-    WORD temp = ADC_GetTemp();
+    temperature = ADC_GetTemp();
     const WORD *thresholds = MENU_GetTMPThresholds();
-    return compute_temperature_state(temp, thresholds);
+    return compute_temperature_state(temperature, thresholds);
+}
+
+WORD TEMP_GetTemperature(void)
+{
+    return temperature;
 }
 
 /* =======================================
@@ -29,19 +40,16 @@ BYTE TEMP_GetState(void)
 /**
  * Classifies the temperature value into one of the four defined states.
  */
-static BYTE compute_temperature_state(WORD value, const WORD *thresholds)
+static SYS_STATUS compute_temperature_state(WORD value, const WORD *thresholds)
 {
     if (value < thresholds[0])
-    {
-        return TEMP_LOW;
-    }
+        return SYS_STATUS_LOW;
+
     if (value < thresholds[1])
-    {
-        return TEMP_MOD;
-    }
+        return SYS_STATUS_MOD;
+
     if (value < thresholds[2])
-    {
-        return TEMP_HIGH;
-    }
-    return TEMP_CRIT;
+        return SYS_STATUS_HIGH;
+
+    return SYS_STATUS_CRIT;
 }

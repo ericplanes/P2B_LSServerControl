@@ -10,7 +10,7 @@ void MENU_Init(void);
 void MENU_Motor(void);
 
 // Configuration getters
-BYTE MENU_isConfigured(void);
+BOOL MENU_isConfigured(void);
 const WORD *MENU_GetTMPThresholds(void);
 BYTE MENU_GetSamplingTime(void);
 const BYTE *MENU_GetInitialTimeString(void);

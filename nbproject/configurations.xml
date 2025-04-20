@@ -38,6 +38,10 @@
       <itemPath>TPWM.c</itemPath>
       <itemPath>TPWM.h</itemPath>
       <itemPath>TController.c</itemPath>
+      <itemPath>TI2C.c</itemPath>
+      <itemPath>TI2C.h</itemPath>
+      <itemPath>TRam.c</itemPath>
+      <itemPath>TRam.h</itemPath>
     </logicalFolder>
     <itemPath>main.c</itemPath>
   </logicalFolder>

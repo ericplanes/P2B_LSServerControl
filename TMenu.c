@@ -33,9 +33,9 @@ void MENU_Motor(void)
     // Will be implemented later when Java communication is active
 }
 
-BYTE MENU_isConfigured(void)
+BOOL MENU_isConfigured(void)
 {
-    return config.isConfigured;
+    return config.isConfigured == TRUE;
 }
 
 const WORD *MENU_GetTMPThresholds(void)

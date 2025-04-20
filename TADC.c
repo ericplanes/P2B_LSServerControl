@@ -16,8 +16,8 @@ static BYTE joyX = 0;
 static BYTE joyY = 0;
 static WORD temperature = 0;
 
-static BYTE channel = 0; // Current channel being read
-static BYTE state = 0;   // FSM state
+static BYTE channel = 0;     // Current channel being read
+static BYTE motor_state = 0; // FSM state
 
 /* =======================================
  *          PUBLIC FUNCTION BODIES
@@ -37,7 +37,7 @@ void ADC_Init(void)
     ADCON0 = 0x00; // Start with channel AN0
 
     channel = 0;
-    state = 0;
+    motor_state = 0;
 }
 
 /**
@@ -45,12 +45,12 @@ void ADC_Init(void)
  */
 void ADC_Motor(void)
 {
-    switch (state)
+    switch (motor_state)
     {
     case 0: // Select and start conversion
         ADCON0bits.CHS = channel;
         ADCON0bits.GO_DONE = 1;
-        state = 1;
+        motor_state = 1;
         break;
 
     case 1: // Wait until conversion completes
@@ -73,7 +73,7 @@ void ADC_Motor(void)
                 channel = CHANNEL_X;
                 break;
             }
-            state = 0;
+            motor_state = 0;
         }
         break;
     }

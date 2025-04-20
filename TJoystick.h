@@ -11,6 +11,6 @@
 
 void Joystick_Init(void);
 BYTE Joystick_GetDirection(void);
-BYTE Joystick_IsButtonPressed(void);
+BOOL Joystick_IsButtonPressed(void);
 
 #endif
