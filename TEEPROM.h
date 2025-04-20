@@ -1,8 +1,8 @@
 #ifndef _EEPROM_H_
 #define _EEPROM_H_
 
-#include <xc.h>         // include processor files - each processor file is guarded.
-#include <pic18f4321.h> // no necessari a MPLAB
+#include <xc.h>
+#include <pic18f4321.h>
 #include "Utils.h"
 
 #define EEPROM_FINISHED 1
