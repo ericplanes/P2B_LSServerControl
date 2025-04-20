@@ -23,7 +23,7 @@ static void write_byte(BYTE address, BYTE data);
  * Stores a new log entry into EEPROM progressively.
  * Returns EEPROM_FINISHED when the log is fully written.
  */
-BYTE EEPROM_StoreLog(const BYTE *log_data)
+STATUS EEPROM_StoreLog(const BYTE *log_data)
 {
     if (pos < LOG_SIZE)
     {
@@ -44,17 +44,17 @@ BYTE EEPROM_StoreLog(const BYTE *log_data)
         }
 
         write_byte(0, amount_of_stored_logs); // increase amount of stored logs
-        return EEPROM_FINISHED;
+        return STATUS_DONE;
     }
 
-    return EEPROM_ONGOING;
+    return STATUS_ONGOING;
 }
 
 /**
  * Reads a log entry from EEPROM progressively.
  * Returns EEPROM_FINISHED when the read is complete.
  */
-BYTE EEPROM_ReadLog(BYTE section, BYTE *log_data)
+STATUS EEPROM_ReadLog(BYTE section, BYTE *log_data)
 {
     if (pos < LOG_SIZE)
     {
@@ -65,10 +65,10 @@ BYTE EEPROM_ReadLog(BYTE section, BYTE *log_data)
     if (pos >= LOG_SIZE)
     {
         pos = 0;
-        return EEPROM_FINISHED;
+        return STATUS_DONE;
     }
 
-    return EEPROM_ONGOING;
+    return STATUS_ONGOING;
 }
 
 /* =======================================
