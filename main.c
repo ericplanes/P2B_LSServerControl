@@ -9,6 +9,7 @@
 #include "TMenu.h"
 #include "TJoystick.h"
 #include "TLed.h"
+#include "TFan.h"
 
 #pragma config OSC = HSPLL // PLL because freq is 40MH
 #pragma config PBADEN = DIG
@@ -38,6 +39,7 @@ void main()
     MENU_Init();
     Joystick_Init();
     LED_Init();
+    FAN_Init();
 
     // Here we'll put the motors, so that they're cooperatively called
     while (TRUE)
