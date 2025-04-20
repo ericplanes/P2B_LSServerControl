@@ -5,8 +5,9 @@
 
 void Serial_Init(void);
 BOOL Serial_CanReadChar(void);
-BYTE Serial_ReadChar(void);
 BOOL Serial_CanSendChar(void);
+BYTE Serial_ReadChar(void);
 void Serial_SendChar(BYTE value);
+void Serial_DebugPrintString(const BYTE *text);
 
 #endif
