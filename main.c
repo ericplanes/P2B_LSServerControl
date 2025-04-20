@@ -1,8 +1,6 @@
-#include <stdio.h>
-#include <stdint.h>
-#include <stdlib.h>
 #include <xc.h>
 #include <pic18f4321.h>
+
 #include "Utils.h"
 #include "TADC.h"
 #include "TTimer.h"
@@ -11,8 +9,9 @@
 #include "TLed.h"
 #include "TFan.h"
 #include "TPWM.h"
+#include "TController.h"
 
-#pragma config OSC = HSPLL // PLL because freq is 40MH
+#pragma config OSC = HSPLL
 #pragma config PBADEN = DIG
 #pragma config MCLRE = OFF
 #pragma config DEBUG = OFF
@@ -24,17 +23,25 @@
 void main(void);
 void __interrupt() RSI_High(void);
 
+/* =======================================
+ *      HIGH PRIORITY INTERRUPT
+ * ======================================= */
+
 void __interrupt() RSI_High(void)
 {
     if (INTCONbits.TMR0IF == 1)
     {
-        // Codi que va amb interrupcions
+        Timer0_ISR();
     }
 }
 
-void main()
+/* =======================================
+ *               MAIN
+ * ======================================= */
+
+void main(void)
 {
-    // Here we'll init all the tads that we need to init
+    // Initialize all TADs
     TiInit();
     ADC_Init();
     MENU_Init();
@@ -42,12 +49,14 @@ void main()
     LED_Init();
     FAN_Init();
     PWM_Init();
+    CTR_Init();
 
-    // Here we'll put the motors, so that they're cooperatively called
+    // Main loop — cooperative multitasking
     while (TRUE)
     {
         ADC_Motor();
         MENU_Motor();
+        CTR_Motor();
         PWM_Motor();
     }
 }
