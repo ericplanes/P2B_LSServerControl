@@ -3,11 +3,8 @@
 
 #include "Utils.h"
 
-#define FAN_OFF 0
-#define FAN_ON 1
-
 void FAN_Init(void);
-void FAN_SetStateA(BYTE state);
-void FAN_SetStateB(BYTE state);
+void FAN_SetStateA(BOOL on);
+void FAN_SetStateB(BOOL on);
 
 #endif
