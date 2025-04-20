@@ -38,14 +38,13 @@ void PWM_Init(void)
 
 void PWM_Motor(void)
 {
-    BYTE status = CTR_GetStatus();
+    STATUS status = CTR_GetStatus();
     WORD ticsPWM = TiGetTics(timerPWM);
     WORD ticsLED = TiGetTics(timerLED);
 
     switch (status)
     {
-    case CTR_LOW:
-        // FAN A → PWM 50%, FAN B OFF
+    case STATUS_LOW:
         if (ticsPWM < PWM_DUTY_ON_MS)
             FAN_SetStateA(FAN_ON);
         else
@@ -55,8 +54,7 @@ void PWM_Motor(void)
         LED_SetColor(LED_GREEN);
         break;
 
-    case CTR_MOD:
-        // FAN A & B → PWM 50%
+    case STATUS_MOD:
         if (ticsPWM < PWM_DUTY_ON_MS)
         {
             FAN_SetStateA(FAN_ON);
@@ -70,15 +68,13 @@ void PWM_Motor(void)
         LED_SetColor(LED_BLUE);
         break;
 
-    case CTR_HIGH:
-        // FAN A & B ON, LED red
+    case STATUS_HIGH:
         FAN_SetStateA(FAN_ON);
         FAN_SetStateB(FAN_ON);
         LED_SetColor(LED_RED);
         break;
 
-    case CTR_CRIT:
-        // Both fans OFF, LED alternate RED/MAGENTA
+    case STATUS_CRIT:
         FAN_SetStateA(FAN_OFF);
         FAN_SetStateB(FAN_OFF);
 
@@ -87,12 +83,19 @@ void PWM_Motor(void)
         else
             LED_SetColor(LED_MAGENTA);
 
-        if (ticsLED >= (2 * CRIT_LED_TOGGLE_MS))
+        if (ticsLED >= 2 * CRIT_LED_TOGGLE_MS)
             TiResetTics(timerLED);
+        break;
+
+    case STATUS_OFF:
+        FAN_SetStateA(FAN_OFF);
+        FAN_SetStateB(FAN_OFF);
+        LED_SetColor(LED_OFF);
+        TiResetTics(timerPWM);
+        TiResetTics(timerLED);
         break;
     }
 
-    // End of simulated PWM cycle for FANs
     if (ticsPWM >= PWM_PERIOD_MS)
         TiResetTics(timerPWM);
 }
