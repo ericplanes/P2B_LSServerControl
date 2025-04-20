@@ -8,15 +8,15 @@
  *           PRIVATE CONSTANTS
  * ======================================= */
 
-#define PWM_PERIOD_MS 20        // Total PWM cycle = 20ms
-#define PWM_DUTY_ON_MS 10       // ON time = 10ms (50%)
+#define FAN_PERIOD_MS 20        // Total PWM cycle = 20ms
+#define FAN_DUTY_ON_MS 10       // ON time = 10ms (50%)
 #define CRIT_LED_TOGGLE_MS 1000 // Toggle LED every 1s
 
 /* =======================================
  *         PRIVATE VARIABLES
  * ======================================= */
 
-static BYTE timerPWM;
+static BYTE timerFAN;
 static BYTE timerLED;
 
 /* =======================================
@@ -25,8 +25,8 @@ static BYTE timerLED;
 
 void PWM_Init(void)
 {
-    timerPWM = TiGetTimer();
-    TiResetTics(timerPWM);
+    timerFAN = TiGetTimer();
+    TiResetTics(timerFAN);
 
     timerLED = TiGetTimer();
     TiResetTics(timerLED);
@@ -39,20 +39,20 @@ void PWM_Init(void)
 void PWM_Motor(void)
 {
     SYS_STATUS status = CTR_GetStatus();
-    WORD ticsPWM = TiGetTics(timerPWM);
+    WORD ticsFAN = TiGetTics(timerFAN);
     WORD ticsLED = TiGetTics(timerLED);
 
     switch (status)
     {
     case SYS_STATUS_LOW:
-        FAN_SetPowerA(ticsPWM < PWM_DUTY_ON_MS ? TRUE : FALSE);
+        FAN_SetPowerA(ticsFAN < FAN_DUTY_ON_MS ? TRUE : FALSE);
         FAN_SetPowerB(FALSE);
         LED_SetColor(LED_GREEN);
         break;
 
     case SYS_STATUS_MOD:
     {
-        BOOL pwm_on = (ticsPWM < PWM_DUTY_ON_MS);
+        BOOL pwm_on = (ticsFAN < FAN_DUTY_ON_MS);
         FAN_SetPowerA(pwm_on);
         FAN_SetPowerB(pwm_on);
         LED_SetColor(LED_BLUE);
@@ -82,11 +82,11 @@ void PWM_Motor(void)
         FAN_SetPowerA(FALSE);
         FAN_SetPowerB(FALSE);
         LED_SetColor(LED_OFF);
-        TiResetTics(timerPWM);
+        TiResetTics(timerFAN);
         TiResetTics(timerLED);
         break;
     }
 
-    if (ticsPWM >= PWM_PERIOD_MS)
-        TiResetTics(timerPWM);
+    if (ticsFAN >= FAN_PERIOD_MS)
+        TiResetTics(timerFAN);
 }
