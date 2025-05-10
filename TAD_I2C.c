@@ -185,3 +185,28 @@ void DS3231_LeerFechaHora(unsigned char* seg, unsigned char* min, unsigned char*
 
   I2C_Stop_();
 }
+
+void testLectura(void) {
+  // Inicializar el DS3231
+  
+  InitI2C();
+  DS3231_InitAlarm1_EverySecond();
+
+  unsigned char seg, min, hora, dia_sem, dia, mes, anio;
+  char buffer[6];
+
+  if (!PORTBbits.RB1) // condicio de la alarma  
+  DS3231_LimpiarFlagAlarma1();
+  
+  DS3231_LeerFechaHora(&seg, &min, &hora, &dia_sem, &dia, &mes, &anio);
+  SIO_PrintString("\r\n");
+  // Imprimir fecha en formato DD/MM/AA
+  itoa(dia, buffer, 10);        SIO_PrintString(buffer); SIO_SafePrint('/');
+  itoa(mes, buffer, 10);        SIO_PrintString(buffer); SIO_SafePrint('/');
+  itoa(anio, buffer, 10);       SIO_PrintString(buffer); SIO_PrintString(" ");
+
+  // Imprimir hora en formato HH:MM:SS
+  itoa(hora, buffer, 10);       SIO_PrintString(buffer); SIO_SafePrint(':');
+  itoa(min, buffer, 10);        SIO_PrintString(buffer); SIO_SafePrint(':');
+  itoa(seg, buffer, 10);        SIO_PrintString(buffer); SIO_PrintString("\r\n");
+}

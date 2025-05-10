@@ -4,7 +4,7 @@
 // Inicialitza l'ADC i els pins RA0, RA1 i RB2
 void JOY_Init(void);
 
-// Llegeix el valor analògic (10 bits) del canal corresponent (0 = RA0, 1 = RA1)
+// Llegeix el valor analï¿½gic (10 bits) del canal corresponent (0 = RA0, 1 = RA1)
 unsigned int JOY_ReadAnalog(unsigned char canal);
 
 // Llegeix l'estat digital del pin RB2 (0 o 1)
