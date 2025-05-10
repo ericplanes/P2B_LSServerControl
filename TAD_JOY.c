@@ -1,5 +1,5 @@
 #include "C:\Program Files\Microchip\xc8\v3.00\pic\include\xc.h"
-#include "../TAD_SIO/TAD_SIO.h"
+#include "TAD_SIO.h"
 #include "TAD_JOY.h"
 
 void JOY_Init(void) {
@@ -11,20 +11,20 @@ void JOY_Init(void) {
     TRISBbits.TRISB2 = 1;
 
     // Configura l'ADC:
-    ADCON1 = 0b00001101; // RA0 i RA1 analògics, resta digitals
+    ADCON1 = 0b00001101; // RA0 i RA1 analï¿½gics, resta digitals
     ADCON2 = 0b10111110; // Right justified, Tacq = 4 TAD, Fosc/32
     ADCON0 = 0b00000101; // Per ara desactivat (es configura segons canal a cada lectura)
 }
 
 unsigned int JOY_ReadAnalog(unsigned char canal) {
-    if (canal > 1) return 0; // Només acceptem canal 0 (RA0) o 1 (RA1)
+    if (canal > 1) return 0; // Nomï¿½s acceptem canal 0 (RA0) o 1 (RA1)
 
     ADCON0 = (canal << 2);   // Selecciona canal
-    ADCON0bits.ADON = 1;     // Activa el mòdul ADC
+    ADCON0bits.ADON = 1;     // Activa el mï¿½dul ADC
 
     //__delay_us(5);           // Petita espera abans de convertir
 
-    ADCON0bits.GO = 1;       // Inicia conversió
+    ADCON0bits.GO = 1;       // Inicia conversiï¿½
     while (ADCON0bits.GO);   // Espera a que acabi
 
     return ((ADRESH << 8) + ADRESL); // Llegeix resultat (10 bits)

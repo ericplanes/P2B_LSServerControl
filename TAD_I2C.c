@@ -6,10 +6,8 @@
 
 void I2C_Ready()
 {
-  while (PIR2bits.BCLIF)
-    ; /* Wait if bit collision interrupt flag is set*/
-  while (SSPSTATbits.BF || (SSPSTATbits.R_nW))
-    ;
+  while (PIR2bits.BCLIF); /* Wait if bit collision interrupt flag is set*/
+  while (SSPSTATbits.BF || (SSPSTATbits.R_nW));
   PIR1bits.SSPIF = 0; /* Clear SSPIF interrupt flag*/
 }
 
@@ -17,16 +15,14 @@ void I2C_Ack()
 {
   SSPCON2bits.ACKDT = 0; /* Acknowledge data 1:NACK,0:ACK */
   SSPCON2bits.ACKEN = 1; /* Enable ACK/NACK to send */
-  while (SSPCON2bits.ACKEN)
-    ;
+  while (SSPCON2bits.ACKEN);
 }
 
 void I2C_Nack()
 {
   SSPCON2bits.ACKDT = 1; /* Acknowledge data 1:NACK,0:ACK */
   SSPCON2bits.ACKEN = 1; /* Enable ACK/NACK to send */
-  while (SSPCON2bits.ACKEN)
-    ;
+  while (SSPCON2bits.ACKEN);
 }
 
 //-------------- Public functions: --------------
@@ -35,6 +31,8 @@ void InitI2C()
 {
   TRISCbits.TRISC3 = 1;
   TRISCbits.TRISC4 = 1;
+  TRISBbits.RB1 = 1;
+  INTCON2bits.RBPU = 0;
   SSPSTAT = 0x80;
   SSPCON1 = 0x28;
   SSPCON2 = 0x0;
@@ -142,43 +140,48 @@ void DS3231_LimpiarFlagAlarma1() {
   I2C_Stop_();
 }
 
-void DS3231_SetFechaHora(unsigned char seg, unsigned char min, unsigned char hora, 
-                        unsigned char dia_semana, unsigned char dia, 
-                        unsigned char mes, unsigned char anio) {
-  StartI2C(DS3231_ADDRESS);
-  I2C_Write(0x00);  // Empezamos en el registro de segundos
-
-  I2C_Write(BINtoBCD(seg));
-  I2C_Write(BINtoBCD(min));
-  I2C_Write(BINtoBCD(hora));        // Modo 24h (bit 6 = 0)
-  I2C_Write(BINtoBCD(dia_semana));  // 1 = domingo, 2 = lunes, ...
-  I2C_Write(BINtoBCD(dia));
-  I2C_Write(BINtoBCD(mes));
-  I2C_Write(BINtoBCD(anio));        // Año en dos cifras (00–99)
-
-  I2C_Stop_();
-}
-
 unsigned char BINtoBCD(unsigned char val) {
   return ((val / 10) << 4) | (val % 10);
 }
 
+void DS3231_SetFechaHora(unsigned char seg, unsigned char min, unsigned char hora, 
+                          unsigned char dia_semana, unsigned char dia, 
+                          unsigned char mes, unsigned char anio) {
+  StartI2C(DS3231_ADDRESS);      // Iniciar comunicación I2C con DS3231
+  I2C_Write(0x00);               // Apuntar al registro de segundos
+
+  I2C_Write(BINtoBCD(seg & 0x7F));        // 7 bits para segundos (bit 7 = 0)
+  I2C_Write(BINtoBCD(min & 0x7F));        // 7 bits para minutos
+  I2C_Write(BINtoBCD(hora & 0x3F));       // 6 bits para horas en formato 24h
+  I2C_Write(BINtoBCD(dia_semana & 0x07)); // 3 bits válidos para día semana
+  I2C_Write(BINtoBCD(dia & 0x3F));        // 6 bits para día del mes
+  I2C_Write(BINtoBCD(mes & 0x1F));        // 5 bits para mes
+  I2C_Write(BINtoBCD(anio));              // Año en dos dígitos (00-99)
+
+  I2C_Stop_();                   // Finalizar comunicación I2C
+}
+
+
+unsigned char BCDtoBIN(unsigned char val) {
+    return ((val >> 4) * 10) + (val & 0x0F);
+}
+
 void DS3231_LeerFechaHora(unsigned char* seg, unsigned char* min, unsigned char* hora,
-                        unsigned char* dia_semana, unsigned char* dia,
-                        unsigned char* mes, unsigned char* anio) {
+                          unsigned char* dia_semana, unsigned char* dia,
+                          unsigned char* mes, unsigned char* anio) {
   StartI2C(DS3231_ADDRESS);
-  I2C_Write(0x00);  // Apuntar al registro 0x00 (segundos)
+  I2C_Write(0x00);               // Apuntar al registro de segundos
   I2C_Stop_();
 
-  StartI2C(DS3231_ADDRESS | 1);  // Lectura
+  StartI2C(DS3231_ADDRESS | 1);  // Lectura (LSB = 1)
 
-  *seg        = BCDtoBIN(I2C_Read(0));
-  *min        = BCDtoBIN(I2C_Read(0));
-  *hora       = BCDtoBIN(I2C_Read(0) & 0x3F);  // Solo 6 bits válidos (modo 24h)
-  *dia_semana = BCDtoBIN(I2C_Read(0));
-  *dia        = BCDtoBIN(I2C_Read(0));
-  *mes        = BCDtoBIN(I2C_Read(0) & 0x1F);  // Bits 4:0 del mes
-  *anio       = BCDtoBIN(I2C_Read(1));         // Último byte con NACK
+  *seg        = BCDtoBIN(I2C_Read(0) & 0x7F); // bits 6:0
+  *min        = BCDtoBIN(I2C_Read(0) & 0x7F); // bits 6:0
+  *hora       = BCDtoBIN(I2C_Read(0) & 0x3F); // 24h, bits 5:0
+  *dia_semana = BCDtoBIN(I2C_Read(0) & 0x07); // bits 2:0
+  *dia        = BCDtoBIN(I2C_Read(0) & 0x3F); // bits 5:0
+  *mes        = BCDtoBIN(I2C_Read(0) & 0x1F); // bits 4:0
+  *anio       = BCDtoBIN(I2C_Read(1));        // última lectura con NACK
 
   I2C_Stop_();
 }

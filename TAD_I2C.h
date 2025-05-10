@@ -28,5 +28,6 @@ char I2C_Read(char flag);
 void DS3231_InitAlarm1_EverySecond(void);
 void DS3231_LimpiarFlagAlarma1(void);
 void DS3231_LeerFechaHora(unsigned char* seg, unsigned char* min, unsigned char* hora, unsigned char* dia_semana, unsigned char* dia, unsigned char* mes, unsigned char* anio);
+void DS3231_SetFechaHora(unsigned char seg, unsigned char min, unsigned char hora, unsigned char dia_semana, unsigned char dia, unsigned char mes, unsigned char anio);
 
 #endif
