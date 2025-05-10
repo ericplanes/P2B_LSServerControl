@@ -3,10 +3,9 @@
 
 void LED_Init(void)
 {
-    TRISDbits.TRISD5 = 0;
-    TRISDbits.TRISD6 = 0;
-    TRISDbits.TRISD7 = 0;
-
+    TRISAbits.TRISA3 = 0; // Red
+    TRISAbits.TRISA5 = 0; // Green
+    TRISAbits.TRISA4 = 0; // Blue
     LED_SetColor(LED_OFF);
 }
 
@@ -15,34 +14,34 @@ void LED_SetColor(BYTE color)
     switch (color)
     {
     case LED_RED:
-        LATDbits.LATD5 = 1;
-        LATDbits.LATD6 = 0;
-        LATDbits.LATD7 = 0;
+        LATAbits.LATA3 = 1;
+        LATAbits.LATA5 = 0;
+        LATAbits.LATA4 = 0;
         break;
 
     case LED_GREEN:
-        LATDbits.LATD5 = 0;
-        LATDbits.LATD6 = 1;
-        LATDbits.LATD7 = 0;
+        LATAbits.LATA3 = 0;
+        LATAbits.LATA5 = 1;
+        LATAbits.LATA4 = 0;
         break;
 
     case LED_BLUE:
-        LATDbits.LATD5 = 0;
-        LATDbits.LATD6 = 0;
-        LATDbits.LATD7 = 1;
+        LATAbits.LATA3 = 0;
+        LATAbits.LATA5 = 0;
+        LATAbits.LATA4 = 1;
         break;
 
     case LED_MAGENTA:
-        LATDbits.LATD5 = 1;
-        LATDbits.LATD6 = 0;
-        LATDbits.LATD7 = 1;
+        LATAbits.LATA3 = 1;
+        LATAbits.LATA5 = 0;
+        LATAbits.LATA4 = 1;
         break;
 
     case LED_OFF:
     default:
-        LATDbits.LATD5 = 0;
-        LATDbits.LATD6 = 0;
-        LATDbits.LATD7 = 0;
+        LATAbits.LATA3 = 0;
+        LATAbits.LATA5 = 0;
+        LATAbits.LATA4 = 0;
         break;
     }
 }
