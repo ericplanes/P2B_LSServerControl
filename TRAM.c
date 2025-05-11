@@ -34,19 +34,19 @@ BOOL RAM_StoreTemperature(WORD temperature)
         writeStage = 0;
         return FALSE;
     }
-}
 
-void RAM_Init(void)
-{
-    TRISD = 0xFF;         // DATA
-    TRISBbits.TRISB0 = 0; // !WE
-    TRISBbits.TRISB3 = 0; // !OE
-    TRISCbits.TRISC0 = 0; // !RESET COUNTER
-    TRISCbits.TRISC5 = 0; // COUNT (CLK)
+    void RAM_Init(void)
+    {
+        TRISD = 0xFF;         // DATA
+        TRISBbits.TRISB0 = 0; // !WE
+        TRISBbits.TRISB3 = 0; // !OE
+        TRISCbits.TRISC0 = 0; // !RESET COUNTER
+        TRISCbits.TRISC5 = 0; // COUNT (CLK)
 
-    LATBbits.LATB0 = 1; // !WE
-    LATBbits.LATB3 = 1; // !OE
-    LATCbits.LATC0 = 1; // !RESET COUNTER
+        LATBbits.LATB0 = 1; // !WE
+        LATBbits.LATB3 = 1; // !OE
+        LATCbits.LATC0 = 1; // !RESET COUNTER
+    }
 }
 
 void RAM_Write(unsigned char data)
