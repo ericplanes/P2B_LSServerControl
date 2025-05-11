@@ -19,7 +19,7 @@ endif
 endif
 
 # Environment
-MKDIR=mkdir -p
+MKDIR=gnumkdir -p
 RM=rm -f 
 MV=mv 
 CP=cp 
@@ -30,18 +30,24 @@ ifeq ($(TYPE_IMAGE), DEBUG_RUN)
 IMAGE_TYPE=debug
 OUTPUT_SUFFIX=elf
 DEBUGGABLE_SUFFIX=elf
-FINAL_IMAGE=${DISTDIR}/P2B_LSServerControl.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
+FINAL_IMAGE=dist/${CND_CONF}/${IMAGE_TYPE}/P2B_LSServerControl.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
 else
 IMAGE_TYPE=production
 OUTPUT_SUFFIX=hex
 DEBUGGABLE_SUFFIX=elf
-FINAL_IMAGE=${DISTDIR}/P2B_LSServerControl.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
+FINAL_IMAGE=dist/${CND_CONF}/${IMAGE_TYPE}/P2B_LSServerControl.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
 endif
 
 ifeq ($(COMPARE_BUILD), true)
 COMPARISON_BUILD=-mafrlcsj
 else
 COMPARISON_BUILD=
+endif
+
+ifdef SUB_IMAGE_ADDRESS
+
+else
+SUB_IMAGE_ADDRESS_COMMAND=
 endif
 
 # Object Directory
@@ -51,17 +57,17 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Source Files Quoted if spaced
-SOURCEFILES_QUOTED_IF_SPACED=TADC.c TEEPROM.c TJoystick.c TMenu.c TTemperature.c TTimer.c TLed.c TFan.c main.c TPWM.c TController.c TI2C.c TRam.c
+SOURCEFILES_QUOTED_IF_SPACED=main.c C:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TADC.c C:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TAD_I2C.c C:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TAD_JOY.c C:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TAD_SIO.c C:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TController.c C:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TEEPROM.c C:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TFan.c C:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TI2C.c C:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TJoystick.c C:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TLed.c C:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TMenu.c C:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TPWM.c C:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TRAM.c C:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TTemperature.c C:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TTimer.c
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/TADC.p1 ${OBJECTDIR}/TEEPROM.p1 ${OBJECTDIR}/TJoystick.p1 ${OBJECTDIR}/TMenu.p1 ${OBJECTDIR}/TTemperature.p1 ${OBJECTDIR}/TTimer.p1 ${OBJECTDIR}/TLed.p1 ${OBJECTDIR}/TFan.p1 ${OBJECTDIR}/main.p1 ${OBJECTDIR}/TPWM.p1 ${OBJECTDIR}/TController.p1 ${OBJECTDIR}/TI2C.p1 ${OBJECTDIR}/TRam.p1
-POSSIBLE_DEPFILES=${OBJECTDIR}/TADC.p1.d ${OBJECTDIR}/TEEPROM.p1.d ${OBJECTDIR}/TJoystick.p1.d ${OBJECTDIR}/TMenu.p1.d ${OBJECTDIR}/TTemperature.p1.d ${OBJECTDIR}/TTimer.p1.d ${OBJECTDIR}/TLed.p1.d ${OBJECTDIR}/TFan.p1.d ${OBJECTDIR}/main.p1.d ${OBJECTDIR}/TPWM.p1.d ${OBJECTDIR}/TController.p1.d ${OBJECTDIR}/TI2C.p1.d ${OBJECTDIR}/TRam.p1.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/main.p1 ${OBJECTDIR}/_ext/958791222/TADC.p1 ${OBJECTDIR}/_ext/958791222/TAD_I2C.p1 ${OBJECTDIR}/_ext/958791222/TAD_JOY.p1 ${OBJECTDIR}/_ext/958791222/TAD_SIO.p1 ${OBJECTDIR}/_ext/958791222/TController.p1 ${OBJECTDIR}/_ext/958791222/TEEPROM.p1 ${OBJECTDIR}/_ext/958791222/TFan.p1 ${OBJECTDIR}/_ext/958791222/TI2C.p1 ${OBJECTDIR}/_ext/958791222/TJoystick.p1 ${OBJECTDIR}/_ext/958791222/TLed.p1 ${OBJECTDIR}/_ext/958791222/TMenu.p1 ${OBJECTDIR}/_ext/958791222/TPWM.p1 ${OBJECTDIR}/_ext/958791222/TRAM.p1 ${OBJECTDIR}/_ext/958791222/TTemperature.p1 ${OBJECTDIR}/_ext/958791222/TTimer.p1
+POSSIBLE_DEPFILES=${OBJECTDIR}/main.p1.d ${OBJECTDIR}/_ext/958791222/TADC.p1.d ${OBJECTDIR}/_ext/958791222/TAD_I2C.p1.d ${OBJECTDIR}/_ext/958791222/TAD_JOY.p1.d ${OBJECTDIR}/_ext/958791222/TAD_SIO.p1.d ${OBJECTDIR}/_ext/958791222/TController.p1.d ${OBJECTDIR}/_ext/958791222/TEEPROM.p1.d ${OBJECTDIR}/_ext/958791222/TFan.p1.d ${OBJECTDIR}/_ext/958791222/TI2C.p1.d ${OBJECTDIR}/_ext/958791222/TJoystick.p1.d ${OBJECTDIR}/_ext/958791222/TLed.p1.d ${OBJECTDIR}/_ext/958791222/TMenu.p1.d ${OBJECTDIR}/_ext/958791222/TPWM.p1.d ${OBJECTDIR}/_ext/958791222/TRAM.p1.d ${OBJECTDIR}/_ext/958791222/TTemperature.p1.d ${OBJECTDIR}/_ext/958791222/TTimer.p1.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/TADC.p1 ${OBJECTDIR}/TEEPROM.p1 ${OBJECTDIR}/TJoystick.p1 ${OBJECTDIR}/TMenu.p1 ${OBJECTDIR}/TTemperature.p1 ${OBJECTDIR}/TTimer.p1 ${OBJECTDIR}/TLed.p1 ${OBJECTDIR}/TFan.p1 ${OBJECTDIR}/main.p1 ${OBJECTDIR}/TPWM.p1 ${OBJECTDIR}/TController.p1 ${OBJECTDIR}/TI2C.p1 ${OBJECTDIR}/TRam.p1
+OBJECTFILES=${OBJECTDIR}/main.p1 ${OBJECTDIR}/_ext/958791222/TADC.p1 ${OBJECTDIR}/_ext/958791222/TAD_I2C.p1 ${OBJECTDIR}/_ext/958791222/TAD_JOY.p1 ${OBJECTDIR}/_ext/958791222/TAD_SIO.p1 ${OBJECTDIR}/_ext/958791222/TController.p1 ${OBJECTDIR}/_ext/958791222/TEEPROM.p1 ${OBJECTDIR}/_ext/958791222/TFan.p1 ${OBJECTDIR}/_ext/958791222/TI2C.p1 ${OBJECTDIR}/_ext/958791222/TJoystick.p1 ${OBJECTDIR}/_ext/958791222/TLed.p1 ${OBJECTDIR}/_ext/958791222/TMenu.p1 ${OBJECTDIR}/_ext/958791222/TPWM.p1 ${OBJECTDIR}/_ext/958791222/TRAM.p1 ${OBJECTDIR}/_ext/958791222/TTemperature.p1 ${OBJECTDIR}/_ext/958791222/TTimer.p1
 
 # Source Files
-SOURCEFILES=TADC.c TEEPROM.c TJoystick.c TMenu.c TTemperature.c TTimer.c TLed.c TFan.c main.c TPWM.c TController.c TI2C.c TRam.c
+SOURCEFILES=main.c C:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TADC.c C:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TAD_I2C.c C:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TAD_JOY.c C:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TAD_SIO.c C:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TController.c C:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TEEPROM.c C:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TFan.c C:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TI2C.c C:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TJoystick.c C:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TLed.c C:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TMenu.c C:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TPWM.c C:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TRAM.c C:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TTemperature.c C:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TTimer.c
 
 
 
@@ -82,220 +88,268 @@ FIXDEPS=fixDeps
 ifneq ($(INFORMATION_MESSAGE), )
 	@echo $(INFORMATION_MESSAGE)
 endif
-	${MAKE}  -f nbproject/Makefile-default.mk ${DISTDIR}/P2B_LSServerControl.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
+	${MAKE}  -f nbproject/Makefile-default.mk dist/${CND_CONF}/${IMAGE_TYPE}/P2B_LSServerControl.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
 
 MP_PROCESSOR_OPTION=18F4321
 # ------------------------------------------------------------------------------------
 # Rules for buildStep: compile
 ifeq ($(TYPE_IMAGE), DEBUG_RUN)
-${OBJECTDIR}/TADC.p1: TADC.c  nbproject/Makefile-${CND_CONF}.mk 
-	@${MKDIR} "${OBJECTDIR}" 
-	@${RM} ${OBJECTDIR}/TADC.p1.d 
-	@${RM} ${OBJECTDIR}/TADC.p1 
-	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -D__DEBUG=1  -mdebugger=none   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/TADC.p1 TADC.c 
-	@-${MV} ${OBJECTDIR}/TADC.d ${OBJECTDIR}/TADC.p1.d 
-	@${FIXDEPS} ${OBJECTDIR}/TADC.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
-	
-${OBJECTDIR}/TEEPROM.p1: TEEPROM.c  nbproject/Makefile-${CND_CONF}.mk 
-	@${MKDIR} "${OBJECTDIR}" 
-	@${RM} ${OBJECTDIR}/TEEPROM.p1.d 
-	@${RM} ${OBJECTDIR}/TEEPROM.p1 
-	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -D__DEBUG=1  -mdebugger=none   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/TEEPROM.p1 TEEPROM.c 
-	@-${MV} ${OBJECTDIR}/TEEPROM.d ${OBJECTDIR}/TEEPROM.p1.d 
-	@${FIXDEPS} ${OBJECTDIR}/TEEPROM.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
-	
-${OBJECTDIR}/TJoystick.p1: TJoystick.c  nbproject/Makefile-${CND_CONF}.mk 
-	@${MKDIR} "${OBJECTDIR}" 
-	@${RM} ${OBJECTDIR}/TJoystick.p1.d 
-	@${RM} ${OBJECTDIR}/TJoystick.p1 
-	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -D__DEBUG=1  -mdebugger=none   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/TJoystick.p1 TJoystick.c 
-	@-${MV} ${OBJECTDIR}/TJoystick.d ${OBJECTDIR}/TJoystick.p1.d 
-	@${FIXDEPS} ${OBJECTDIR}/TJoystick.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
-	
-${OBJECTDIR}/TMenu.p1: TMenu.c  nbproject/Makefile-${CND_CONF}.mk 
-	@${MKDIR} "${OBJECTDIR}" 
-	@${RM} ${OBJECTDIR}/TMenu.p1.d 
-	@${RM} ${OBJECTDIR}/TMenu.p1 
-	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -D__DEBUG=1  -mdebugger=none   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/TMenu.p1 TMenu.c 
-	@-${MV} ${OBJECTDIR}/TMenu.d ${OBJECTDIR}/TMenu.p1.d 
-	@${FIXDEPS} ${OBJECTDIR}/TMenu.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
-	
-${OBJECTDIR}/TTemperature.p1: TTemperature.c  nbproject/Makefile-${CND_CONF}.mk 
-	@${MKDIR} "${OBJECTDIR}" 
-	@${RM} ${OBJECTDIR}/TTemperature.p1.d 
-	@${RM} ${OBJECTDIR}/TTemperature.p1 
-	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -D__DEBUG=1  -mdebugger=none   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/TTemperature.p1 TTemperature.c 
-	@-${MV} ${OBJECTDIR}/TTemperature.d ${OBJECTDIR}/TTemperature.p1.d 
-	@${FIXDEPS} ${OBJECTDIR}/TTemperature.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
-	
-${OBJECTDIR}/TTimer.p1: TTimer.c  nbproject/Makefile-${CND_CONF}.mk 
-	@${MKDIR} "${OBJECTDIR}" 
-	@${RM} ${OBJECTDIR}/TTimer.p1.d 
-	@${RM} ${OBJECTDIR}/TTimer.p1 
-	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -D__DEBUG=1  -mdebugger=none   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/TTimer.p1 TTimer.c 
-	@-${MV} ${OBJECTDIR}/TTimer.d ${OBJECTDIR}/TTimer.p1.d 
-	@${FIXDEPS} ${OBJECTDIR}/TTimer.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
-	
-${OBJECTDIR}/TLed.p1: TLed.c  nbproject/Makefile-${CND_CONF}.mk 
-	@${MKDIR} "${OBJECTDIR}" 
-	@${RM} ${OBJECTDIR}/TLed.p1.d 
-	@${RM} ${OBJECTDIR}/TLed.p1 
-	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -D__DEBUG=1  -mdebugger=none   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/TLed.p1 TLed.c 
-	@-${MV} ${OBJECTDIR}/TLed.d ${OBJECTDIR}/TLed.p1.d 
-	@${FIXDEPS} ${OBJECTDIR}/TLed.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
-	
-${OBJECTDIR}/TFan.p1: TFan.c  nbproject/Makefile-${CND_CONF}.mk 
-	@${MKDIR} "${OBJECTDIR}" 
-	@${RM} ${OBJECTDIR}/TFan.p1.d 
-	@${RM} ${OBJECTDIR}/TFan.p1 
-	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -D__DEBUG=1  -mdebugger=none   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/TFan.p1 TFan.c 
-	@-${MV} ${OBJECTDIR}/TFan.d ${OBJECTDIR}/TFan.p1.d 
-	@${FIXDEPS} ${OBJECTDIR}/TFan.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
-	
-${OBJECTDIR}/main.p1: main.c  nbproject/Makefile-${CND_CONF}.mk 
+${OBJECTDIR}/main.p1: main.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}" 
 	@${RM} ${OBJECTDIR}/main.p1.d 
 	@${RM} ${OBJECTDIR}/main.p1 
-	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -D__DEBUG=1  -mdebugger=none   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/main.p1 main.c 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -D__DEBUG=1   -mdfp=${DFP_DIR}/xc8  -fno-short-double -fno-short-float -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx032 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/main.p1 main.c 
 	@-${MV} ${OBJECTDIR}/main.d ${OBJECTDIR}/main.p1.d 
 	@${FIXDEPS} ${OBJECTDIR}/main.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
 	
-${OBJECTDIR}/TPWM.p1: TPWM.c  nbproject/Makefile-${CND_CONF}.mk 
-	@${MKDIR} "${OBJECTDIR}" 
-	@${RM} ${OBJECTDIR}/TPWM.p1.d 
-	@${RM} ${OBJECTDIR}/TPWM.p1 
-	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -D__DEBUG=1  -mdebugger=none   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/TPWM.p1 TPWM.c 
-	@-${MV} ${OBJECTDIR}/TPWM.d ${OBJECTDIR}/TPWM.p1.d 
-	@${FIXDEPS} ${OBJECTDIR}/TPWM.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+${OBJECTDIR}/_ext/958791222/TADC.p1: C\:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TADC.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/_ext/958791222" 
+	@${RM} ${OBJECTDIR}/_ext/958791222/TADC.p1.d 
+	@${RM} ${OBJECTDIR}/_ext/958791222/TADC.p1 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -D__DEBUG=1   -mdfp=${DFP_DIR}/xc8  -fno-short-double -fno-short-float -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx032 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/_ext/958791222/TADC.p1 C:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TADC.c 
+	@-${MV} ${OBJECTDIR}/_ext/958791222/TADC.d ${OBJECTDIR}/_ext/958791222/TADC.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/_ext/958791222/TADC.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
 	
-${OBJECTDIR}/TController.p1: TController.c  nbproject/Makefile-${CND_CONF}.mk 
-	@${MKDIR} "${OBJECTDIR}" 
-	@${RM} ${OBJECTDIR}/TController.p1.d 
-	@${RM} ${OBJECTDIR}/TController.p1 
-	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -D__DEBUG=1  -mdebugger=none   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/TController.p1 TController.c 
-	@-${MV} ${OBJECTDIR}/TController.d ${OBJECTDIR}/TController.p1.d 
-	@${FIXDEPS} ${OBJECTDIR}/TController.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+${OBJECTDIR}/_ext/958791222/TAD_I2C.p1: C\:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TAD_I2C.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/_ext/958791222" 
+	@${RM} ${OBJECTDIR}/_ext/958791222/TAD_I2C.p1.d 
+	@${RM} ${OBJECTDIR}/_ext/958791222/TAD_I2C.p1 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -D__DEBUG=1   -mdfp=${DFP_DIR}/xc8  -fno-short-double -fno-short-float -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx032 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/_ext/958791222/TAD_I2C.p1 C:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TAD_I2C.c 
+	@-${MV} ${OBJECTDIR}/_ext/958791222/TAD_I2C.d ${OBJECTDIR}/_ext/958791222/TAD_I2C.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/_ext/958791222/TAD_I2C.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
 	
-${OBJECTDIR}/TI2C.p1: TI2C.c  nbproject/Makefile-${CND_CONF}.mk 
-	@${MKDIR} "${OBJECTDIR}" 
-	@${RM} ${OBJECTDIR}/TI2C.p1.d 
-	@${RM} ${OBJECTDIR}/TI2C.p1 
-	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -D__DEBUG=1  -mdebugger=none   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/TI2C.p1 TI2C.c 
-	@-${MV} ${OBJECTDIR}/TI2C.d ${OBJECTDIR}/TI2C.p1.d 
-	@${FIXDEPS} ${OBJECTDIR}/TI2C.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+${OBJECTDIR}/_ext/958791222/TAD_JOY.p1: C\:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TAD_JOY.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/_ext/958791222" 
+	@${RM} ${OBJECTDIR}/_ext/958791222/TAD_JOY.p1.d 
+	@${RM} ${OBJECTDIR}/_ext/958791222/TAD_JOY.p1 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -D__DEBUG=1   -mdfp=${DFP_DIR}/xc8  -fno-short-double -fno-short-float -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx032 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/_ext/958791222/TAD_JOY.p1 C:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TAD_JOY.c 
+	@-${MV} ${OBJECTDIR}/_ext/958791222/TAD_JOY.d ${OBJECTDIR}/_ext/958791222/TAD_JOY.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/_ext/958791222/TAD_JOY.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
 	
-${OBJECTDIR}/TRam.p1: TRam.c  nbproject/Makefile-${CND_CONF}.mk 
-	@${MKDIR} "${OBJECTDIR}" 
-	@${RM} ${OBJECTDIR}/TRam.p1.d 
-	@${RM} ${OBJECTDIR}/TRam.p1 
-	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -D__DEBUG=1  -mdebugger=none   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/TRam.p1 TRam.c 
-	@-${MV} ${OBJECTDIR}/TRam.d ${OBJECTDIR}/TRam.p1.d 
-	@${FIXDEPS} ${OBJECTDIR}/TRam.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+${OBJECTDIR}/_ext/958791222/TAD_SIO.p1: C\:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TAD_SIO.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/_ext/958791222" 
+	@${RM} ${OBJECTDIR}/_ext/958791222/TAD_SIO.p1.d 
+	@${RM} ${OBJECTDIR}/_ext/958791222/TAD_SIO.p1 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -D__DEBUG=1   -mdfp=${DFP_DIR}/xc8  -fno-short-double -fno-short-float -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx032 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/_ext/958791222/TAD_SIO.p1 C:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TAD_SIO.c 
+	@-${MV} ${OBJECTDIR}/_ext/958791222/TAD_SIO.d ${OBJECTDIR}/_ext/958791222/TAD_SIO.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/_ext/958791222/TAD_SIO.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+	
+${OBJECTDIR}/_ext/958791222/TController.p1: C\:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TController.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/_ext/958791222" 
+	@${RM} ${OBJECTDIR}/_ext/958791222/TController.p1.d 
+	@${RM} ${OBJECTDIR}/_ext/958791222/TController.p1 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -D__DEBUG=1   -mdfp=${DFP_DIR}/xc8  -fno-short-double -fno-short-float -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx032 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/_ext/958791222/TController.p1 C:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TController.c 
+	@-${MV} ${OBJECTDIR}/_ext/958791222/TController.d ${OBJECTDIR}/_ext/958791222/TController.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/_ext/958791222/TController.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+	
+${OBJECTDIR}/_ext/958791222/TEEPROM.p1: C\:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TEEPROM.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/_ext/958791222" 
+	@${RM} ${OBJECTDIR}/_ext/958791222/TEEPROM.p1.d 
+	@${RM} ${OBJECTDIR}/_ext/958791222/TEEPROM.p1 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -D__DEBUG=1   -mdfp=${DFP_DIR}/xc8  -fno-short-double -fno-short-float -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx032 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/_ext/958791222/TEEPROM.p1 C:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TEEPROM.c 
+	@-${MV} ${OBJECTDIR}/_ext/958791222/TEEPROM.d ${OBJECTDIR}/_ext/958791222/TEEPROM.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/_ext/958791222/TEEPROM.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+	
+${OBJECTDIR}/_ext/958791222/TFan.p1: C\:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TFan.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/_ext/958791222" 
+	@${RM} ${OBJECTDIR}/_ext/958791222/TFan.p1.d 
+	@${RM} ${OBJECTDIR}/_ext/958791222/TFan.p1 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -D__DEBUG=1   -mdfp=${DFP_DIR}/xc8  -fno-short-double -fno-short-float -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx032 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/_ext/958791222/TFan.p1 C:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TFan.c 
+	@-${MV} ${OBJECTDIR}/_ext/958791222/TFan.d ${OBJECTDIR}/_ext/958791222/TFan.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/_ext/958791222/TFan.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+	
+${OBJECTDIR}/_ext/958791222/TI2C.p1: C\:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TI2C.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/_ext/958791222" 
+	@${RM} ${OBJECTDIR}/_ext/958791222/TI2C.p1.d 
+	@${RM} ${OBJECTDIR}/_ext/958791222/TI2C.p1 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -D__DEBUG=1   -mdfp=${DFP_DIR}/xc8  -fno-short-double -fno-short-float -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx032 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/_ext/958791222/TI2C.p1 C:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TI2C.c 
+	@-${MV} ${OBJECTDIR}/_ext/958791222/TI2C.d ${OBJECTDIR}/_ext/958791222/TI2C.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/_ext/958791222/TI2C.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+	
+${OBJECTDIR}/_ext/958791222/TJoystick.p1: C\:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TJoystick.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/_ext/958791222" 
+	@${RM} ${OBJECTDIR}/_ext/958791222/TJoystick.p1.d 
+	@${RM} ${OBJECTDIR}/_ext/958791222/TJoystick.p1 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -D__DEBUG=1   -mdfp=${DFP_DIR}/xc8  -fno-short-double -fno-short-float -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx032 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/_ext/958791222/TJoystick.p1 C:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TJoystick.c 
+	@-${MV} ${OBJECTDIR}/_ext/958791222/TJoystick.d ${OBJECTDIR}/_ext/958791222/TJoystick.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/_ext/958791222/TJoystick.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+	
+${OBJECTDIR}/_ext/958791222/TLed.p1: C\:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TLed.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/_ext/958791222" 
+	@${RM} ${OBJECTDIR}/_ext/958791222/TLed.p1.d 
+	@${RM} ${OBJECTDIR}/_ext/958791222/TLed.p1 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -D__DEBUG=1   -mdfp=${DFP_DIR}/xc8  -fno-short-double -fno-short-float -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx032 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/_ext/958791222/TLed.p1 C:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TLed.c 
+	@-${MV} ${OBJECTDIR}/_ext/958791222/TLed.d ${OBJECTDIR}/_ext/958791222/TLed.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/_ext/958791222/TLed.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+	
+${OBJECTDIR}/_ext/958791222/TMenu.p1: C\:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TMenu.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/_ext/958791222" 
+	@${RM} ${OBJECTDIR}/_ext/958791222/TMenu.p1.d 
+	@${RM} ${OBJECTDIR}/_ext/958791222/TMenu.p1 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -D__DEBUG=1   -mdfp=${DFP_DIR}/xc8  -fno-short-double -fno-short-float -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx032 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/_ext/958791222/TMenu.p1 C:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TMenu.c 
+	@-${MV} ${OBJECTDIR}/_ext/958791222/TMenu.d ${OBJECTDIR}/_ext/958791222/TMenu.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/_ext/958791222/TMenu.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+	
+${OBJECTDIR}/_ext/958791222/TPWM.p1: C\:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TPWM.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/_ext/958791222" 
+	@${RM} ${OBJECTDIR}/_ext/958791222/TPWM.p1.d 
+	@${RM} ${OBJECTDIR}/_ext/958791222/TPWM.p1 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -D__DEBUG=1   -mdfp=${DFP_DIR}/xc8  -fno-short-double -fno-short-float -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx032 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/_ext/958791222/TPWM.p1 C:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TPWM.c 
+	@-${MV} ${OBJECTDIR}/_ext/958791222/TPWM.d ${OBJECTDIR}/_ext/958791222/TPWM.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/_ext/958791222/TPWM.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+	
+${OBJECTDIR}/_ext/958791222/TRAM.p1: C\:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TRAM.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/_ext/958791222" 
+	@${RM} ${OBJECTDIR}/_ext/958791222/TRAM.p1.d 
+	@${RM} ${OBJECTDIR}/_ext/958791222/TRAM.p1 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -D__DEBUG=1   -mdfp=${DFP_DIR}/xc8  -fno-short-double -fno-short-float -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx032 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/_ext/958791222/TRAM.p1 C:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TRAM.c 
+	@-${MV} ${OBJECTDIR}/_ext/958791222/TRAM.d ${OBJECTDIR}/_ext/958791222/TRAM.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/_ext/958791222/TRAM.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+	
+${OBJECTDIR}/_ext/958791222/TTemperature.p1: C\:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TTemperature.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/_ext/958791222" 
+	@${RM} ${OBJECTDIR}/_ext/958791222/TTemperature.p1.d 
+	@${RM} ${OBJECTDIR}/_ext/958791222/TTemperature.p1 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -D__DEBUG=1   -mdfp=${DFP_DIR}/xc8  -fno-short-double -fno-short-float -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx032 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/_ext/958791222/TTemperature.p1 C:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TTemperature.c 
+	@-${MV} ${OBJECTDIR}/_ext/958791222/TTemperature.d ${OBJECTDIR}/_ext/958791222/TTemperature.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/_ext/958791222/TTemperature.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+	
+${OBJECTDIR}/_ext/958791222/TTimer.p1: C\:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TTimer.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/_ext/958791222" 
+	@${RM} ${OBJECTDIR}/_ext/958791222/TTimer.p1.d 
+	@${RM} ${OBJECTDIR}/_ext/958791222/TTimer.p1 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -D__DEBUG=1   -mdfp=${DFP_DIR}/xc8  -fno-short-double -fno-short-float -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx032 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/_ext/958791222/TTimer.p1 C:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TTimer.c 
+	@-${MV} ${OBJECTDIR}/_ext/958791222/TTimer.d ${OBJECTDIR}/_ext/958791222/TTimer.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/_ext/958791222/TTimer.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
 	
 else
-${OBJECTDIR}/TADC.p1: TADC.c  nbproject/Makefile-${CND_CONF}.mk 
-	@${MKDIR} "${OBJECTDIR}" 
-	@${RM} ${OBJECTDIR}/TADC.p1.d 
-	@${RM} ${OBJECTDIR}/TADC.p1 
-	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/TADC.p1 TADC.c 
-	@-${MV} ${OBJECTDIR}/TADC.d ${OBJECTDIR}/TADC.p1.d 
-	@${FIXDEPS} ${OBJECTDIR}/TADC.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
-	
-${OBJECTDIR}/TEEPROM.p1: TEEPROM.c  nbproject/Makefile-${CND_CONF}.mk 
-	@${MKDIR} "${OBJECTDIR}" 
-	@${RM} ${OBJECTDIR}/TEEPROM.p1.d 
-	@${RM} ${OBJECTDIR}/TEEPROM.p1 
-	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/TEEPROM.p1 TEEPROM.c 
-	@-${MV} ${OBJECTDIR}/TEEPROM.d ${OBJECTDIR}/TEEPROM.p1.d 
-	@${FIXDEPS} ${OBJECTDIR}/TEEPROM.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
-	
-${OBJECTDIR}/TJoystick.p1: TJoystick.c  nbproject/Makefile-${CND_CONF}.mk 
-	@${MKDIR} "${OBJECTDIR}" 
-	@${RM} ${OBJECTDIR}/TJoystick.p1.d 
-	@${RM} ${OBJECTDIR}/TJoystick.p1 
-	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/TJoystick.p1 TJoystick.c 
-	@-${MV} ${OBJECTDIR}/TJoystick.d ${OBJECTDIR}/TJoystick.p1.d 
-	@${FIXDEPS} ${OBJECTDIR}/TJoystick.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
-	
-${OBJECTDIR}/TMenu.p1: TMenu.c  nbproject/Makefile-${CND_CONF}.mk 
-	@${MKDIR} "${OBJECTDIR}" 
-	@${RM} ${OBJECTDIR}/TMenu.p1.d 
-	@${RM} ${OBJECTDIR}/TMenu.p1 
-	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/TMenu.p1 TMenu.c 
-	@-${MV} ${OBJECTDIR}/TMenu.d ${OBJECTDIR}/TMenu.p1.d 
-	@${FIXDEPS} ${OBJECTDIR}/TMenu.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
-	
-${OBJECTDIR}/TTemperature.p1: TTemperature.c  nbproject/Makefile-${CND_CONF}.mk 
-	@${MKDIR} "${OBJECTDIR}" 
-	@${RM} ${OBJECTDIR}/TTemperature.p1.d 
-	@${RM} ${OBJECTDIR}/TTemperature.p1 
-	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/TTemperature.p1 TTemperature.c 
-	@-${MV} ${OBJECTDIR}/TTemperature.d ${OBJECTDIR}/TTemperature.p1.d 
-	@${FIXDEPS} ${OBJECTDIR}/TTemperature.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
-	
-${OBJECTDIR}/TTimer.p1: TTimer.c  nbproject/Makefile-${CND_CONF}.mk 
-	@${MKDIR} "${OBJECTDIR}" 
-	@${RM} ${OBJECTDIR}/TTimer.p1.d 
-	@${RM} ${OBJECTDIR}/TTimer.p1 
-	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/TTimer.p1 TTimer.c 
-	@-${MV} ${OBJECTDIR}/TTimer.d ${OBJECTDIR}/TTimer.p1.d 
-	@${FIXDEPS} ${OBJECTDIR}/TTimer.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
-	
-${OBJECTDIR}/TLed.p1: TLed.c  nbproject/Makefile-${CND_CONF}.mk 
-	@${MKDIR} "${OBJECTDIR}" 
-	@${RM} ${OBJECTDIR}/TLed.p1.d 
-	@${RM} ${OBJECTDIR}/TLed.p1 
-	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/TLed.p1 TLed.c 
-	@-${MV} ${OBJECTDIR}/TLed.d ${OBJECTDIR}/TLed.p1.d 
-	@${FIXDEPS} ${OBJECTDIR}/TLed.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
-	
-${OBJECTDIR}/TFan.p1: TFan.c  nbproject/Makefile-${CND_CONF}.mk 
-	@${MKDIR} "${OBJECTDIR}" 
-	@${RM} ${OBJECTDIR}/TFan.p1.d 
-	@${RM} ${OBJECTDIR}/TFan.p1 
-	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/TFan.p1 TFan.c 
-	@-${MV} ${OBJECTDIR}/TFan.d ${OBJECTDIR}/TFan.p1.d 
-	@${FIXDEPS} ${OBJECTDIR}/TFan.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
-	
-${OBJECTDIR}/main.p1: main.c  nbproject/Makefile-${CND_CONF}.mk 
+${OBJECTDIR}/main.p1: main.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}" 
 	@${RM} ${OBJECTDIR}/main.p1.d 
 	@${RM} ${OBJECTDIR}/main.p1 
-	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/main.p1 main.c 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c   -mdfp=${DFP_DIR}/xc8  -fno-short-double -fno-short-float -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx032 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/main.p1 main.c 
 	@-${MV} ${OBJECTDIR}/main.d ${OBJECTDIR}/main.p1.d 
 	@${FIXDEPS} ${OBJECTDIR}/main.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
 	
-${OBJECTDIR}/TPWM.p1: TPWM.c  nbproject/Makefile-${CND_CONF}.mk 
-	@${MKDIR} "${OBJECTDIR}" 
-	@${RM} ${OBJECTDIR}/TPWM.p1.d 
-	@${RM} ${OBJECTDIR}/TPWM.p1 
-	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/TPWM.p1 TPWM.c 
-	@-${MV} ${OBJECTDIR}/TPWM.d ${OBJECTDIR}/TPWM.p1.d 
-	@${FIXDEPS} ${OBJECTDIR}/TPWM.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+${OBJECTDIR}/_ext/958791222/TADC.p1: C\:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TADC.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/_ext/958791222" 
+	@${RM} ${OBJECTDIR}/_ext/958791222/TADC.p1.d 
+	@${RM} ${OBJECTDIR}/_ext/958791222/TADC.p1 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c   -mdfp=${DFP_DIR}/xc8  -fno-short-double -fno-short-float -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx032 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/_ext/958791222/TADC.p1 C:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TADC.c 
+	@-${MV} ${OBJECTDIR}/_ext/958791222/TADC.d ${OBJECTDIR}/_ext/958791222/TADC.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/_ext/958791222/TADC.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
 	
-${OBJECTDIR}/TController.p1: TController.c  nbproject/Makefile-${CND_CONF}.mk 
-	@${MKDIR} "${OBJECTDIR}" 
-	@${RM} ${OBJECTDIR}/TController.p1.d 
-	@${RM} ${OBJECTDIR}/TController.p1 
-	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/TController.p1 TController.c 
-	@-${MV} ${OBJECTDIR}/TController.d ${OBJECTDIR}/TController.p1.d 
-	@${FIXDEPS} ${OBJECTDIR}/TController.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+${OBJECTDIR}/_ext/958791222/TAD_I2C.p1: C\:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TAD_I2C.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/_ext/958791222" 
+	@${RM} ${OBJECTDIR}/_ext/958791222/TAD_I2C.p1.d 
+	@${RM} ${OBJECTDIR}/_ext/958791222/TAD_I2C.p1 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c   -mdfp=${DFP_DIR}/xc8  -fno-short-double -fno-short-float -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx032 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/_ext/958791222/TAD_I2C.p1 C:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TAD_I2C.c 
+	@-${MV} ${OBJECTDIR}/_ext/958791222/TAD_I2C.d ${OBJECTDIR}/_ext/958791222/TAD_I2C.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/_ext/958791222/TAD_I2C.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
 	
-${OBJECTDIR}/TI2C.p1: TI2C.c  nbproject/Makefile-${CND_CONF}.mk 
-	@${MKDIR} "${OBJECTDIR}" 
-	@${RM} ${OBJECTDIR}/TI2C.p1.d 
-	@${RM} ${OBJECTDIR}/TI2C.p1 
-	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/TI2C.p1 TI2C.c 
-	@-${MV} ${OBJECTDIR}/TI2C.d ${OBJECTDIR}/TI2C.p1.d 
-	@${FIXDEPS} ${OBJECTDIR}/TI2C.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+${OBJECTDIR}/_ext/958791222/TAD_JOY.p1: C\:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TAD_JOY.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/_ext/958791222" 
+	@${RM} ${OBJECTDIR}/_ext/958791222/TAD_JOY.p1.d 
+	@${RM} ${OBJECTDIR}/_ext/958791222/TAD_JOY.p1 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c   -mdfp=${DFP_DIR}/xc8  -fno-short-double -fno-short-float -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx032 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/_ext/958791222/TAD_JOY.p1 C:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TAD_JOY.c 
+	@-${MV} ${OBJECTDIR}/_ext/958791222/TAD_JOY.d ${OBJECTDIR}/_ext/958791222/TAD_JOY.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/_ext/958791222/TAD_JOY.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
 	
-${OBJECTDIR}/TRam.p1: TRam.c  nbproject/Makefile-${CND_CONF}.mk 
-	@${MKDIR} "${OBJECTDIR}" 
-	@${RM} ${OBJECTDIR}/TRam.p1.d 
-	@${RM} ${OBJECTDIR}/TRam.p1 
-	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/TRam.p1 TRam.c 
-	@-${MV} ${OBJECTDIR}/TRam.d ${OBJECTDIR}/TRam.p1.d 
-	@${FIXDEPS} ${OBJECTDIR}/TRam.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+${OBJECTDIR}/_ext/958791222/TAD_SIO.p1: C\:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TAD_SIO.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/_ext/958791222" 
+	@${RM} ${OBJECTDIR}/_ext/958791222/TAD_SIO.p1.d 
+	@${RM} ${OBJECTDIR}/_ext/958791222/TAD_SIO.p1 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c   -mdfp=${DFP_DIR}/xc8  -fno-short-double -fno-short-float -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx032 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/_ext/958791222/TAD_SIO.p1 C:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TAD_SIO.c 
+	@-${MV} ${OBJECTDIR}/_ext/958791222/TAD_SIO.d ${OBJECTDIR}/_ext/958791222/TAD_SIO.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/_ext/958791222/TAD_SIO.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+	
+${OBJECTDIR}/_ext/958791222/TController.p1: C\:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TController.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/_ext/958791222" 
+	@${RM} ${OBJECTDIR}/_ext/958791222/TController.p1.d 
+	@${RM} ${OBJECTDIR}/_ext/958791222/TController.p1 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c   -mdfp=${DFP_DIR}/xc8  -fno-short-double -fno-short-float -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx032 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/_ext/958791222/TController.p1 C:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TController.c 
+	@-${MV} ${OBJECTDIR}/_ext/958791222/TController.d ${OBJECTDIR}/_ext/958791222/TController.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/_ext/958791222/TController.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+	
+${OBJECTDIR}/_ext/958791222/TEEPROM.p1: C\:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TEEPROM.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/_ext/958791222" 
+	@${RM} ${OBJECTDIR}/_ext/958791222/TEEPROM.p1.d 
+	@${RM} ${OBJECTDIR}/_ext/958791222/TEEPROM.p1 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c   -mdfp=${DFP_DIR}/xc8  -fno-short-double -fno-short-float -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx032 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/_ext/958791222/TEEPROM.p1 C:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TEEPROM.c 
+	@-${MV} ${OBJECTDIR}/_ext/958791222/TEEPROM.d ${OBJECTDIR}/_ext/958791222/TEEPROM.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/_ext/958791222/TEEPROM.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+	
+${OBJECTDIR}/_ext/958791222/TFan.p1: C\:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TFan.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/_ext/958791222" 
+	@${RM} ${OBJECTDIR}/_ext/958791222/TFan.p1.d 
+	@${RM} ${OBJECTDIR}/_ext/958791222/TFan.p1 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c   -mdfp=${DFP_DIR}/xc8  -fno-short-double -fno-short-float -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx032 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/_ext/958791222/TFan.p1 C:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TFan.c 
+	@-${MV} ${OBJECTDIR}/_ext/958791222/TFan.d ${OBJECTDIR}/_ext/958791222/TFan.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/_ext/958791222/TFan.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+	
+${OBJECTDIR}/_ext/958791222/TI2C.p1: C\:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TI2C.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/_ext/958791222" 
+	@${RM} ${OBJECTDIR}/_ext/958791222/TI2C.p1.d 
+	@${RM} ${OBJECTDIR}/_ext/958791222/TI2C.p1 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c   -mdfp=${DFP_DIR}/xc8  -fno-short-double -fno-short-float -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx032 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/_ext/958791222/TI2C.p1 C:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TI2C.c 
+	@-${MV} ${OBJECTDIR}/_ext/958791222/TI2C.d ${OBJECTDIR}/_ext/958791222/TI2C.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/_ext/958791222/TI2C.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+	
+${OBJECTDIR}/_ext/958791222/TJoystick.p1: C\:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TJoystick.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/_ext/958791222" 
+	@${RM} ${OBJECTDIR}/_ext/958791222/TJoystick.p1.d 
+	@${RM} ${OBJECTDIR}/_ext/958791222/TJoystick.p1 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c   -mdfp=${DFP_DIR}/xc8  -fno-short-double -fno-short-float -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx032 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/_ext/958791222/TJoystick.p1 C:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TJoystick.c 
+	@-${MV} ${OBJECTDIR}/_ext/958791222/TJoystick.d ${OBJECTDIR}/_ext/958791222/TJoystick.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/_ext/958791222/TJoystick.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+	
+${OBJECTDIR}/_ext/958791222/TLed.p1: C\:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TLed.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/_ext/958791222" 
+	@${RM} ${OBJECTDIR}/_ext/958791222/TLed.p1.d 
+	@${RM} ${OBJECTDIR}/_ext/958791222/TLed.p1 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c   -mdfp=${DFP_DIR}/xc8  -fno-short-double -fno-short-float -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx032 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/_ext/958791222/TLed.p1 C:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TLed.c 
+	@-${MV} ${OBJECTDIR}/_ext/958791222/TLed.d ${OBJECTDIR}/_ext/958791222/TLed.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/_ext/958791222/TLed.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+	
+${OBJECTDIR}/_ext/958791222/TMenu.p1: C\:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TMenu.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/_ext/958791222" 
+	@${RM} ${OBJECTDIR}/_ext/958791222/TMenu.p1.d 
+	@${RM} ${OBJECTDIR}/_ext/958791222/TMenu.p1 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c   -mdfp=${DFP_DIR}/xc8  -fno-short-double -fno-short-float -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx032 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/_ext/958791222/TMenu.p1 C:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TMenu.c 
+	@-${MV} ${OBJECTDIR}/_ext/958791222/TMenu.d ${OBJECTDIR}/_ext/958791222/TMenu.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/_ext/958791222/TMenu.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+	
+${OBJECTDIR}/_ext/958791222/TPWM.p1: C\:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TPWM.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/_ext/958791222" 
+	@${RM} ${OBJECTDIR}/_ext/958791222/TPWM.p1.d 
+	@${RM} ${OBJECTDIR}/_ext/958791222/TPWM.p1 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c   -mdfp=${DFP_DIR}/xc8  -fno-short-double -fno-short-float -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx032 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/_ext/958791222/TPWM.p1 C:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TPWM.c 
+	@-${MV} ${OBJECTDIR}/_ext/958791222/TPWM.d ${OBJECTDIR}/_ext/958791222/TPWM.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/_ext/958791222/TPWM.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+	
+${OBJECTDIR}/_ext/958791222/TRAM.p1: C\:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TRAM.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/_ext/958791222" 
+	@${RM} ${OBJECTDIR}/_ext/958791222/TRAM.p1.d 
+	@${RM} ${OBJECTDIR}/_ext/958791222/TRAM.p1 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c   -mdfp=${DFP_DIR}/xc8  -fno-short-double -fno-short-float -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx032 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/_ext/958791222/TRAM.p1 C:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TRAM.c 
+	@-${MV} ${OBJECTDIR}/_ext/958791222/TRAM.d ${OBJECTDIR}/_ext/958791222/TRAM.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/_ext/958791222/TRAM.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+	
+${OBJECTDIR}/_ext/958791222/TTemperature.p1: C\:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TTemperature.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/_ext/958791222" 
+	@${RM} ${OBJECTDIR}/_ext/958791222/TTemperature.p1.d 
+	@${RM} ${OBJECTDIR}/_ext/958791222/TTemperature.p1 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c   -mdfp=${DFP_DIR}/xc8  -fno-short-double -fno-short-float -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx032 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/_ext/958791222/TTemperature.p1 C:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TTemperature.c 
+	@-${MV} ${OBJECTDIR}/_ext/958791222/TTemperature.d ${OBJECTDIR}/_ext/958791222/TTemperature.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/_ext/958791222/TTemperature.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+	
+${OBJECTDIR}/_ext/958791222/TTimer.p1: C\:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TTimer.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/_ext/958791222" 
+	@${RM} ${OBJECTDIR}/_ext/958791222/TTimer.p1.d 
+	@${RM} ${OBJECTDIR}/_ext/958791222/TTimer.p1 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c   -mdfp=${DFP_DIR}/xc8  -fno-short-double -fno-short-float -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx032 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/_ext/958791222/TTimer.p1 C:/Users/francesc/Documentos/salle/ProjectesC/RepoPractica/P2B_LSServerControl/TTimer.c 
+	@-${MV} ${OBJECTDIR}/_ext/958791222/TTimer.d ${OBJECTDIR}/_ext/958791222/TTimer.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/_ext/958791222/TTimer.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
 	
 endif
 
@@ -314,17 +368,15 @@ endif
 # ------------------------------------------------------------------------------------
 # Rules for buildStep: link
 ifeq ($(TYPE_IMAGE), DEBUG_RUN)
-${DISTDIR}/P2B_LSServerControl.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}: ${OBJECTFILES}  nbproject/Makefile-${CND_CONF}.mk    
-	@${MKDIR} ${DISTDIR} 
-	${MP_CC} $(MP_EXTRA_LD_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -Wl,-Map=${DISTDIR}/P2B_LSServerControl.X.${IMAGE_TYPE}.map  -D__DEBUG=1  -mdebugger=none  -DXPRJ_default=$(CND_CONF)  -Wl,--defsym=__MPLAB_BUILD=1   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto        $(COMPARISON_BUILD) -Wl,--memorysummary,${DISTDIR}/memoryfile.xml -o ${DISTDIR}/P2B_LSServerControl.X.${IMAGE_TYPE}.${DEBUGGABLE_SUFFIX}  ${OBJECTFILES_QUOTED_IF_SPACED}     
-	@${RM} ${DISTDIR}/P2B_LSServerControl.X.${IMAGE_TYPE}.hex 
-	
+dist/${CND_CONF}/${IMAGE_TYPE}/P2B_LSServerControl.${IMAGE_TYPE}.${OUTPUT_SUFFIX}: ${OBJECTFILES}  nbproject/Makefile-${CND_CONF}.mk    
+	@${MKDIR} dist/${CND_CONF}/${IMAGE_TYPE} 
+	${MP_CC} $(MP_EXTRA_LD_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -Wl,-Map=dist/${CND_CONF}/${IMAGE_TYPE}/P2B_LSServerControl.${IMAGE_TYPE}.map  -D__DEBUG=1  -DXPRJ_default=$(CND_CONF)  -Wl,--defsym=__MPLAB_BUILD=1   -mdfp=${DFP_DIR}/xc8  -fno-short-double -fno-short-float -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -msummary=-psect,-class,+mem,-hex,-file  -ginhx032 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -mrom=default,-1dc0-1fff -mram=default,-1f4-1ff,-fdb-fdf,-fe3-fe7,-feb-fef,-fd4-fd4,-ffd-fff  $(COMPARISON_BUILD) -Wl,--memorysummary,dist/${CND_CONF}/${IMAGE_TYPE}/memoryfile.xml -o dist/${CND_CONF}/${IMAGE_TYPE}/P2B_LSServerControl.${IMAGE_TYPE}.${DEBUGGABLE_SUFFIX}  ${OBJECTFILES_QUOTED_IF_SPACED}     
+	@${RM} dist/${CND_CONF}/${IMAGE_TYPE}/P2B_LSServerControl.${IMAGE_TYPE}.hex 
 	
 else
-${DISTDIR}/P2B_LSServerControl.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}: ${OBJECTFILES}  nbproject/Makefile-${CND_CONF}.mk   
-	@${MKDIR} ${DISTDIR} 
-	${MP_CC} $(MP_EXTRA_LD_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -Wl,-Map=${DISTDIR}/P2B_LSServerControl.X.${IMAGE_TYPE}.map  -DXPRJ_default=$(CND_CONF)  -Wl,--defsym=__MPLAB_BUILD=1   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     $(COMPARISON_BUILD) -Wl,--memorysummary,${DISTDIR}/memoryfile.xml -o ${DISTDIR}/P2B_LSServerControl.X.${IMAGE_TYPE}.${DEBUGGABLE_SUFFIX}  ${OBJECTFILES_QUOTED_IF_SPACED}     
-	
+dist/${CND_CONF}/${IMAGE_TYPE}/P2B_LSServerControl.${IMAGE_TYPE}.${OUTPUT_SUFFIX}: ${OBJECTFILES}  nbproject/Makefile-${CND_CONF}.mk   
+	@${MKDIR} dist/${CND_CONF}/${IMAGE_TYPE} 
+	${MP_CC} $(MP_EXTRA_LD_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -Wl,-Map=dist/${CND_CONF}/${IMAGE_TYPE}/P2B_LSServerControl.${IMAGE_TYPE}.map  -DXPRJ_default=$(CND_CONF)  -Wl,--defsym=__MPLAB_BUILD=1   -mdfp=${DFP_DIR}/xc8  -fno-short-double -fno-short-float -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -msummary=-psect,-class,+mem,-hex,-file  -ginhx032 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     $(COMPARISON_BUILD) -Wl,--memorysummary,dist/${CND_CONF}/${IMAGE_TYPE}/memoryfile.xml -o dist/${CND_CONF}/${IMAGE_TYPE}/P2B_LSServerControl.${IMAGE_TYPE}.${DEBUGGABLE_SUFFIX}  ${OBJECTFILES_QUOTED_IF_SPACED}     
 	
 endif
 
@@ -338,13 +390,13 @@ endif
 
 # Clean Targets
 .clean-conf: ${CLEAN_SUBPROJECTS}
-	${RM} -r ${OBJECTDIR}
-	${RM} -r ${DISTDIR}
+	${RM} -r build/default
+	${RM} -r dist/default
 
 # Enable dependency checking
 .dep.inc: .depcheck-impl
 
-DEPFILES=$(wildcard ${POSSIBLE_DEPFILES})
+DEPFILES=$(shell mplabwildcard ${POSSIBLE_DEPFILES})
 ifneq (${DEPFILES},)
 include ${DEPFILES}
 endif

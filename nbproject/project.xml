@@ -7,8 +7,15 @@
             <creation-uuid>6c8bc3e3-59aa-4e6c-85cb-7531f0c5ef79</creation-uuid>
             <make-project-type>0</make-project-type>
             <sourceEncoding>UTF-8</sourceEncoding>
+            <c-extensions>c</c-extensions>
+            <cpp-extensions/>
+            <header-extensions>h</header-extensions>
+            <asminc-extensions/>
             <make-dep-projects/>
-            <sourceRootList/>
+            <sourceRootList>
+                <sourceRootElem>C:\Users\francesc\Documentos\salle\ProjectesC\RepoTest\P2B_LSServerControl</sourceRootElem>
+                <sourceRootElem>C:\Users\francesc\Documentos\salle\ProjectesC\RepoPractica\P2B_LSServerControl</sourceRootElem>
+            </sourceRootList>
             <confList>
                 <confElem>
                     <name>default</name>
