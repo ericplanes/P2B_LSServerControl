@@ -4,7 +4,7 @@
 #include "Utils.h"
 
 // Stores a temperature value into RAM progressively (simulated)
-BOOL RAM_StoreTemperature(WORD temperature);void RAM_Init(void);
+BOOL RAM_StoreTemperature(WORD temperature);
 void RAM_Init(void);
 void RAM_Write(unsigned char data);
 unsigned char RAM_Read(void);
