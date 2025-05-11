@@ -1,6 +1,8 @@
 #ifndef TRAM_H
 #define TRAM_H
 
+#include <xc.h>
+#include <pic18f4321.h>
 #include "Utils.h"
 
 // Stores a temperature value into RAM progressively (simulated)
@@ -14,4 +16,5 @@ void count(void);
 void count_reset(void);
 void RAM_WriteIncremental(void);
 void RAM_ReadAndPrint100(void);
+
 #endif
