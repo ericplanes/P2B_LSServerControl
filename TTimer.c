@@ -1,25 +1,25 @@
 #include "TTimer.h"
 
-#define TI_FALSE 0
-#define TI_TRUE 1
-
-#define TI_MAXTICS 30000 // Max time span to measure (30-40 seconds)
+#define TI_MAXTICS 30000
 
 /* =======================================
  *          PRIVATE FUNCTION HEADERS
  * ======================================= */
-static void TMR0_set_interruption_1ms();
+static inline void TMR0_set_interruption_1ms(void)
+{
+    TMR0H = 216;
+    TMR0L = 240;
+}
 
 // Internal timer structure
 typedef struct
 {
-    unsigned int startTics;
-    unsigned char inUse;
+    WORD startTics;
+    BOOL inUse;
 } Timer;
 
 static Timer timers[TI_NUMTIMERS];
-static unsigned int globalTics = 0;
-static int i;
+static WORD globalTics = 0;
 
 /* =======================================
  *         INTERRUPT SERVICE ROUTINE
@@ -27,19 +27,17 @@ static int i;
 
 void Timer0_ISR(void)
 {
-    INTCONbits.TMR0IF = 0; // Clear Timer0 interrupt flag
+    INTCONbits.TMR0IF = 0;
 
-    // Reinitialize Timer0 for the next interrupt (1ms)
     TMR0_set_interruption_1ms();
     globalTics++;
 
-    // Prevent overflow by normalizing all timers if max tics is reached
     if (globalTics >= TI_MAXTICS)
     {
-        for (i = 0; i < TI_NUMTIMERS; i++)
+        for (BYTE index = 0; index < TI_NUMTIMERS; index++)
         {
-            if (timers[i].inUse == TI_TRUE)
-                timers[i].startTics -= globalTics;
+            if (timers[index].inUse == TRUE)
+                timers[index].startTics -= globalTics;
         }
         globalTics = 0;
     }
@@ -51,57 +49,45 @@ void Timer0_ISR(void)
 
 void TiInit(void)
 {
-    for (i = 0; i < TI_NUMTIMERS; i++)
+    for (BYTE index = 0; index < TI_NUMTIMERS; index++)
     {
-        timers[i].inUse = TI_FALSE;
+        timers[index].inUse = FALSE;
     }
 
     globalTics = 0;
 
-    // Timer0 configuration
-    T0CONbits.T08BIT = 0; // 16-bit mode
-    T0CONbits.T0CS = 0;   // Clock = Fosc/4
-    T0CONbits.PSA = 1;    // No prescaler
+    T0CONbits.T08BIT = 0;
+    T0CONbits.T0CS = 0;
+    T0CONbits.PSA = 1;
 
     TMR0_set_interruption_1ms();
-    T0CONbits.TMR0ON = 1; // Enable Timer0
+    T0CONbits.TMR0ON = 1;
 
-    // Interrupt configuration
-    INTCONbits.GIE = 1;    // Global interrupt enable
-    INTCONbits.PEIE = 1;   // Peripheral Interrupt Enable (in case we want to use it for RTC)
-    INTCONbits.TMR0IF = 0; // Overflow not reached, 1 when reached
-    INTCONbits.TMR0IE = 1; // Timer0 interrupt enable
+    INTCONbits.GIE = 1;
+    INTCONbits.PEIE = 1;
+    INTCONbits.TMR0IF = 0;
+    INTCONbits.TMR0IE = 1;
 }
 
-char TiGetTimer(void)
+BYTE TiGetTimer(void)
 {
-    for (char timerId = 0; timerId < TI_NUMTIMERS; timerId++)
+    for (BYTE index = 0; index < TI_NUMTIMERS; index++)
     {
-        if (timers[timerId].inUse == TI_FALSE)
+        if (timers[index].inUse == FALSE)
         {
-            timers[timerId].inUse = TI_TRUE;
-            return timerId;
+            timers[index].inUse = TRUE;
+            return index;
         }
     }
     return NO_TIMERS_AVAILABLE;
 }
 
-void TiResetTics(unsigned char timerId)
+void TiResetTics(BYTE timerId)
 {
     timers[timerId].startTics = globalTics;
 }
 
-unsigned int TiGetTics(unsigned char timerId)
+WORD TiGetTics(BYTE timerId)
 {
     return (globalTics - timers[timerId].startTics);
-}
-
-/* =======================================
- *          PRIVATE FUNCTION BODIES
- * ======================================= */
-
-static void TMR0_set_interruption_1ms()
-{
-    TMR0H = 216;
-    TMR0L = 240;
 }
