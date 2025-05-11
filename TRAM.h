@@ -1,6 +1,10 @@
-#ifndef TAD_RAM_H
-#define TAD_RAM_H
+#ifndef TRAM_H
+#define TRAM_H
 
+#include "Utils.h"
+
+// Stores a temperature value into RAM progressively (simulated)
+BOOL RAM_StoreTemperature(WORD temperature);void RAM_Init(void);
 void RAM_Init(void);
 void RAM_Write(unsigned char data);
 unsigned char RAM_Read(void);
@@ -10,5 +14,4 @@ void count(void);
 void count_reset(void);
 void RAM_WriteIncremental(void);
 void RAM_ReadAndPrint100(void);
-
 #endif
