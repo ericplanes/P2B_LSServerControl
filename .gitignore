@@ -2,6 +2,7 @@
 nbproject/private/
 dist/
 build/
+nbproject/
 
 # Fitxers de compilació
 *.hex
