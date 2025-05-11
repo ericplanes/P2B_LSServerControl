@@ -11,7 +11,7 @@
 #include "TPWM.h"
 #include "TController.h"
 
-#pragma config OSC = HSPLL
+#pragma config OSC = HS
 #pragma config PBADEN = DIG
 #pragma config MCLRE = OFF
 #pragma config DEBUG = OFF

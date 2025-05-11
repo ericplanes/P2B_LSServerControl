@@ -7,8 +7,8 @@
  * ======================================= */
 static inline void TMR0_set_interruption_1ms(void)
 {
-    TMR0H = 216;
-    TMR0L = 240;
+    TMR0H = 0xF6;
+    TMR0L = 0x36;
 }
 
 // Internal timer structure
