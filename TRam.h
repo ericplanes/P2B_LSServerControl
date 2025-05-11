@@ -1,6 +1,9 @@
 #ifndef TRAM_H
 #define TRAM_H
 
+#include <xc.h>
+#include <pic18f4321.h>
+#include "TAD_SIO.h"
 #include "Utils.h"
 
 // Stores a temperature value into RAM progressively (simulated)

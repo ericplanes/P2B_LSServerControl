@@ -1,10 +1,3 @@
-/*
- * File:   TAD_SIO.c
- * Author: Emilio Sánchez i Oriol Merino
- *
- * Created febrer / 2025
- */
-#include <stdint.h>
 #include "TAD_SIO.h"
 
 void SIO_Init()

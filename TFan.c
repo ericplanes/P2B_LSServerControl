@@ -10,8 +10,8 @@ void FAN_Init(void)
     TRISCbits.TRISC1 = 0; // FAN A
     TRISCbits.TRISC2 = 0; // FAN B
 
-    LATACits.LATC1 = 0;
-    LATACits.LATC2 = 0;
+    LATCbits.LATC1 = 0;
+    LATCbits.LATC2 = 0;
 }
 
 void FAN_SetPowerA(BOOL enabled)

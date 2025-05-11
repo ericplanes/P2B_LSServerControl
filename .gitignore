@@ -1,8 +1,7 @@
 # Carpetes temporals de MPLAB
-nbproject/private/
+nbproject/
 dist/
 build/
-nbproject/
 
 # Fitxers de compilació
 *.hex
