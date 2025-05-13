@@ -47,28 +47,30 @@ static void write_byte(BYTE address, BYTE data)
 
 BOOL EEPROM_StoreLog(const BYTE *log_data)
 {
-    if (pos < LOG_SIZE)
+    if(!EECON1bits.WR)
     {
-        write_byte(pos + (mem_section * LOG_SIZE) + 1, log_data[pos]);
-        pos++;
-    }
-
-    if (pos == LOG_SIZE)
-    {
-        pos = 0;
-        mem_section++;
-        amount_of_stored_logs++;
-
-        if (mem_section == MAX_LOGS)
+        if (pos < LOG_SIZE)
         {
-            mem_section = 0;
-            amount_of_stored_logs = MAX_LOGS;
+            write_byte(pos + (mem_section * LOG_SIZE) + 1, log_data[pos]);
+            pos++;
         }
 
-        write_byte(0, amount_of_stored_logs);
-        return TRUE;
-    }
+        if (pos == LOG_SIZE)
+        {
+            pos = 0;
+            mem_section++;
+            amount_of_stored_logs++;
 
+            if (mem_section == MAX_LOGS)
+            {
+                mem_section = 0;
+                amount_of_stored_logs = MAX_LOGS;
+            }
+
+            write_byte(0, amount_of_stored_logs);
+            return TRUE;
+        }
+    }
     return FALSE;
 }
 
