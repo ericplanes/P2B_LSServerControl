@@ -47,30 +47,31 @@ static void write_byte(BYTE address, BYTE data)
 
 BOOL EEPROM_StoreLog(const BYTE *log_data)
 {
-    if(!EECON1bits.WR)
+    if (EECON1bits.WR)  // EEPROM is busy writing, exit early
+        return FALSE;
+
+    if (pos < LOG_SIZE)
     {
-        if (pos < LOG_SIZE)
-        {
-            write_byte(pos + (mem_section * LOG_SIZE) + 1, log_data[pos]);
-            pos++;
-        }
-
-        if (pos == LOG_SIZE)
-        {
-            pos = 0;
-            mem_section++;
-            amount_of_stored_logs++;
-
-            if (mem_section == MAX_LOGS)
-            {
-                mem_section = 0;
-                amount_of_stored_logs = MAX_LOGS;
-            }
-
-            write_byte(0, amount_of_stored_logs);
-            return TRUE;
-        }
+        write_byte(pos + (mem_section * LOG_SIZE) + 1, log_data[pos]);
+        pos++;
     }
+
+    if (pos == LOG_SIZE)
+    {
+        pos = 0;
+        mem_section++;
+        amount_of_stored_logs++;
+
+        if (mem_section == MAX_LOGS)
+        {
+            mem_section = 0;
+            amount_of_stored_logs = MAX_LOGS; // cap the count
+        }
+
+        write_byte(0, amount_of_stored_logs);
+        return TRUE;
+    }
+
     return FALSE;
 }
 
