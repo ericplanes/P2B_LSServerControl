@@ -14,7 +14,9 @@ static BYTE pos = 0;
 static BYTE read_byte(BYTE address)
 {
     EEADR = address;
-    EECON1 = 0x01;
+    EECON1bits.EEPGD = 0; // Acceder a memoria de datos, no FLASH
+    EECON1bits.CFGS = 0;  // Acceder a EEPROM, no configuración
+    EECON1bits.RD = 1;    // Iniciar lectura
     return EEDATA;
 }
 
