@@ -29,9 +29,13 @@ static void prepare_write_info(BYTE address, BYTE data)
 
 static void write_prepared_info(void)
 {
+    EECON1bits.EEPGD = 0; // Acceso a EEPROM (no FLASH)
+    EECON1bits.CFGS = 0;  // Acceso a EEPROM (no configuración)
+    EECON1bits.WREN = 1;
     EECON2 = 0x55;
     EECON2 = 0xAA;
     EECON1bits.WR = 1;
+    while (EECON1bits.WR);
     EECON1bits.WREN = 0;
 }
 
