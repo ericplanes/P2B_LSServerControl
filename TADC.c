@@ -33,10 +33,10 @@ void ADC_Init(void)
     TRISAbits.TRISA2 = 1; // AN2 (TMP36)
 
     ADCON1 = 0x0D; // Configure AN0–AN2 as analog, rest as digital
-    ADCON2 = 0x09; // Right justified result, acquisition time = 2 TAD
+    ADCON2 = 0b00111110; // Right justified result, acquisition time = 2 TAD
     ADCON0 = 0x00; // Start with channel AN0
-
-    channel = 0;
+    ADCON0bits.ADON = 1; // Enable ADC module    channel = 0;
+    
     motor_state = 0;
 }
 
