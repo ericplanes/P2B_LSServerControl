@@ -5,6 +5,7 @@
 #include "TI2C.h"
 #include "TRAM.h"
 #include "TEEPROM.h"
+#include "TAD_SIO.h"
 
 /* =======================================
  *           PRIVATE CONSTANTS
