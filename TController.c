@@ -63,11 +63,15 @@ void CTR_Motor(void)
         break;
 
     case S_WAIT_SAMPLETIME:
+        motor_state = S_READ_TEMPERATURE;
+
+        /*
         if (TiGetTics(timer_id) >= wait_sample_time * 1000)
         {
             TiResetTics(timer_id);
             motor_state = S_READ_TEMPERATURE;
         }
+        */
         break;
 
     case S_READ_TEMPERATURE:

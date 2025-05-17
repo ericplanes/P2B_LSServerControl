@@ -28,5 +28,6 @@ void DS3231_SetFechaHora(unsigned char seg, unsigned char min, unsigned char hor
 
 // Added functions
 void I2C_ReadTimestamp(BYTE *hhmmssDDMMYYYY);
+void testLectura(void);
 
 #endif

@@ -48,13 +48,15 @@ void main(void)
     ADC_Init();
     CTR_Init();
     FAN_Init();
-    InitI2C();
     Joystick_Init();
     LED_Init();
     MENU_Init();
     PWM_Init();
     RAM_Init();
     TiInit();
+
+    // Test and inits I2C
+    testLectura();
 
     // Extras for testing
     RAM_Reset();
