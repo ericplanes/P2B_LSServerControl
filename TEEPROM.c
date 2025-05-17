@@ -35,7 +35,8 @@ static void write_prepared_info(void)
     EECON2 = 0x55;
     EECON2 = 0xAA;
     EECON1bits.WR = 1;
-    while (EECON1bits.WR);
+    while (EECON1bits.WR)
+        ;
     EECON1bits.WREN = 0;
 }
 
@@ -53,7 +54,7 @@ static void write_byte(BYTE address, BYTE data)
 
 BOOL EEPROM_StoreLog(const BYTE *log_data)
 {
-    if (EECON1bits.WR)  // EEPROM is busy writing, exit early
+    if (EECON1bits.WR) // EEPROM is busy writing, exit early
         return FALSE;
 
     if (pos < LOG_SIZE)
@@ -102,4 +103,9 @@ BOOL EEPROM_ReadLog(BYTE section, BYTE *log_data)
     }
 
     return FALSE;
+}
+
+BYTE EEPROM_GetAmountOfStoredLogs(void)
+{
+    return amount_of_stored_logs;
 }
