@@ -60,8 +60,11 @@ void main(void)
         PWM_Motor();
 
         // Every 100 iterations, write actual state
-        if (i % 100 == 0)
+        if (i == 500)
+        {
+            i = 0;
             TEST_print_results();
+        }
         i++;
     }
 }
