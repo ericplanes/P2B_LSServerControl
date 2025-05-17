@@ -9,13 +9,14 @@
 
 void wait1s(void);
 void print(const BYTE *log);
-void print_iterator(BYTE iterator);
+void print_iterator(BYTE d, BYTE u);
 void println(void);
 
 static BYTE iteration = 0;
 static BYTE buffer[TIMESTAMP_SIZE];
 static BYTE temperature = 1;
 static SYS_STATUS status = SYS_STATUS_OFF;
+void int_to_ascii_digits(int number, char *buffer);
 
 /* =======================================
  *          PUBLIC FUNCTION BODIES
@@ -36,10 +37,10 @@ void TEST_print_results(void)
     SIO_PrintString("\n-------- RAM (Temperatures) --------\n");
     temperature = RAM_Read();
     int i = 0;
-    while (temperature != 0)
+    while (temperature != 0 && i < 99)
     {
         temperature = RAM_Read();
-        print_iterator(i);
+        print_iterator(i / 10, i % 10);
         SIO_SafePrint('0' + temperature);
         println();
         i++;
@@ -52,7 +53,7 @@ void TEST_print_results(void)
     for (BYTE i = 0; i < storedLogs; i++)
     {
         EEPROM_ReadLog(i, buffer);
-        print_iterator(i);
+        print_iterator(i / 10, i % 10);
         print(buffer);
         println();
     }
@@ -91,14 +92,43 @@ void print(const BYTE *log)
     SIO_PrintString("\r\n");
 }
 
-void print_iterator(BYTE iterator)
+void print_iterator(BYTE d, BYTE u)
 {
     SIO_PrintString("  ");
-    SIO_SafePrint('0' + iterator);
+    SIO_SafePrint('0' + d);
+    SIO_SafePrint('0' + u);
     SIO_PrintString(": ");
 }
 
 void println(void)
 {
     SIO_PrintString("\r\n");
+}
+
+void int_to_ascii_digits(int number, char *buffer)
+{
+    int divisor = 10000;
+    int index = 0;
+    BOOL started = FALSE;
+
+    if (number == 0)
+    {
+        buffer[0] = '0';
+        buffer[1] = '\0';
+        return;
+    }
+
+    while (divisor > 0)
+    {
+        int digit = number / divisor;
+        if (digit != 0 || started)
+        {
+            buffer[index++] = digit + '0';
+            started = TRUE;
+        }
+        number %= divisor;
+        divisor /= 10;
+    }
+
+    buffer[index] = '\0'; // null-terminate
 }
