@@ -54,6 +54,7 @@ void main(void)
     FAN_Init();
     PWM_Init();
     CTR_Init();
+    SIO_Init();
     InitI2C();
     DS3231_InitAlarm1_EverySecond();
 
