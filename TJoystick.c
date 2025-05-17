@@ -43,7 +43,7 @@ BYTE Joystick_GetDirection(void)
     BYTE xDirection = classify_axis(xAnalog);
     BYTE yDirection = classify_axis(yAnalog);
 
-    return get_next_direction();
+    return get_next_direction(xDirection, yDirection);
 }
 
 BOOL Joystick_IsButtonPressed(void)
@@ -77,7 +77,7 @@ static BYTE direction_from_axes(BYTE x, BYTE y)
     return JOY_CENTER;
 }
 
-static BYTE get_next_direction(void)
+static BYTE get_next_direction(BYTE xDirection, BYTE yDirection)
 {
     static BYTE previousDirection = currentDirection;
     currentDirection = direction_from_axes(xDirection, yDirection);
