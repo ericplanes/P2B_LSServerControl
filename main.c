@@ -24,19 +24,6 @@
 #pragma config LVP = OFF
 
 void main(void);
-void __interrupt() RSI_High(void);
-
-/* =======================================
- *      HIGH PRIORITY INTERRUPT
- * ======================================= */
-
-void __interrupt() RSI_High(void)
-{
-    if (INTCONbits.TMR0IF == 1)
-    {
-        Timer0_ISR();
-    }
-}
 
 /* =======================================
  *               MAIN
