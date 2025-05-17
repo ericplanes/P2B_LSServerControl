@@ -96,8 +96,6 @@ void CTR_Motor(void)
         break;
 
     case S_WRITE_RAM:
-        SIO_SafePrint('0' + temperature);
-        SIO_PrintString("\r\n");
         RAM_Write(temperature);
         motor_state = S_WAIT_SAMPLETIME;
         break;
