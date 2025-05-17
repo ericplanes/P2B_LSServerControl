@@ -49,9 +49,9 @@ SYS_STATUS CTR_GetStatus(void)
 
 void CTR_Motor(void)
 {
-    SIO_PrintString("Controller state: ");
+    /*SIO_PrintString("Controller state: ");
     SIO_SafePrint('0' + motor_state);
-    SIO_PrintString("\r\n");
+    SIO_PrintString("\r\n");*/
 
     switch (motor_state)
     {
