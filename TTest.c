@@ -34,13 +34,13 @@ void TEST_print_results(void)
     set_default_config();
 
     // Check RAM stored temperatures
-    SIO_PrintString("\n-------- RAM (Temperatures) --------\n");
+    SIO_PrintString("\r\n-------- RAM (Temperatures) --------\r\n");
     temperature = RAM_Read();
     int i = 0;
     while (temperature != 0 && i < 99)
     {
         temperature = RAM_Read();
-        print_iterator(i / 10, i % 10);
+        print_iterator((BYTE)i / 10, (BYTE)i % 10);
         SIO_SafePrint('0' + temperature);
         println();
         i++;
@@ -48,12 +48,12 @@ void TEST_print_results(void)
     i = 0;
 
     // Check EEPROM stored logs
-    SIO_PrintString("\n----------- EEPROM (Logs) ----------\n");
+    SIO_PrintString("\r\n----------- EEPROM (Logs) ----------\r\n");
     BYTE storedLogs = EEPROM_GetAmountOfStoredLogs();
     for (BYTE i = 0; i < storedLogs; i++)
     {
         EEPROM_ReadLog(i, buffer);
-        print_iterator(i / 10, i % 10);
+        print_iterator((BYTE)i / 10, (BYTE)i % 10);
         print(buffer);
         println();
     }
@@ -89,7 +89,7 @@ void print(const BYTE *log)
     {
         SIO_SafePrint(log[i]);
     }
-    SIO_PrintString("\r\n");
+    println();
 }
 
 void print_iterator(BYTE d, BYTE u)
@@ -103,32 +103,4 @@ void print_iterator(BYTE d, BYTE u)
 void println(void)
 {
     SIO_PrintString("\r\n");
-}
-
-void int_to_ascii_digits(int number, char *buffer)
-{
-    int divisor = 10000;
-    int index = 0;
-    BOOL started = FALSE;
-
-    if (number == 0)
-    {
-        buffer[0] = '0';
-        buffer[1] = '\0';
-        return;
-    }
-
-    while (divisor > 0)
-    {
-        int digit = number / divisor;
-        if (digit != 0 || started)
-        {
-            buffer[index++] = digit + '0';
-            started = TRUE;
-        }
-        number %= divisor;
-        divisor /= 10;
-    }
-
-    buffer[index] = '\0'; // null-terminate
 }
