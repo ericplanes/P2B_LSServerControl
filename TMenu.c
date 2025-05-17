@@ -58,7 +58,7 @@ void set_default_config(void)
     config.thresholds[0] = 20; // A - Low
     config.thresholds[1] = 25; // B - Moderate
     config.thresholds[2] = 30; // C - High
-    config.samplingTime = 5;   // Sampling every 5 seconds
+    config.samplingTime = 1;   // Sampling every 1 seconds
 
     // Default time: 00:00:00 01/01/2025 → "00000001012025"
     const BYTE *defaultTime = (const BYTE *)"00000001012025";

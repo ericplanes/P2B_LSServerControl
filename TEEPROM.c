@@ -6,6 +6,7 @@
 static BYTE mem_section = 0;
 static BYTE amount_of_stored_logs = 0;
 static BYTE pos = 0;
+static BOOL writing = FALSE;
 
 /* =======================================
  *          PRIVATE FUNCTION BODIES
@@ -54,6 +55,7 @@ static void write_byte(BYTE address, BYTE data)
 
 BOOL EEPROM_StoreLog(const BYTE *log_data)
 {
+    writing = TRUE;
     if (EECON1bits.WR) // EEPROM is busy writing, exit early
         return FALSE;
 
@@ -75,6 +77,7 @@ BOOL EEPROM_StoreLog(const BYTE *log_data)
             amount_of_stored_logs = MAX_LOGS; // cap the count
         }
 
+        writing = FALSE;
         write_byte(0, amount_of_stored_logs);
         return TRUE;
     }
@@ -84,6 +87,10 @@ BOOL EEPROM_StoreLog(const BYTE *log_data)
 
 BOOL EEPROM_ReadLog(BYTE section, BYTE *log_data)
 {
+    if (writing = TRUE)
+    {
+        return FALSE;
+    }
     if (pos < LOG_SIZE)
     {
         log_data[pos] = read_byte(pos + (section * LOG_SIZE) + 1);
