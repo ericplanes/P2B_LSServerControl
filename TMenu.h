@@ -15,4 +15,7 @@ const WORD *MENU_GetTMPThresholds(void);
 BYTE MENU_GetSamplingTime(void);
 const BYTE *MENU_GetInitialTimeString(void);
 
+// Visible for testing
+static void set_default_config(void);
+
 #endif
