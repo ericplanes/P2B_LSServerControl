@@ -71,9 +71,9 @@ static BYTE direction_from_axes(BYTE x, BYTE y)
     if (x == AXIS_LOW)
         return JOY_LEFT;
     if (y == AXIS_HIGH)
-        return JOY_UP;
-    if (y == AXIS_LOW)
         return JOY_DOWN;
+    if (y == AXIS_LOW)
+        return JOY_UP;
     return JOY_CENTER;
 }
 
