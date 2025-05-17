@@ -7,6 +7,7 @@
  * ======================================= */
 
 static SYS_STATUS compute_temperature_state(WORD value, const WORD *thresholds);
+static BYTE compute_temperature_degrees(WORD adc);
 
 /* =======================================
  *          PRIVATE VARIABLES
@@ -23,12 +24,13 @@ static WORD temperature;
  */
 SYS_STATUS TEMP_GetState(void)
 {
-    temperature = ADC_GetTemp();
-    const WORD *thresholds = MENU_GetTMPThresholds();
+    WORD adc = ADC_GetTemp();
+    BYTE temperature = compute_temperature_degrees(adc);
+    const BYTE *thresholds = MENU_GetTMPThresholds();
     return compute_temperature_state(temperature, thresholds);
 }
 
-WORD TEMP_GetTemperature(void)
+BYTE TEMP_GetTemperature(void)
 {
     return temperature;
 }
@@ -37,10 +39,23 @@ WORD TEMP_GetTemperature(void)
  *          PRIVATE FUNCTION BODIES
  * ======================================= */
 
+/*
+ * Computes the value of the temperature from the value readed at the ADC (XXXXXXHH LLLLLLLL).
+ * Function used -> TMP36: Vout = 0.5 + 10mV/°C → 0.5V = 0 °C
+ * Each step ADC ≈ 4.88 mV → 1 step = 0.488°C
+ */
+static BYTE compute_temperature_degrees(WORD adc)
+{
+    WORD temp_mv = (adc * 500) / 1024; // temperatura en dec °C
+    if (temp_mv < 50)
+        return 0; // avoid negative values
+    return (BYTE)(temp_mv - 50);
+}
+
 /**
  * Classifies the temperature value into one of the four defined states.
  */
-static SYS_STATUS compute_temperature_state(WORD value, const WORD *thresholds)
+static SYS_STATUS compute_temperature_state(BYTE value, const BYTE *thresholds)
 {
     if (value < thresholds[0])
         return SYS_STATUS_LOW;
