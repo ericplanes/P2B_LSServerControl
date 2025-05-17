@@ -233,3 +233,28 @@ void testLectura(void)
   SIO_PrintString(buffer);
   SIO_PrintString("\r\n");
 }
+
+void fillTimestampLog(BYTE *log, BYTE seg, BYTE min, BYTE hora, BYTE dia, BYTE mes, BYTE anio)
+{
+  log[0] = '0' + (hora / 10);
+  log[1] = '0' + (hora % 10);
+  log[2] = '0' + (min / 10);
+  log[3] = '0' + (min % 10);
+  log[4] = '0' + (seg / 10);
+  log[5] = '0' + (seg % 10);
+  log[6] = '0' + (dia / 10);
+  log[7] = '0' + (dia % 10);
+  log[8] = '0' + (mes / 10);
+  log[9] = '0' + (mes % 10);
+  log[10] = '2'; // Year 20xx
+  log[11] = '0';
+  log[12] = '0' + (anio / 10);
+  log[13] = '0' + (anio % 10);
+}
+
+void I2C_ReadTimestamp(BYTE *hhmmssDDMMYYYY)
+{
+  static BYTE seg, min, hour, day_of_week, day, month, year;
+  DS3231_LeerFechaHora(&seg, &min, &hour, &day_of_week, &day, &month, &year);
+  fillTimestampLog(hhmmssDDMMYYYY, seg, min, hour, day, month, year);
+}

@@ -12,7 +12,6 @@ static BYTE writeStage = 0;
 
 static void count(void);
 static void count_reset(void);
-static void RAM_Reset(void);
 static void RAM_DebugPrint(void);
 static void RAM_WriteIncremental(void);
 static void RAM_ReadAndPrint100(void);
@@ -74,7 +73,7 @@ void RAM_Reset(void)
  *        PRIVATE FUNCTION BODIES
  * ======================================= */
 
-void RAM_DebugPrint(void)
+static void RAM_DebugPrint(void)
 {
     unsigned char data = RAM_Read(); // Llegeix dades de la RAM
     char buffer[6];                  // per convertir valors
@@ -86,13 +85,13 @@ void RAM_DebugPrint(void)
     SIO_SafePrint('\n');
 }
 
-void count(void)
+static void count(void)
 {
     LATCbits.LATC5 = 1; // COUNT (CLK)
     LATCbits.LATC5 = 0; // COUNT (CLK)
 }
 
-void count_reset(void)
+static void count_reset(void)
 {
     LATCbits.LATC0 = 0; // !RESET COUNTER
     LATCbits.LATC0 = 1; // !RESET COUNTER

@@ -3,7 +3,7 @@
 #include "TTemperature.h"
 #include "TMenu.h"
 #include "TI2C.h"
-#include "TRam.h"
+#include "TRAM.h"
 #include "TEEPROM.h"
 
 /* =======================================
@@ -26,7 +26,7 @@ static BYTE motor_state;
 static BYTE timer_id;
 static BYTE wait_sample_time = 0;
 static BYTE timestamp_buffer[TIMESTAMP_SIZE];
-static WORD temperature;
+static BYTE temperature;
 
 /* =======================================
  *         PUBLIC FUNCTION BODIES
@@ -77,8 +77,8 @@ void CTR_Motor(void)
         break;
 
     case S_READ_TIME:
-        if (I2C_ReadTimestamp(timestamp_buffer) == TRUE)
-            motor_state = S_WRITE_EEPROM;
+        I2C_ReadTimestamp(timestamp_buffer);
+        motor_state = S_WRITE_EEPROM;
         break;
 
     case S_WRITE_EEPROM:
@@ -87,8 +87,8 @@ void CTR_Motor(void)
         break;
 
     case S_WRITE_RAM:
-        if (RAM_StoreTemperature(temperature) == TRUE)
-            motor_state = S_WAIT_SAMPLETIME;
+        RAM_Write(temperature);
+        motor_state = S_WAIT_SAMPLETIME;
         break;
     }
 }

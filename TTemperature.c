@@ -6,7 +6,7 @@
  *          PRIVATE FUNCTION HEADERS
  * ======================================= */
 
-static SYS_STATUS compute_temperature_state(WORD value, const WORD *thresholds);
+static SYS_STATUS compute_temperature_state(BYTE value, const BYTE *thresholds);
 static BYTE compute_temperature_degrees(WORD adc);
 
 /* =======================================
@@ -35,7 +35,7 @@ SYS_STATUS TEMP_GetState(void)
 {
     WORD adc = ADC_GetTemp();
     BYTE temperature = compute_temperature_degrees(adc);
-    const BYTE *thresholds = MENU_GetTMPThresholds();
+    BYTE *thresholds = MENU_GetTMPThresholds();
     return compute_temperature_state(temperature, thresholds);
 }
 
@@ -76,7 +76,7 @@ void TEMP_SimulateState(SYS_STATUS state)
  * ======================================= */
 
 /*
- * Computes the value of the temperature from the value readed at the ADC (XXXXXXHH LLLLLLLL).
+ * Computes the value of the temperature from the value readed at the ADC (XXXXXX-HH LLLLLLLL).
  * Function used -> TMP36: Vout = 0.5 + 10mV/°C → 0.5V = 0 °C
  * Each step ADC ≈ 4.88 mV → 1 step = 0.488°C
  */

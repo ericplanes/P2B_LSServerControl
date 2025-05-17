@@ -8,7 +8,7 @@ typedef struct
 {
     BYTE initialTime[15]; // hhmmssDDMMYYYY + '\0'
     BYTE samplingTime;    // in seconds
-    WORD thresholds[3];   // thresholds A, B, C
+    BYTE thresholds[3];   // thresholds A, B, C
     BYTE isConfigured;
 } MenuConfig;
 
@@ -38,7 +38,7 @@ BOOL MENU_isConfigured(void)
     return config.isConfigured == TRUE;
 }
 
-const WORD *MENU_GetTMPThresholds(void)
+const BYTE *MENU_GetTMPThresholds(void)
 {
     return config.thresholds;
 }

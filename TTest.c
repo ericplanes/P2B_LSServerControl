@@ -4,9 +4,13 @@
 #include "TEEPROM.h"
 #include "TRAM.h"
 #include "TTemperature.h"
+#include "TMenu.h"
+#include "TI2C.h"
 
 void wait1s(void);
 void print(const BYTE *log);
+void print_iterator(BYTE iterator);
+void println(void);
 
 static BYTE iteration = 0;
 static BYTE buffer[TIMESTAMP_SIZE];
@@ -26,25 +30,31 @@ void TEST_print_results(void)
     wait1s();
 
     // Prepare testing
-    set_default_config(void);
+    set_default_config();
 
     // Check RAM stored temperatures
     SIO_PrintString("\n-------- RAM (Temperatures) --------\n");
     temperature = RAM_Read();
+    BYTE i = 0;
     while (temperature != 0)
     {
         temperature = RAM_Read();
-        SIO_PrintString("\t" + i + ": " + temperature + "\n");
+        print_iterator(i);
+        SIO_SafePrint('0' + temperature);
+        println();
+        i++;
     }
+    i = 0;
 
     // Check EEPROM stored logs
     SIO_PrintString("\n----------- EEPROM (Logs) ----------\n");
     BYTE storedLogs = EEPROM_GetAmountOfStoredLogs();
-    for (int i = 0; i < storedLogs; i++)
+    for (BYTE i = 0; i < storedLogs; i++)
     {
-        SIO_PrintString("\t" + i + ": \n");
         EEPROM_ReadLog(i, buffer);
+        print_iterator(i);
         print(buffer);
+        println();
     }
 
     // Increase iteration value
@@ -74,9 +84,21 @@ void wait1s()
 
 void print(const BYTE *log)
 {
-    for (int i = 0; i < TIMESTAMP_SIZE && log[i] != '\n'; ++i)
+    for (BYTE i = 0; i < TIMESTAMP_SIZE && log[i] != '\n'; ++i)
     {
         SIO_SafePrint(log[i]);
     }
+    SIO_PrintString("\r\n");
+}
+
+void print_iterator(BYTE iterator)
+{
+    SIO_PrintString("\t");
+    SIO_PrintString(": ");
+    SIO_SafePrint('0' + iterator);
+}
+
+void println(void)
+{
     SIO_PrintString("\r\n");
 }
