@@ -52,22 +52,11 @@ BYTE TEMP_GetTemperature(void)
  */
 void TEMP_SimulateState(SYS_STATUS state)
 {
-    simulation = TRUE;
     const BYTE *thresholds = MENU_GetTMPThresholds();
     if (state == SYS_STATUS_OFF)
-    {
         TEMP_Init();
-        return;
-    }
 
-    if (state == SYS_STATUS_CRIT)
-    {
-        temperature = 234;
-    }
-    else
-    {
-        temperature = thresholds[state - 1] - 1; // 1 degree under the threshold
-    }
+    simulation = TRUE;
     fake = state;
 }
 
@@ -93,6 +82,9 @@ static BYTE compute_temperature_degrees(WORD adc)
  */
 static SYS_STATUS compute_temperature_state(BYTE value, const BYTE *thresholds)
 {
+    if (simulation == TRUE)
+        return fake;
+
     if (value < thresholds[0])
         return SYS_STATUS_LOW;
 
