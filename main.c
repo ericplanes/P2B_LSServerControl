@@ -51,12 +51,17 @@ void main(void)
     DS3231_InitAlarm1_EverySecond();
 
     // Main loop — cooperative multitasking
+    int i = 1;
     while (TRUE)
     {
         ADC_Motor();
         MENU_Motor();
         CTR_Motor();
         PWM_Motor();
-        TEST_print_results();
+
+        // Every 100 iterations, write actual state
+        if (i % 100 == 0)
+            TEST_print_results();
+        i++;
     }
 }
