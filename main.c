@@ -40,7 +40,7 @@ void main(void)
     MENU_Init();
     PWM_Init();
     RAM_Init();
-    TiInit();
+    // TiInit();
 
     // Test and inits I2C
     SIO_Init();
