@@ -13,11 +13,20 @@ static BYTE compute_temperature_degrees(WORD adc);
  *          PRIVATE VARIABLES
  * ======================================= */
 
-static WORD temperature;
+static BYTE temperature;
+static BOOL simulation;
+static SYS_STATUS fake;
 
 /* =======================================
  *          PUBLIC FUNCTION BODIES
  * ======================================= */
+
+void TEMP_Init(void)
+{
+    temperature = 0;
+    simulation = FALSE;
+    fake = SYS_STATUS_OFF;
+}
 
 /**
  * Returns the current room temperature state based on thresholds A, B, C.
@@ -30,9 +39,36 @@ SYS_STATUS TEMP_GetState(void)
     return compute_temperature_state(temperature, thresholds);
 }
 
+/**
+ * Returns the last-read temperature degrees
+ */
 BYTE TEMP_GetTemperature(void)
 {
     return temperature;
+}
+
+/**
+ * TESTING METHOD -> Forces a state of the temperature to tweak the system
+ */
+void TEMP_SimulateState(SYS_STATUS state)
+{
+    simulation = TRUE;
+    const BYTE *thresholds = MENU_GetTMPThresholds();
+    if (state == SYS_STATUS_OFF)
+    {
+        TEMP_Init();
+        return;
+    }
+
+    if (state == SYS_STATUS_CRIT)
+    {
+        temperature = 234;
+    }
+    else
+    {
+        temperature = thresholds[state - 1] - 1; // 1 degree under the threshold
+    }
+    fake = state;
 }
 
 /* =======================================

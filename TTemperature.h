@@ -5,6 +5,7 @@
 
 // Public function
 SYS_STATUS TEMP_GetState(void);
-WORD TEMP_GetTemperature(void);
+BYTE TEMP_GetTemperature(void);
+void TEMP_SimulateState(SYS_STATUS state);
 
 #endif
