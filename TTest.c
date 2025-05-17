@@ -35,7 +35,7 @@ void TEST_print_results(void)
     // Check RAM stored temperatures
     SIO_PrintString("\n-------- RAM (Temperatures) --------\n");
     temperature = RAM_Read();
-    BYTE i = 0;
+    int i = 0;
     while (temperature != 0)
     {
         temperature = RAM_Read();
@@ -93,9 +93,9 @@ void print(const BYTE *log)
 
 void print_iterator(BYTE iterator)
 {
-    SIO_PrintString("\t");
-    SIO_PrintString(": ");
+    SIO_PrintString("  ");
     SIO_SafePrint('0' + iterator);
+    SIO_PrintString(": ");
 }
 
 void println(void)

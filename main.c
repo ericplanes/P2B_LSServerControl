@@ -12,6 +12,7 @@
 #include "TController.h"
 #include "TTest.h"
 #include "TI2C.h"
+#include "TRAM.h"
 
 #pragma config OSC = HS
 #pragma config PBADEN = DIG
@@ -46,16 +47,20 @@ void __interrupt() RSI_High(void)
 void main(void)
 {
     // Initialize all TADs
-    TiInit();
     ADC_Init();
-    MENU_Init();
+    CTR_Init();
+    FAN_Init();
+    InitI2C();
     Joystick_Init();
     LED_Init();
-    FAN_Init();
+    MENU_Init();
     PWM_Init();
-    CTR_Init();
+    RAM_Init();
+    TiInit();
+
+    // Extras for testing
+    RAM_Reset();
     SIO_Init();
-    InitI2C();
     DS3231_InitAlarm1_EverySecond();
 
     // Main loop — cooperative multitasking
