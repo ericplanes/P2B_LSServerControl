@@ -35,7 +35,7 @@ SYS_STATUS TEMP_GetState(void)
 {
     WORD adc = ADC_GetTemp();
     BYTE temperature = compute_temperature_degrees(adc);
-    BYTE *thresholds = MENU_GetTMPThresholds();
+    const BYTE *thresholds = MENU_GetTMPThresholds();
     return compute_temperature_state(temperature, thresholds);
 }
 

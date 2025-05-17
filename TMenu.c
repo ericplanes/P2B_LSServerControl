@@ -15,11 +15,6 @@ typedef struct
 static MenuConfig config;
 
 /* =======================================
- *          PRIVATE FUNCTION HEADERS
- * ======================================= */
-static void set_default_config(void);
-
-/* =======================================
  *          PUBLIC FUNCTION BODIES
  * ======================================= */
 
@@ -56,15 +51,14 @@ const BYTE *MENU_GetInitialTimeString(void)
 /* =======================================
  *        PRIVATE FUNCTION BODIES
  * ======================================= */
-
-static void set_default_config(void)
+void set_default_config(void)
 {
     config.isConfigured = FALSE; // Since we're using the default config
 
-    config.thresholds[0] = 25; // A - Low
-    config.thresholds[1] = 35; // B - Moderate
-    config.thresholds[2] = 50; // C - High
-    config.samplingTime = 20;  // Sampling every 30 seconds
+    config.thresholds[0] = 20; // A - Low
+    config.thresholds[1] = 25; // B - Moderate
+    config.thresholds[2] = 30; // C - High
+    config.samplingTime = 5;   // Sampling every 5 seconds
 
     // Default time: 00:00:00 01/01/2025 → "00000001012025"
     const BYTE *defaultTime = (const BYTE *)"00000001012025";

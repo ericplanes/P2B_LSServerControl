@@ -10,6 +10,8 @@
 #include "TFan.h"
 #include "TPWM.h"
 #include "TController.h"
+#include "TTest.h"
+#include "TI2C.h"
 
 #pragma config OSC = HS
 #pragma config PBADEN = DIG
@@ -52,6 +54,8 @@ void main(void)
     FAN_Init();
     PWM_Init();
     CTR_Init();
+    InitI2C();
+    DS3231_InitAlarm1_EverySecond();
 
     // Main loop — cooperative multitasking
     while (TRUE)
@@ -60,5 +64,6 @@ void main(void)
         MENU_Motor();
         CTR_Motor();
         PWM_Motor();
+        TEST_print_results();
     }
 }
