@@ -50,14 +50,13 @@ void TEST_print_results(void)
     // Check EEPROM stored logs
     SIO_PrintString("\r\n----------- EEPROM (Logs) ----------\r\n");
     BYTE storedLogs = EEPROM_GetAmountOfStoredLogs();
-    for (BYTE i = 0; i < storedLogs;)
+    for (BYTE i = 0; i < storedLogs; i++)
     {
         if (EEPROM_ReadLog(i, buffer) == TRUE)
         {
             print_iterator((BYTE)i / 10, (BYTE)i % 10);
             print(buffer);
             println();
-            i++;
         }
     }
 
