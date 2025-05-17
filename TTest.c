@@ -16,7 +16,6 @@ static BYTE iteration = 0;
 static BYTE buffer[TIMESTAMP_SIZE];
 static BYTE temperature = 1;
 static SYS_STATUS status = SYS_STATUS_OFF;
-void int_to_ascii_digits(int number, char *buffer);
 
 /* =======================================
  *          PUBLIC FUNCTION BODIES
@@ -27,9 +26,6 @@ void int_to_ascii_digits(int number, char *buffer);
  */
 void TEST_print_results(void)
 {
-    // Wait before starting
-    wait1s();
-
     // Prepare testing
     set_default_config();
 

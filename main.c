@@ -60,7 +60,7 @@ void main(void)
         PWM_Motor();
 
         // Every 100 iterations, write actual state
-        if (i == 500)
+        if (i == 2000)
         {
             i = 0;
             TEST_print_results();
