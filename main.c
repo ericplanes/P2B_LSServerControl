@@ -43,11 +43,11 @@ void main(void)
     TiInit();
 
     // Test and inits I2C
+    SIO_Init();
     testLectura();
 
     // Extras for testing
     RAM_Reset();
-    SIO_Init();
     DS3231_InitAlarm1_EverySecond();
 
     // Main loop — cooperative multitasking
