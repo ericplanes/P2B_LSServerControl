@@ -14,7 +14,9 @@ static BYTE pos = 0;
 static BYTE read_byte(BYTE address)
 {
     EEADR = address;
-    EECON1 = 0x01;
+    EECON1bits.EEPGD = 0; // Acceder a memoria de datos, no FLASH
+    EECON1bits.CFGS = 0;  // Acceder a EEPROM, no configuración
+    EECON1bits.RD = 1;    // Iniciar lectura
     return EEDATA;
 }
 
@@ -27,9 +29,13 @@ static void prepare_write_info(BYTE address, BYTE data)
 
 static void write_prepared_info(void)
 {
+    EECON1bits.EEPGD = 0; // Acceso a EEPROM (no FLASH)
+    EECON1bits.CFGS = 0;  // Acceso a EEPROM (no configuración)
+    EECON1bits.WREN = 1;
     EECON2 = 0x55;
     EECON2 = 0xAA;
     EECON1bits.WR = 1;
+    while (EECON1bits.WR);
     EECON1bits.WREN = 0;
 }
 
