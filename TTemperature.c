@@ -71,7 +71,7 @@ void TEMP_SimulateState(SYS_STATUS state)
  */
 static BYTE compute_temperature_degrees(WORD adc)
 {
-    return 20 + fake;
+    return 1 + fake;
     /*WORD temp_mv = (adc * 500) / 1024; // temperatura en dec °C
     if (temp_mv < 50)
         return 0; // avoid negative values
