@@ -53,7 +53,7 @@ const BYTE *MENU_GetInitialTimeString(void)
  * ======================================= */
 void set_default_config(void)
 {
-    config.isConfigured = FALSE; // Since we're using the default config
+    config.isConfigured = TRUE;
 
     config.thresholds[0] = 20; // A - Low
     config.thresholds[1] = 25; // B - Moderate
