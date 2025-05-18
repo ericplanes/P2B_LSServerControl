@@ -1,71 +1,82 @@
 #include "TRAM.h"
 
-/* =======================================
- *         PRIVATE VARIABLES
- * ======================================= */
-
-static BYTE writeStage = 0;
+#define MAX_RAM_ADDRESS 32768 // 2^15 addresses
 
 /* =======================================
- *        PRIVATE FUNCTION HEADERS
+ *         PRIVATE FUNCTION HEADERS
  * ======================================= */
 
-static void count(void);
-static void count_reset(void);
-static void RAM_DebugPrint(void);
-static void RAM_WriteIncremental(void);
-static void RAM_ReadAndPrint100(void);
+static void inc_address(void);
+static void reset_address(void);
 
 /* =======================================
  *        PUBLIC FUNCTION BODIES
  * ======================================= */
 
+/*
+ * Configures the initial state of the control bits, both from the RAM and the counter
+ */
 void RAM_Init(void)
 {
-    TRISD = 0xFF;         // DATA
-    TRISBbits.TRISB0 = 0; // !WE
-    TRISBbits.TRISB3 = 0; // !OE
+    // Configure directions and initial state of pins
+    TRISD = 0xFF;         // Port D com entrada (DATA)
+    TRISBbits.TRISB0 = 0; // !WE (write enable)
+    TRISBbits.TRISB3 = 0; // !OE (output enable)
     TRISCbits.TRISC0 = 0; // !RESET COUNTER
     TRISCbits.TRISC5 = 0; // COUNT (CLK)
 
-    LATBbits.LATB0 = 1; // !WE
-    LATBbits.LATB3 = 1; // !OE
-    LATCbits.LATC0 = 1; // !RESET COUNTER
+    LATBbits.LATB0 = 1; // !WE inactiu
+    LATBbits.LATB3 = 1; // !OE inactiu
+    LATCbits.LATC0 = 1; // RESET inactiu
+    RAM_Reset();        // Cleans all the previously recorded information
 }
 
-void RAM_Write(unsigned char data)
+/*
+ * Writes the RAM position with the byte information sent on data
+ */
+void RAM_Write(BYTE data)
 {
-    LATBbits.LATB0 = 0; // !WE -> RAM mode write (pins de la RAM en input)
-    TRISD = 0x00;       // DATA -> output
-    LATD = data;        // Write data to RAM
+    LATBbits.LATB0 = 0; // Activem !WE → mode escriptura
+    TRISD = 0x00;       // Port D com a sortida
+    LATD = data;        // Escrivim valor a la RAM
 
-    // Wait for the write operation to complete
-
-    TRISD = 0xFF;       // DATA -> input
-    LATBbits.LATB0 = 1; // !WE -> RAM mode idle
-    count();            // Count pulse
+    TRISD = 0xFF;       // Port D com a entrada un altre cop
+    LATBbits.LATB0 = 1; // Desactivem !WE → idle
+    inc_address();      // Incrementem adreça
 }
 
-unsigned char RAM_Read(void)
+/*
+ * Reads the RAM byte that we are pointing with the counter
+ */
+BYTE RAM_Read(void)
 {
-    TRISD = 0xFF;               // DATA -> input
-    LATBbits.LATB3 = 0;         // !OE -> RAM mode read (pins de la RAM en output)
-    unsigned char data = PORTD; // Llegim dades de la RAM
+    TRISD = 0xFF;       // Port D com entrada
+    LATBbits.LATB3 = 0; // Activem !OE → mode lectura
+    BYTE data = PORTD;  // Llegim dades
 
-    // Wait for the write operation to complete
-
-    LATBbits.LATB3 = 1; // !OE -> RAM mode idle
-    count();            // Count pulse
+    LATBbits.LATB3 = 1; // Desactivem !OE
+    inc_address();      // Incrementem adreça
     return data;
 }
 
+/*
+ * Visible for testing, reads the first byte of the RAM.
+ */
+BYTE TEST_RAM_Read_From_0(void)
+{
+    reset_address();
+    return RAM_Read();
+}
+
+/*
+ * As per requirement, writes all the available positions of the RAM to 0
+ */
 void RAM_Reset(void)
 {
-    int i = 0;
-    while (i < 32767) // 32768 = 2^15
+    reset_address();
+    for (WORD i = 0; i < MAX_RAM_ADDRESS; i++)
     {
-        RAM_Write(0x00); // Escrivim 0 a la RAM
-        i++;
+        RAM_Write(0x00); // Write 0 to all the positions
     }
 }
 
@@ -73,26 +84,20 @@ void RAM_Reset(void)
  *        PRIVATE FUNCTION BODIES
  * ======================================= */
 
-static void RAM_DebugPrint(void)
+/*
+ * RAM COUNTER: Pulse to the CLK signal to increase the counter (RAM address) by 1.
+ */
+static void inc_address(void)
 {
-    unsigned char data = RAM_Read(); // Llegeix dades de la RAM
-    char buffer[6];                  // per convertir valors
-
-    SIO_PrintString("RAM: ");
-    itoa(data, buffer, 10);
-    SIO_PrintString(buffer);
-    SIO_SafePrint('\r');
-    SIO_SafePrint('\n');
+    LATCbits.LATC5 = 1;
+    LATCbits.LATC5 = 0;
 }
 
-static void count(void)
+/*
+ * RAM COUNTER: Pulse to the !Reset signal to make the address of the RAM = 0
+ */
+static void reset_address(void)
 {
-    LATCbits.LATC5 = 1; // COUNT (CLK)
-    LATCbits.LATC5 = 0; // COUNT (CLK)
-}
-
-static void count_reset(void)
-{
-    LATCbits.LATC0 = 0; // !RESET COUNTER
-    LATCbits.LATC0 = 1; // !RESET COUNTER
+    LATCbits.LATC0 = 0; // Activate Reset
+    LATCbits.LATC0 = 1; // Deactivate Reset
 }
