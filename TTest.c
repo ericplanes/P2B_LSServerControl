@@ -7,6 +7,7 @@
 #include "TMenu.h"
 #include "TI2C.h"
 #include "TTimer.h"
+#include "TController.h"
 
 #define ONE_SECOND 1000
 
@@ -14,6 +15,7 @@ void print(const BYTE *log);
 void print_iterator(BYTE d, BYTE u);
 void println(void);
 void print_number(BYTE d, BYTE u);
+void print_long_number(BYTE c, BYTE d, BYTE u);
 
 static BYTE iteration = 0;
 static BYTE buffer[TIMESTAMP_SIZE];
@@ -70,7 +72,7 @@ void TEST_Init_PerifericsSimpleTest(void)
 
     // Write first log of the EEPROM
     SIO_PrintString("Writing 12345678901234 on the EEPROM...\r\n");
-    while (EEPROM_StoreLog("12345678901234") == FALSE)
+    while (EEPROM_StoreLog((BYTE *)"12345678901234") == FALSE)
         ;
 
     // Read stored log from the EEPROM
@@ -78,7 +80,7 @@ void TEST_Init_PerifericsSimpleTest(void)
     BYTE eeprom[15];
     while (EEPROM_ReadLog(0, eeprom) == FALSE)
         ;
-    SIO_PrintString(eeprom);
+    SIO_PrintString((char *)eeprom);
     println();
     println();
 
@@ -113,7 +115,7 @@ void TEST_print_status(void)
     TiResetTics(timer);
 
     // Print current CTR state
-    SIO_PrintString(CTR_TEST_GetInfo());
+    SIO_PrintString((char *)CTR_TEST_GetInfo());
 
     // Print EEPROM status
     eeprom_amount_of_logs = EEPROM_GetAmountOfStoredLogs();
@@ -133,7 +135,7 @@ void TEST_print_status(void)
 
         if (EEPROM_ReadLog(i, buffer) == TRUE)
         {
-            SIO_PrintString(buffer);
+            SIO_PrintString((char *)buffer);
             println();
             i++;
         }

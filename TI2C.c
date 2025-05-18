@@ -203,7 +203,7 @@ static void ds3231_clear_alarm_flag(void)
 
 static BYTE bin_to_bcd(BYTE val)
 {
-  return ((val / 10) << 4) | (val % 10);
+  return (BYTE)((val / 10) << 4) | (val % 10);
 }
 
 static BYTE bcd_to_bin(BYTE val)
