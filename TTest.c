@@ -37,6 +37,7 @@ static BYTE ram_data = 0;
  */
 void TEST_Init_PerifericsSimpleTest(void)
 {
+    /*
     // Starting message
     println();
     println();
@@ -100,6 +101,7 @@ void TEST_Init_PerifericsSimpleTest(void)
     }
     println();
     SIO_PrintString("---- END OF INITIAL TESTING ---- \r\n");
+    //*/
 }
 
 /*
@@ -107,6 +109,7 @@ void TEST_Init_PerifericsSimpleTest(void)
  */
 void TEST_print_status(void)
 {
+    /*
     if (TiGetTics(timer) < ONE_SECOND || EEPROM_CanBeUsed() == FALSE) // Wait 2 seconds per iteration and make sure that EEPROM available
     {
         return;
@@ -162,6 +165,7 @@ void TEST_print_status(void)
     SIO_PrintString("RAM has this amount of stored values: ");
     print_long_number(ram_amount / 100, ram_amount / 10, ram_amount % 10);
     println();
+    // */
 }
 
 /* =======================================
