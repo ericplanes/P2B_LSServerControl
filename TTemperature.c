@@ -50,7 +50,7 @@ BYTE TEMP_GetTemperature(void)
 /**
  * TESTING METHOD -> Forces a state of the temperature to tweak the system
  */
-void TEMP_SimulateState(SYS_STATUS state)
+void TEMP_TEST_SimulateState(SYS_STATUS state)
 {
     const BYTE *thresholds = MENU_GetTMPThresholds();
     if (state == SYS_STATUS_OFF)
@@ -58,6 +58,7 @@ void TEMP_SimulateState(SYS_STATUS state)
 
     simulation = TRUE;
     fake = state;
+    temperature = state * (11 - state); // 0 (OFF), 10 (LOW), 18 (MID), 24 (HIGH), 28 (CRIT)
 }
 
 /* =======================================
@@ -71,11 +72,10 @@ void TEMP_SimulateState(SYS_STATUS state)
  */
 static BYTE compute_temperature_degrees(WORD adc)
 {
-    return 1 + fake;
-    /*WORD temp_mv = (adc * 500) / 1024; // temperatura en dec °C
-    if (temp_mv < 50)
-        return 0; // avoid negative values
-    return (BYTE)(temp_mv - 50);*/
+    if (simulation == TRUE)
+        return temperature;
+
+    return 20; // Provisional number until the conversion works correctly
 }
 
 /**
