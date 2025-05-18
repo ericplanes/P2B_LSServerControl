@@ -71,6 +71,10 @@ void TEST_Init_PerifericsSimpleTest(void)
     print_number(ram / 10, ram % 10);
     println();
 
+    // Clean EEPROM
+    SIO_PrintString("Cleaning EEPROM...\r\n");
+    EEPROM_CleanMemory();
+
     // Write first log of the EEPROM
     SIO_PrintString("Writing 12345678901234 on the EEPROM...\r\n");
     while (EEPROM_StoreLog((BYTE *)"12345678901234") == FALSE)
