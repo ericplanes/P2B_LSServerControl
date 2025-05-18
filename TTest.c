@@ -27,7 +27,7 @@ static SYS_STATUS status = SYS_STATUS_OFF;
 void TEST_print_results(void)
 {
     // Prepare testing
-    set_default_config();
+    MENU_TEST_SetDefaultConfig();
 
     // Check RAM stored temperatures
     SIO_PrintString("\r\n-------- RAM (Temperatures) --------\r\n");

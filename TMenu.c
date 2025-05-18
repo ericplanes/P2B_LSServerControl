@@ -20,7 +20,6 @@ static MenuConfig config;
 
 void MENU_Init(void)
 {
-    set_default_config();
 }
 
 void MENU_Motor(void)
@@ -48,16 +47,13 @@ const BYTE *MENU_GetInitialTimeString(void)
     return config.initialTime;
 }
 
-/* =======================================
- *        PRIVATE FUNCTION BODIES
- * ======================================= */
-void set_default_config(void)
+void MENU_TEST_SetDefaultConfig(void)
 {
     config.isConfigured = TRUE;
 
-    config.thresholds[0] = 20; // A - Low
-    config.thresholds[1] = 25; // B - Moderate
-    config.thresholds[2] = 30; // C - High
+    config.thresholds[0] = 20; // A - Low Temperature
+    config.thresholds[1] = 25; // B - Moderate Temperature
+    config.thresholds[2] = 30; // C - High Temperature
     config.samplingTime = 1;   // Sampling every 1 seconds
 
     // Default time: 00:00:00 01/01/2025 → "00000001012025"

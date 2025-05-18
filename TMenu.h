@@ -16,6 +16,6 @@ BYTE MENU_GetSamplingTime(void);
 const BYTE *MENU_GetInitialTimeString(void);
 
 // Visible for testing
-void set_default_config(void);
+void MENU_TEST_SetDefaultConfig(void);
 
 #endif
