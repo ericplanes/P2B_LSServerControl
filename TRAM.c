@@ -60,15 +60,6 @@ BYTE RAM_Read(void)
 }
 
 /*
- * Visible for testing, reads the first byte of the RAM.
- */
-BYTE TEST_RAM_Read_From_0(void)
-{
-    reset_address();
-    return RAM_Read();
-}
-
-/*
  * As per requirement, writes all the available positions of the RAM to 0
  */
 void RAM_Reset(void)
@@ -78,6 +69,15 @@ void RAM_Reset(void)
     {
         RAM_Write(0x00); // Write 0 to all the positions
     }
+}
+
+/*
+ * Visible for testing, reads the first byte of the RAM.
+ */
+BYTE TEST_RAM_Read_From_0(void)
+{
+    reset_address();
+    return RAM_Read();
 }
 
 /* =======================================
