@@ -13,6 +13,7 @@
 #include "TTest.h"
 #include "TI2C.h"
 #include "TRAM.h"
+#include "TTemperature.h"
 
 #pragma config OSC = HS
 #pragma config PBADEN = DIG
@@ -34,12 +35,14 @@ void main(void)
     // Initialize all TADs
     ADC_Init();
     CTR_Init();
-    FAN_Init();
+    FAN_Init(); // Check
     Joystick_Init();
-    LED_Init();
-    MENU_Init();
+    LED_Init();  // Check
+    MENU_Init(); // Check
     PWM_Init();
-    RAM_Init();
+    RAM_Init(); // Check
+    TEMP_Init();
+
     // TiInit();
 
     // Test and inits I2C
