@@ -1,11 +1,4 @@
 #include "TController.h"
-#include "TTimer.h"
-#include "TTemperature.h"
-#include "TMenu.h"
-#include "TI2C.h"
-#include "TRAM.h"
-#include "TEEPROM.h"
-#include "TAD_SIO.h"
 
 /* =======================================
  *           PRIVATE CONSTANTS
@@ -49,10 +42,6 @@ SYS_STATUS CTR_GetStatus(void)
 
 void CTR_Motor(void)
 {
-    /*SIO_PrintString("Controller state: ");
-    SIO_SafePrint('0' + motor_state);
-    SIO_PrintString("\r\n");*/
-
     switch (motor_state)
     {
     case S_WAIT_CONFIG:
@@ -65,14 +54,11 @@ void CTR_Motor(void)
 
     case S_WAIT_SAMPLETIME:
         motor_state = S_READ_TEMPERATURE;
-
-        /*
         if (TiGetTics(timer_id) >= wait_sample_time * 1000)
         {
             TiResetTics(timer_id);
             motor_state = S_READ_TEMPERATURE;
         }
-        */
         break;
 
     case S_READ_TEMPERATURE:

@@ -39,18 +39,19 @@ void main(void)
     Joystick_Init(); // Check
     LED_Init();      // Check
     MENU_Init();     // Check
-    PWM_Init();
-    RAM_Init(); // Check
-    TEMP_Init();
+    PWM_Init();      // Check (Sets FAN and LED to OFF)
+    RAM_Init();      // Check (Resets RAM)
+    TEMP_Init();     // Check
 
-    // TiInit();
+    // Unreviewed inits
+    TiInit();
+    InitI2C();
 
     // Test and inits I2C
     SIO_Init();
     testLectura();
 
     // Extras for testing
-    RAM_Reset();
     DS3231_InitAlarm1_EverySecond();
 
     // Main loop — cooperative multitasking
