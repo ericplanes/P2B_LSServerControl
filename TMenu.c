@@ -8,16 +8,11 @@ typedef struct
 {
     BYTE initialTime[15]; // hhmmssDDMMYYYY + '\0'
     BYTE samplingTime;    // in seconds
-    WORD thresholds[3];   // thresholds A, B, C
+    BYTE thresholds[3];   // thresholds A, B, C
     BYTE isConfigured;
 } MenuConfig;
 
 static MenuConfig config;
-
-/* =======================================
- *          PRIVATE FUNCTION HEADERS
- * ======================================= */
-static void set_default_config(void);
 
 /* =======================================
  *          PUBLIC FUNCTION BODIES
@@ -25,7 +20,6 @@ static void set_default_config(void);
 
 void MENU_Init(void)
 {
-    set_default_config();
 }
 
 void MENU_Motor(void)
@@ -38,7 +32,7 @@ BOOL MENU_isConfigured(void)
     return config.isConfigured == TRUE;
 }
 
-const WORD *MENU_GetTMPThresholds(void)
+const BYTE *MENU_GetTMPThresholds(void)
 {
     return config.thresholds;
 }
@@ -53,18 +47,14 @@ const BYTE *MENU_GetInitialTimeString(void)
     return config.initialTime;
 }
 
-/* =======================================
- *        PRIVATE FUNCTION BODIES
- * ======================================= */
-
-static void set_default_config(void)
+void MENU_TEST_SetDefaultConfig(void)
 {
-    config.isConfigured = FALSE; // Since we're using the default config
+    config.isConfigured = TRUE;
 
-    config.thresholds[0] = 25; // A - Low
-    config.thresholds[1] = 35; // B - Moderate
-    config.thresholds[2] = 50; // C - High
-    config.samplingTime = 20;  // Sampling every 30 seconds
+    config.thresholds[0] = 20; // A - Low Temperature
+    config.thresholds[1] = 25; // B - Moderate Temperature
+    config.thresholds[2] = 30; // C - High Temperature
+    config.samplingTime = 1;   // Sampling every 1 seconds
 
     // Default time: 00:00:00 01/01/2025 → "00000001012025"
     const BYTE *defaultTime = (const BYTE *)"00000001012025";

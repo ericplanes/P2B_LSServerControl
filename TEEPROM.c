@@ -3,9 +3,14 @@
 #define LOG_SIZE (TIMESTAMP_SIZE - 1)
 #define MAX_LOGS 15
 
+#define EEPROM_IDLE 0
+#define EEPROM_WRITING 1
+#define EEPROM_READING 2
+
 static BYTE mem_section = 0;
 static BYTE amount_of_stored_logs = 0;
 static BYTE pos = 0;
+static BYTE eeprom_state = EEPROM_IDLE;
 
 /* =======================================
  *          PRIVATE FUNCTION BODIES
@@ -14,9 +19,9 @@ static BYTE pos = 0;
 static BYTE read_byte(BYTE address)
 {
     EEADR = address;
-    EECON1bits.EEPGD = 0; // Acceder a memoria de datos, no FLASH
-    EECON1bits.CFGS = 0;  // Acceder a EEPROM, no configuración
-    EECON1bits.RD = 1;    // Iniciar lectura
+    EECON1bits.EEPGD = 0;
+    EECON1bits.CFGS = 0;
+    EECON1bits.RD = 1;
     return EEDATA;
 }
 
@@ -29,13 +34,12 @@ static void prepare_write_info(BYTE address, BYTE data)
 
 static void write_prepared_info(void)
 {
-    EECON1bits.EEPGD = 0; // Acceso a EEPROM (no FLASH)
-    EECON1bits.CFGS = 0;  // Acceso a EEPROM (no configuración)
+    EECON1bits.EEPGD = 0;
+    EECON1bits.CFGS = 0;
     EECON1bits.WREN = 1;
     EECON2 = 0x55;
     EECON2 = 0xAA;
     EECON1bits.WR = 1;
-    while (EECON1bits.WR);
     EECON1bits.WREN = 0;
 }
 
@@ -53,8 +57,10 @@ static void write_byte(BYTE address, BYTE data)
 
 BOOL EEPROM_StoreLog(const BYTE *log_data)
 {
-    if (EECON1bits.WR)  // EEPROM is busy writing, exit early
+    if (eeprom_state != EEPROM_IDLE || EECON1bits.WR)
         return FALSE;
+
+    eeprom_state = EEPROM_WRITING;
 
     if (pos < LOG_SIZE)
     {
@@ -71,10 +77,11 @@ BOOL EEPROM_StoreLog(const BYTE *log_data)
         if (mem_section == MAX_LOGS)
         {
             mem_section = 0;
-            amount_of_stored_logs = MAX_LOGS; // cap the count
+            amount_of_stored_logs = MAX_LOGS;
         }
 
         write_byte(0, amount_of_stored_logs);
+        eeprom_state = EEPROM_IDLE;
         return TRUE;
     }
 
@@ -83,6 +90,11 @@ BOOL EEPROM_StoreLog(const BYTE *log_data)
 
 BOOL EEPROM_ReadLog(BYTE section, BYTE *log_data)
 {
+    if (eeprom_state != EEPROM_IDLE)
+        return FALSE;
+
+    eeprom_state = EEPROM_READING;
+
     if (pos < LOG_SIZE)
     {
         log_data[pos] = read_byte(pos + (section * LOG_SIZE) + 1);
@@ -98,8 +110,19 @@ BOOL EEPROM_ReadLog(BYTE section, BYTE *log_data)
     if (pos > LOG_SIZE)
     {
         pos = 0;
+        eeprom_state = EEPROM_IDLE;
         return TRUE;
     }
 
     return FALSE;
+}
+
+BYTE EEPROM_GetAmountOfStoredLogs(void)
+{
+    return amount_of_stored_logs;
+}
+
+BYTE EEPROM_CanBeUsed(void)
+{
+    return eeprom_state == EEPROM_IDLE ? TRUE : FALSE;
 }

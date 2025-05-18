@@ -1,5 +1,4 @@
 #include "TFan.h"
-#include <xc.h>
 
 /* =======================================
  *        PUBLIC FUNCTION BODIES
@@ -10,8 +9,8 @@ void FAN_Init(void)
     TRISCbits.TRISC1 = 0; // FAN A
     TRISCbits.TRISC2 = 0; // FAN B
 
-    LATCbits.LATC1 = 0;
-    LATCbits.LATC2 = 0;
+    FAN_SetPowerA(FALSE);
+    FAN_SetPowerB(FALSE);
 }
 
 void FAN_SetPowerA(BOOL enabled)

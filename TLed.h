@@ -1,6 +1,8 @@
 #ifndef TLED_H
 #define TLED_H
 
+#include <xc.h>
+#include <pic18f4321.h>
 #include "Utils.h"
 
 #define LED_OFF 0

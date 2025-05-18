@@ -9,7 +9,7 @@
  * ======================================= */
 
 #define PWM_PERIOD_MS 20        // Total PWM cycle = 20ms
-#define PWM_DUTY_ON_MS 10       // ON time = 10ms (50%)
+#define PWM_DUTY_ON_MS 5        // ON time = 5ms (25%)
 #define CRIT_LED_TOGGLE_MS 1000 // Toggle LED every 1s
 
 /* =======================================

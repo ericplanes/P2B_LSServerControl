@@ -1,10 +1,5 @@
 #include "TController.h"
-#include "TTimer.h"
-#include "TTemperature.h"
-#include "TMenu.h"
-#include "TI2C.h"
-#include "TRam.h"
-#include "TEEPROM.h"
+#include <stdio.h>
 
 /* =======================================
  *           PRIVATE CONSTANTS
@@ -26,7 +21,7 @@ static BYTE motor_state;
 static BYTE timer_id;
 static BYTE wait_sample_time = 0;
 static BYTE timestamp_buffer[TIMESTAMP_SIZE];
-static WORD temperature;
+static BYTE temperature;
 
 /* =======================================
  *         PUBLIC FUNCTION BODIES
@@ -59,6 +54,7 @@ void CTR_Motor(void)
         break;
 
     case S_WAIT_SAMPLETIME:
+        motor_state = S_READ_TEMPERATURE;
         if (TiGetTics(timer_id) >= wait_sample_time * 1000)
         {
             TiResetTics(timer_id);
@@ -77,8 +73,8 @@ void CTR_Motor(void)
         break;
 
     case S_READ_TIME:
-        if (I2C_ReadTimestamp(timestamp_buffer) == TRUE)
-            motor_state = S_WRITE_EEPROM;
+        I2C_ReadTimestamp(timestamp_buffer);
+        motor_state = S_WRITE_EEPROM;
         break;
 
     case S_WRITE_EEPROM:
@@ -87,8 +83,74 @@ void CTR_Motor(void)
         break;
 
     case S_WRITE_RAM:
-        if (RAM_StoreTemperature(temperature) == TRUE)
-            motor_state = S_WAIT_SAMPLETIME;
+        RAM_Write(temperature);
+        motor_state = S_WAIT_SAMPLETIME;
         break;
     }
+}
+
+/*
+ * Gets the current information of the Controller and returns a string ready to be printed
+ * Prints something like:
+ * CONTROLLER
+ *   Motor state: S_WAIT_CONFIG
+ *   System state: SYS_STATUS_OFF
+ */
+BYTE *CTR_TEST_GetInfo(void)
+{
+    static char buffer[80];
+
+    const char *motor_str = "";
+    const char *status_str = "";
+
+    switch (motor_state)
+    {
+    case S_WAIT_CONFIG:
+        motor_str = "S_WAIT_CONFIG";
+        break;
+    case S_WAIT_SAMPLETIME:
+        motor_str = "S_WAIT_SAMPLETIME";
+        break;
+    case S_READ_TEMPERATURE:
+        motor_str = "S_READ_TEMPERATURE";
+        break;
+    case S_READ_TIME:
+        motor_str = "S_READ_TIME";
+        break;
+    case S_WRITE_EEPROM:
+        motor_str = "S_WRITE_EEPROM";
+        break;
+    case S_WRITE_RAM:
+        motor_str = "S_WRITE_RAM";
+        break;
+    default:
+        motor_str = "UNKNOWN";
+        break;
+    }
+
+    switch (controller_status)
+    {
+    case SYS_STATUS_OFF:
+        status_str = "SYS_STATUS_OFF";
+        break;
+    case SYS_STATUS_LOW:
+        status_str = "SYS_STATUS_LOW";
+        break;
+    case SYS_STATUS_MOD:
+        status_str = "SYS_STATUS_MOD";
+        break;
+    case SYS_STATUS_HIGH:
+        status_str = "SYS_STATUS_HIGH";
+        break;
+    case SYS_STATUS_CRIT:
+        status_str = "SYS_STATUS_CRIT";
+        break;
+    default:
+        status_str = "UNKNOWN";
+        break;
+    }
+
+    sprintf(buffer, "CONTROLLER\r\n  Motor state: %s\r\n  System state: %s\r\n", motor_str, status_str);
+
+    return (BYTE *)buffer;
 }

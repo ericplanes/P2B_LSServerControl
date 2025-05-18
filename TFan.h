@@ -1,6 +1,8 @@
 #ifndef TFAN_H
 #define TFAN_H
 
+#include <xc.h>
+#include <pic18f4321.h>
 #include "Utils.h"
 
 void FAN_Init(void);

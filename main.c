@@ -10,6 +10,10 @@
 #include "TFan.h"
 #include "TPWM.h"
 #include "TController.h"
+#include "TTest.h"
+#include "TI2C.h"
+#include "TRAM.h"
+#include "TTemperature.h"
 
 #pragma config OSC = HS
 #pragma config PBADEN = DIG
@@ -21,10 +25,9 @@
 #pragma config LVP = OFF
 
 void main(void);
-void __interrupt() RSI_High(void);
 
 /* =======================================
- *      HIGH PRIORITY INTERRUPT
+ *               MAIN
  * ======================================= */
 
 void __interrupt() RSI_High(void)
@@ -35,28 +38,38 @@ void __interrupt() RSI_High(void)
     }
 }
 
-/* =======================================
- *               MAIN
- * ======================================= */
-
 void main(void)
 {
     // Initialize all TADs
-    TiInit();
     ADC_Init();
-    MENU_Init();
+    CTR_Init();
+    FAN_Init();
     Joystick_Init();
     LED_Init();
-    FAN_Init();
-    PWM_Init();
-    CTR_Init();
+    MENU_Init();
+    PWM_Init(); // Sets FAN and LED to OFF
+    RAM_Init(); // Resets RAM
+    TEMP_Init();
+    I2C_Init();
+
+    // Init timer, sometimes problematic
+    TiInit();
+
+    // Test and inits I2C
+    SIO_Init();
+    I2C_TEST_InitAlarmEverySecond();
+
+    // Extras for testing
+    TEST_Init_PerifericsSimpleTest();
 
     // Main loop — cooperative multitasking
+    int i = 1;
     while (TRUE)
     {
         ADC_Motor();
         MENU_Motor();
         CTR_Motor();
         PWM_Motor();
+        TEST_print_status();
     }
 }

@@ -3,11 +3,11 @@
 
 #include "Utils.h"
 
-#define JOY_CENTER 0
-#define JOY_UP 1
-#define JOY_DOWN 2
-#define JOY_LEFT 3
-#define JOY_RIGHT 4
+#define JOY_CENTER 'C'
+#define JOY_UP 'U'
+#define JOY_DOWN 'D'
+#define JOY_LEFT 'L'
+#define JOY_RIGHT 'R'
 
 void Joystick_Init(void);
 BYTE Joystick_GetDirection(void);

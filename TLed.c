@@ -1,5 +1,4 @@
 #include "TLed.h"
-#include <xc.h>
 
 void LED_Init(void)
 {
