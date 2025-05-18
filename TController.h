@@ -14,5 +14,6 @@
 void CTR_Init(void);
 void CTR_Motor(void);
 SYS_STATUS CTR_GetStatus(void);
+BYTE *CTR_TEST_GetInfo(void);
 
 #endif
