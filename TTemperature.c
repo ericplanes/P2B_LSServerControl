@@ -1,6 +1,4 @@
 #include "TTemperature.h"
-#include "TMenu.h"
-#include "TADC.h"
 
 /* =======================================
  *          PRIVATE FUNCTION HEADERS
