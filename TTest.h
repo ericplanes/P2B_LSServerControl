@@ -3,6 +3,7 @@
 
 #include "Utils.h"
 
-void TEST_print_results(void);
+void TEST_Init_PerifericsSimpleTest(void);
+void TEST_print_status(void);
 
 #endif
