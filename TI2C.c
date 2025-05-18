@@ -1,260 +1,237 @@
 #include "TI2C.h"
 
-#define DS3231_ADDRESS 0x68 << 1 // Dirección I2C del DS3231 (esclavo)
+#define DS3231_ADDRESS (0x68 << 1)
 
-//-------------- Private functions: --------------
+/* =======================================
+ *         PRIVATE FUNCTION HEADERS
+ * ======================================= */
 
-void I2C_Ready()
-{
-  while (PIR2bits.BCLIF)
-    ; /* Wait if bit collision interrupt flag is set*/
-  while (SSPSTATbits.BF || (SSPSTATbits.R_nW))
-    ;
-  PIR1bits.SSPIF = 0; /* Clear SSPIF interrupt flag*/
-}
+static void i2c_ready(void);
+static void i2c_ack(void);
+static void i2c_nack(void);
+static char i2c_start(char address);
+static char i2c_restart(char address);
+static char i2c_write(BYTE data);
+static char i2c_stop(void);
+static char i2c_read(char ack);
+static void ds3231_clear_alarm_flag(void);
+static BYTE bin_to_bcd(BYTE val);
+static BYTE bcd_to_bin(BYTE val);
+static void ds3231_read_raw(BYTE *h, BYTE *m, BYTE *s, BYTE *dow, BYTE *d, BYTE *mo, BYTE *y);
+static void ds3231_write_raw(BYTE h, BYTE m, BYTE s, BYTE dow, BYTE d, BYTE mo, BYTE y);
+static void fill_timestamp(BYTE *log, BYTE sec, BYTE min, BYTE hour, BYTE day, BYTE month, BYTE year);
 
-void I2C_Ack()
-{
-  SSPCON2bits.ACKDT = 0; /* Acknowledge data 1:NACK,0:ACK */
-  SSPCON2bits.ACKEN = 1; /* Enable ACK/NACK to send */
-  while (SSPCON2bits.ACKEN)
-    ;
-}
+/* =======================================
+ *         PUBLIC FUNCTION BODIES
+ * ======================================= */
 
-void I2C_Nack()
-{
-  SSPCON2bits.ACKDT = 1; /* Acknowledge data 1:NACK,0:ACK */
-  SSPCON2bits.ACKEN = 1; /* Enable ACK/NACK to send */
-  while (SSPCON2bits.ACKEN)
-    ;
-}
-
-//-------------- Public functions: --------------
-
-void InitI2C()
+void I2C_Init(void)
 {
   TRISCbits.TRISC3 = 1;
   TRISCbits.TRISC4 = 1;
   TRISBbits.RB1 = 1;
+
   INTCON2bits.RBPU = 0;
   SSPSTAT = 0x80;
   SSPCON1 = 0x28;
-  SSPCON2 = 0x0;
-  SSPADD = BAUDRATE;
+  SSPCON2 = 0x00;
+  SSPADD = I2C_BAUDRATE;
   PIE1bits.SSPIE = 1;
   PIR1bits.SSPIF = 0;
 }
 
-char StartI2C(char slave_rw_addr)
+void I2C_ReadTimestamp(BYTE *timestamp)
+{
+  BYTE s, m, h, dow, d, mo, y;
+  ds3231_read_raw(&h, &m, &s, &dow, &d, &mo, &y);
+  fill_timestamp(timestamp, s, m, h, d, mo, y);
+}
+
+void I2C_SetTimestamp(BYTE hour, BYTE min, BYTE sec, BYTE weekday, BYTE day, BYTE month, BYTE year)
+{
+  ds3231_write_raw(hour, min, sec, weekday, day, month, year);
+}
+
+void I2C_TestRead(void)
+{
+  I2C_Init();
+
+  BYTE s, m, h, dow, d, mo, y;
+  char buffer[6];
+
+  if (!PORTBbits.RB1)
+    ds3231_clear_alarm_flag();
+
+  ds3231_read_raw(&h, &m, &s, &dow, &d, &mo, &y);
+
+  SIO_PrintString("\r\n");
+  itoa(d, buffer, 10);
+  SIO_PrintString(buffer);
+  SIO_SafePrint('/');
+  itoa(mo, buffer, 10);
+  SIO_PrintString(buffer);
+  SIO_SafePrint('/');
+  itoa(y, buffer, 10);
+  SIO_PrintString(buffer);
+  SIO_PrintString(" ");
+  itoa(h, buffer, 10);
+  SIO_PrintString(buffer);
+  SIO_SafePrint(':');
+  itoa(m, buffer, 10);
+  SIO_PrintString(buffer);
+  SIO_SafePrint(':');
+  itoa(s, buffer, 10);
+  SIO_PrintString(buffer);
+  SIO_PrintString("\r\n");
+}
+
+/* =======================================
+ *         PRIVATE FUNCTION BODIES
+ * ======================================= */
+
+static void i2c_ready(void)
+{
+  while (PIR2bits.BCLIF)
+    ; // Wait if bit collision interrupt flag is set
+  while (SSPSTATbits.BF || (SSPSTATbits.R_nW))
+    ;                 //
+  PIR1bits.SSPIF = 0; // Clear SSPIF interrupt flag
+}
+
+static void i2c_ack(void)
+{
+  SSPCON2bits.ACKDT = 0;
+  SSPCON2bits.ACKEN = 1;
+  while (SSPCON2bits.ACKEN)
+    ;
+}
+
+static void i2c_nack(void)
+{
+  SSPCON2bits.ACKDT = 1;
+  SSPCON2bits.ACKEN = 1;
+  while (SSPCON2bits.ACKEN)
+    ;
+}
+
+static char i2c_start(char address)
 {
   SSPCON2bits.SEN = 1;
   while (SSPCON2bits.SEN)
     ;
   PIR1bits.SSPIF = 0;
   if (!(SSPSTATbits.S))
-  {
     return 0;
-  }
-  return (I2C_Write(slave_rw_addr));
+  return i2c_write(address);
 }
 
-char ReStartI2C_(char slave_rw_addr)
+static char i2c_restart(char address)
 {
   SSPCON2bits.RSEN = 1;
   while (SSPCON2bits.RSEN)
     ;
   PIR1bits.SSPIF = 0;
   if (!(SSPSTATbits.S))
-  {
     return 0;
-  }
-  return (I2C_Write(slave_rw_addr));
+  return i2c_write(address);
 }
 
-char I2C_Write(unsigned char data)
+static char i2c_write(BYTE data)
 {
-  SSPBUF = data; /* Write data to SSPBUF*/
-  I2C_Ready();
-  if (SSPCON2bits.ACKSTAT) /* Check for acknowledge bit from slave*/
-    return 1;
-  else
-    return 2;
+  SSPBUF = data; // Write data to SSPBUF
+  i2c_ready();
+  return (SSPCON2bits.ACKSTAT ? 1 : 2);
 }
 
-char I2C_Stop_()
+static char i2c_stop(void)
 {
-  I2C_Ready();
-  SSPCON2bits.PEN = 1; /* Stop communication*/
+  i2c_ready();
+  SSPCON2bits.PEN = 1; // Stop communication
   while (SSPCON2bits.PEN)
-    ; /* Wait for end of stop pulse*/
+    ; // Wait for end of stop pulse
   PIR1bits.SSPIF = 0;
-  if (!SSPSTATbits.P)
-    return 0;
-  return 1;
+  return (!SSPSTATbits.P ? 0 : 1);
 }
 
-char I2C_Read(char flag)
+static char i2c_read(char ack)
 {
-  char buffer = 0;
-  SSPCON2bits.RCEN = 1; /* Enable receive */
-
-  /* Wait for buffer full flag which when complete byte received */
+  SSPCON2bits.RCEN = 1; // Enable receive
   while (!SSPSTATbits.BF)
     ;
-  buffer = SSPBUF; /* Copy SSPBUF to buffer */
-
-  /* Send acknowledgment or negative acknowledgment after read to
-  continue or stop reading */
-  if (flag == 0)
-    I2C_Ack();
+  char buffer = SSPBUF;
+  if (ack == 0)
+    i2c_ack();
   else
-    I2C_Nack();
-  I2C_Ready();
-  return (buffer);
+    i2c_nack();
+  i2c_ready();
+  return buffer;
 }
 
-// Inicializa la alarma 1 para que se active cada segundo
-void DS3231_InitAlarm1_EverySecond()
+static void ds3231_clear_alarm_flag(void)
 {
-  // Apuntar al registro 0x07 (Alarm1 Seconds)
-  StartI2C(DS3231_ADDRESS);
-
-  I2C_Write(0x07); // Dirección del primer registro de alarma 1
-
-  // Configurar los registros de alarma con los bits A1Mx = 1 para "cada segundo"
-  I2C_Write(0x80); // Alarm1 Seconds: A1M1 = 1
-  I2C_Write(0x80); // Alarm1 Minutes: A1M2 = 1
-  I2C_Write(0x80); // Alarm1 Hours:   A1M3 = 1
-  I2C_Write(0x80); // Alarm1 Day/Date: A1M4 = 1, DY/DT = 0
-
-  I2C_Stop_();
-
-  // Configurar el registro de control (0x0E): INTCN = 1, A1IE = 1
-  StartI2C(DS3231_ADDRESS);
-  I2C_Write(0x0E);
-  I2C_Write(0b00000101); // INTCN=1, A1IE=1, otras en 0
-  I2C_Stop_();
-
-  // Limpiar el flag de la alarma 1 (A1F en 0x0F)
-  DS3231_LimpiarFlagAlarma1();
+  i2c_start(DS3231_ADDRESS);
+  i2c_write(0x0F);
+  i2c_write(0x00);
+  i2c_stop();
 }
 
-void DS3231_LimpiarFlagAlarma1()
-{
-  StartI2C(DS3231_ADDRESS);
-  I2C_Write(0x0F); // Dirección del registro de estado
-  I2C_Write(0x00); // Escribimos 0 para borrar el flag A1F
-  I2C_Stop_();
-}
-
-unsigned char BINtoBCD(unsigned char val)
+static BYTE bin_to_bcd(BYTE val)
 {
   return ((val / 10) << 4) | (val % 10);
 }
 
-void DS3231_SetFechaHora(unsigned char seg, unsigned char min, unsigned char hora,
-                         unsigned char dia_semana, unsigned char dia,
-                         unsigned char mes, unsigned char anio)
-{
-  StartI2C(DS3231_ADDRESS); // Iniciar comunicación I2C con DS3231
-  I2C_Write(0x00);          // Apuntar al registro de segundos
-
-  I2C_Write(BINtoBCD(seg & 0x7F));        // 7 bits para segundos (bit 7 = 0)
-  I2C_Write(BINtoBCD(min & 0x7F));        // 7 bits para minutos
-  I2C_Write(BINtoBCD(hora & 0x3F));       // 6 bits para horas en formato 24h
-  I2C_Write(BINtoBCD(dia_semana & 0x07)); // 3 bits válidos para día semana
-  I2C_Write(BINtoBCD(dia & 0x3F));        // 6 bits para día del mes
-  I2C_Write(BINtoBCD(mes & 0x1F));        // 5 bits para mes
-  I2C_Write(BINtoBCD(anio));              // Año en dos dígitos (00-99)
-
-  I2C_Stop_(); // Finalizar comunicación I2C
-}
-
-unsigned char BCDtoBIN(unsigned char val)
+static BYTE bcd_to_bin(BYTE val)
 {
   return ((val >> 4) * 10) + (val & 0x0F);
 }
 
-void DS3231_LeerFechaHora(unsigned char *seg, unsigned char *min, unsigned char *hora,
-                          unsigned char *dia_semana, unsigned char *dia,
-                          unsigned char *mes, unsigned char *anio)
+static void ds3231_read_raw(BYTE *h, BYTE *m, BYTE *s, BYTE *dow, BYTE *d, BYTE *mo, BYTE *y)
 {
-  StartI2C(DS3231_ADDRESS);
-  I2C_Write(0x00); // Apuntar al registro de segundos
-  I2C_Stop_();
+  i2c_start(DS3231_ADDRESS);
+  i2c_write(0x00);
+  i2c_stop();
 
-  StartI2C(DS3231_ADDRESS | 1); // Lectura (LSB = 1)
+  i2c_start(DS3231_ADDRESS | 1);
 
-  *seg = BCDtoBIN(I2C_Read(0) & 0x7F);        // bits 6:0
-  *min = BCDtoBIN(I2C_Read(0) & 0x7F);        // bits 6:0
-  *hora = BCDtoBIN(I2C_Read(0) & 0x3F);       // 24h, bits 5:0
-  *dia_semana = BCDtoBIN(I2C_Read(0) & 0x07); // bits 2:0
-  *dia = BCDtoBIN(I2C_Read(0) & 0x3F);        // bits 5:0
-  *mes = BCDtoBIN(I2C_Read(0) & 0x1F);        // bits 4:0
-  *anio = BCDtoBIN(I2C_Read(1));              // última lectura con NACK
+  *s = bcd_to_bin(i2c_read(0) & 0x7F);
+  *m = bcd_to_bin(i2c_read(0) & 0x7F);
+  *h = bcd_to_bin(i2c_read(0) & 0x3F);
+  *dow = bcd_to_bin(i2c_read(0) & 0x07);
+  *d = bcd_to_bin(i2c_read(0) & 0x3F);
+  *mo = bcd_to_bin(i2c_read(0) & 0x1F);
+  *y = bcd_to_bin(i2c_read(1));
 
-  I2C_Stop_();
+  i2c_stop();
 }
 
-void testLectura(void)
+static void ds3231_write_raw(BYTE h, BYTE m, BYTE s, BYTE dow, BYTE d, BYTE mo, BYTE y)
 {
-  // Inicializar el DS3231
-
-  InitI2C();
-  DS3231_InitAlarm1_EverySecond();
-
-  unsigned char seg, min, hora, dia_sem, dia, mes, anio;
-  char buffer[6];
-
-  if (!PORTBbits.RB1) // condicio de la alarma
-    DS3231_LimpiarFlagAlarma1();
-
-  DS3231_LeerFechaHora(&seg, &min, &hora, &dia_sem, &dia, &mes, &anio);
-  SIO_PrintString("\r\n");
-  // Imprimir fecha en formato DD/MM/AA
-  itoa(dia, buffer, 10);
-  SIO_PrintString(buffer);
-  SIO_SafePrint('/');
-  itoa(mes, buffer, 10);
-  SIO_PrintString(buffer);
-  SIO_SafePrint('/');
-  itoa(anio, buffer, 10);
-  SIO_PrintString(buffer);
-  SIO_PrintString(" ");
-
-  // Imprimir hora en formato HH:MM:SS
-  itoa(hora, buffer, 10);
-  SIO_PrintString(buffer);
-  SIO_SafePrint(':');
-  itoa(min, buffer, 10);
-  SIO_PrintString(buffer);
-  SIO_SafePrint(':');
-  itoa(seg, buffer, 10);
-  SIO_PrintString(buffer);
-  SIO_PrintString("\r\n");
+  i2c_start(DS3231_ADDRESS);
+  i2c_write(0x00);
+  i2c_write(bin_to_bcd(s & 0x7F));
+  i2c_write(bin_to_bcd(m & 0x7F));
+  i2c_write(bin_to_bcd(h & 0x3F));
+  i2c_write(bin_to_bcd(dow & 0x07));
+  i2c_write(bin_to_bcd(d & 0x3F));
+  i2c_write(bin_to_bcd(mo & 0x1F));
+  i2c_write(bin_to_bcd(y));
+  i2c_stop(); // End I2C comunication
 }
 
-void fillTimestampLog(BYTE *log, BYTE seg, BYTE min, BYTE hora, BYTE dia, BYTE mes, BYTE anio)
+static void fill_timestamp(BYTE *log, BYTE sec, BYTE min, BYTE hour, BYTE day, BYTE month, BYTE year)
 {
-  log[0] = '0' + (hora / 10);
-  log[1] = '0' + (hora % 10);
+  log[0] = '0' + (hour / 10);
+  log[1] = '0' + (hour % 10);
   log[2] = '0' + (min / 10);
   log[3] = '0' + (min % 10);
-  log[4] = '0' + (seg / 10);
-  log[5] = '0' + (seg % 10);
-  log[6] = '0' + (dia / 10);
-  log[7] = '0' + (dia % 10);
-  log[8] = '0' + (mes / 10);
-  log[9] = '0' + (mes % 10);
+  log[4] = '0' + (sec / 10);
+  log[5] = '0' + (sec % 10);
+  log[6] = '0' + (day / 10);
+  log[7] = '0' + (day % 10);
+  log[8] = '0' + (month / 10);
+  log[9] = '0' + (month % 10);
   log[10] = '2'; // Year 20xx
   log[11] = '0';
-  log[12] = '0' + (anio / 10);
-  log[13] = '0' + (anio % 10);
-}
-
-void I2C_ReadTimestamp(BYTE *hhmmssDDMMYYYY)
-{
-  static BYTE seg, min, hour, day_of_week, day, month, year;
-  DS3231_LeerFechaHora(&seg, &min, &hour, &day_of_week, &day, &month, &year);
-  fillTimestampLog(hhmmssDDMMYYYY, seg, min, hour, day, month, year);
+  log[12] = '0' + (year / 10);
+  log[13] = '0' + (year % 10);
 }
