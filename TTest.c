@@ -67,7 +67,7 @@ void TEST_print_results(void)
             status = SYS_STATUS_OFF;
         }
         status++;
-        TEMP_SimulateState(status);
+        TEMP_TEST_SimulateState(status);
     }
 }
 
