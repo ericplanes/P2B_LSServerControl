@@ -21,7 +21,7 @@ Configuració necessària:
 {
   "includePath": [
     "${workspaceFolder}",
-    "/Applications/microchip/xc8/v3.00/pic/include",
+    "/Applications/microchip/xc8/v3.00/pic/include", // Path al vostre compilador, aquest és de mac
     "/Applications/microchip/xc8/v3.00/pic/include/proc"
   ],
   "defines": ["__18F4321"],
@@ -41,6 +41,10 @@ Des de terminal (dins la carpeta `.X`):
 
 ```bash
 make
+```
+Pots netejar la compilació també així:
+```bash
+make clean
 ```
 
 ---
