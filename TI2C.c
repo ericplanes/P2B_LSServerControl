@@ -54,8 +54,6 @@ void I2C_SetTimestamp(BYTE hour, BYTE min, BYTE sec, BYTE weekday, BYTE day, BYT
 
 void I2C_TEST_PrintTimestamp(void)
 {
-  I2C_Init();
-
   BYTE s, m, h, dow, d, mo, y;
   char buffer[6];
 
