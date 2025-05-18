@@ -110,11 +110,15 @@ void TEST_Init_PerifericsSimpleTest(void)
 void TEST_print_status(void)
 {
     /*
-    if (TiGetTics(timer) < ONE_SECOND || EEPROM_CanBeUsed() == FALSE) // Wait 2 seconds per iteration and make sure that EEPROM available
+    if (TiGetTics(timer) < ONE_SECOND * 2 || EEPROM_CanBeUsed() == FALSE) // Wait 2 seconds per iteration and make sure that EEPROM available
     {
         return;
     }
 
+    status++;
+    TEMP_TEST_SimulateState(status);
+    if (status == SYS_STATUS_CRIT)
+        status = SYS_STATUS_OFF;
     TiResetTics(timer);
 
     // Print current CTR state
