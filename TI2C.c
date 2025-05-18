@@ -14,11 +14,11 @@ static char i2c_restart(char address);
 static char i2c_write(BYTE data);
 static char i2c_stop(void);
 static char i2c_read(char ack);
-static void ds3231_clear_alarm_flag(void);
 static BYTE bin_to_bcd(BYTE val);
 static BYTE bcd_to_bin(BYTE val);
 static void ds3231_read_raw(BYTE *h, BYTE *m, BYTE *s, BYTE *dow, BYTE *d, BYTE *mo, BYTE *y);
 static void ds3231_write_raw(BYTE h, BYTE m, BYTE s, BYTE dow, BYTE d, BYTE mo, BYTE y);
+static void ds3231_clear_alarm_flag(void);
 static void fill_timestamp(BYTE *log, BYTE sec, BYTE min, BYTE hour, BYTE day, BYTE month, BYTE year);
 
 /* =======================================
@@ -52,7 +52,7 @@ void I2C_SetTimestamp(BYTE hour, BYTE min, BYTE sec, BYTE weekday, BYTE day, BYT
   ds3231_write_raw(hour, min, sec, weekday, day, month, year);
 }
 
-void I2C_TestRead(void)
+void I2C_TEST_PrintTimestamp(void)
 {
   I2C_Init();
 
@@ -83,6 +83,34 @@ void I2C_TestRead(void)
   itoa(s, buffer, 10);
   SIO_PrintString(buffer);
   SIO_PrintString("\r\n");
+}
+
+static void I2C_TEST_Wait1S(void)
+{
+  while (PORTBbits.RB1)
+    ; // Wait for alarm flag (falling edge on RB1)
+  ds3231_clear_alarm_flag();
+}
+
+void I2C_TEST_InitAlarmEverySecond(void)
+{
+  // Set Alarm1 registers to trigger every second (A1Mx = 1)
+  i2c_start(DS3231_ADDRESS);
+  i2c_write(0x07); // Start at Alarm1 Seconds register
+  i2c_write(0x80); // A1M1 = 1
+  i2c_write(0x80); // A1M2 = 1
+  i2c_write(0x80); // A1M3 = 1
+  i2c_write(0x80); // A1M4 = 1
+  i2c_stop();
+
+  // Set control register: INTCN = 1, A1IE = 1
+  i2c_start(DS3231_ADDRESS);
+  i2c_write(0x0E);       // Control register
+  i2c_write(0b00000101); // INTCN = 1, A1IE = 1
+  i2c_stop();
+
+  // Clear Alarm1 flag (A1F bit in status register 0x0F)
+  ds3231_clear_alarm_flag();
 }
 
 /* =======================================

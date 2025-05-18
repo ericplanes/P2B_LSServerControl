@@ -7,7 +7,6 @@
 #include "TMenu.h"
 #include "TI2C.h"
 
-void wait1s(void);
 void print(const BYTE *log);
 void print_iterator(BYTE d, BYTE u);
 void println(void);
@@ -74,13 +73,6 @@ void TEST_print_results(void)
 /* =======================================
  *         PRIVATE FUNCTION BODIES
  * ======================================= */
-void wait1s()
-{
-    while (PORTBbits.RB1)
-        ; // Wait for alarm flag (falling edge on RB1)
-    DS3231_LimpiarFlagAlarma1();
-}
-
 void print(const BYTE *log)
 {
     for (BYTE i = 0; i < TIMESTAMP_SIZE && log[i] != '\n'; ++i)

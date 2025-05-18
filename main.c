@@ -42,17 +42,17 @@ void main(void)
     PWM_Init();      // Check (Sets FAN and LED to OFF)
     RAM_Init();      // Check (Resets RAM)
     TEMP_Init();     // Check
+    I2C_Init();      // Check
 
     // Unreviewed inits
     TiInit();
-    InitI2C();
 
     // Test and inits I2C
     SIO_Init();
-    testLectura();
+    I2C_TEST_PrintTimestamp();
 
     // Extras for testing
-    DS3231_InitAlarm1_EverySecond();
+    I2C_TEST_InitAlarmEverySecond();
 
     // Main loop — cooperative multitasking
     int i = 1;
@@ -63,8 +63,8 @@ void main(void)
         CTR_Motor();
         PWM_Motor();
 
-        // Every 100 iterations, write actual state
-        if (i == 2000)
+        // Every 5000 iterations, write actual state
+        if (i == 5000)
         {
             i = 0;
             TEST_print_results();
