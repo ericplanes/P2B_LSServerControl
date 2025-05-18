@@ -62,7 +62,7 @@ make clean
 
 - Usa **branches i Pull Requests** per desenvolupar mòduls
 - Posa en comú amb el grup els **fitxers compartits** com `dictionary.c`, `config.h`, etc.
-- Evita pujar `.vscode/`, `.idea/` o `dist/` (ja inclòs al `.gitignore`)
+- Evita pujar `.vscode/`, `.idea/`, `/nbproject` o `dist/` (ja inclòs al `.gitignore`)
 
 ---
 
