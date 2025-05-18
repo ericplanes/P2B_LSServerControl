@@ -55,7 +55,8 @@ BYTE RAM_Read(void)
     BYTE data = PORTD;  // Llegim dades
 
     LATBbits.LATB3 = 1; // Desactivem !OE
-    inc_address();      // Incrementem adreça
+    if (data != 0)
+        inc_address(); // Incrementem adreça si no hem llegit un 0
     return data;
 }
 
@@ -74,7 +75,7 @@ void RAM_Reset(void)
 /*
  * Visible for testing, reads the first byte of the RAM.
  */
-BYTE TEST_RAM_Read_From_0(void)
+BYTE RAM_TEST_Read_From_0(void)
 {
     reset_address();
     return RAM_Read();
