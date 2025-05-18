@@ -63,13 +63,20 @@ void main(void)
     TEST_Init_PerifericsSimpleTest();
 
     // Main loop — cooperative multitasking
-    int i = 1;
     while (TRUE)
     {
         ADC_Motor();
         MENU_Motor();
         CTR_Motor();
         PWM_Motor();
+
+        /*
+         * Every 2 seconds:
+         * Prints Controller status.
+         * Prints all EEPROM logs.
+         * Prins amount of stored temperatures in RAM.
+         * Changes state of the system (changes temperature status)
+         */
         TEST_print_status();
     }
 }
