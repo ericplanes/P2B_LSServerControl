@@ -6,6 +6,9 @@
 #include "TTemperature.h"
 #include "TMenu.h"
 #include "TI2C.h"
+#include "TTimer.h"
+
+#define ONE_SECOND 1000
 
 void print(const BYTE *log);
 void print_iterator(BYTE d, BYTE u);
@@ -16,11 +19,17 @@ static BYTE iteration = 0;
 static BYTE buffer[TIMESTAMP_SIZE];
 static BYTE temperature = 1;
 static SYS_STATUS status = SYS_STATUS_OFF;
+static BYTE timer = 0;
 
 /* =======================================
  *          PUBLIC FUNCTION BODIES
  * ======================================= */
 
+/*
+ * Method to be called at the beginning of the execution.
+ * Tests Read and Write for: RAM, EEPROM, I2C.
+ * Tests the Timer.
+ */
 void TEST_Init_PerifericsSimpleTest(void)
 {
     // Starting message
@@ -61,7 +70,7 @@ void TEST_Init_PerifericsSimpleTest(void)
     while (EEPROM_StoreLog("12345678901234") == FALSE)
         ;
 
-    // Read stored log of the EEPROM
+    // Read stored log from the EEPROM
     SIO_PrintString("EEPROM stored a: ");
     BYTE eeprom[15];
     while (EEPROM_ReadLog(0, eeprom) == FALSE)
@@ -71,6 +80,19 @@ void TEST_Init_PerifericsSimpleTest(void)
     println();
 
     // Test timers
+    timer = TiGetTimer();
+    TiResetTics(timer);
+    SIO_PrintString("Testing timer, should print hour every 1 second, during 10 seconds...\r\n");
+    for (int i; i < 10;)
+    {
+        if (TiGetTics(timer) > ONE_SECOND)
+        {
+            TiResetTics(timer);
+            print_iterator(i / 10, i % 10);
+            I2C_TEST_PrintTimestamp();
+            i++;
+        }
+    }
 }
 
 /*
