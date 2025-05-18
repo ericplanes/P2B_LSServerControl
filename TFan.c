@@ -1,5 +1,4 @@
 #include "TFan.h"
-#include <xc.h>
 
 /* =======================================
  *        PUBLIC FUNCTION BODIES
