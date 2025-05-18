@@ -33,12 +33,12 @@ void main(void);
 void main(void)
 {
     // Initialize all TADs
-    ADC_Init();
+    ADC_Init(); // Check
     CTR_Init();
-    FAN_Init(); // Check
-    Joystick_Init();
-    LED_Init();  // Check
-    MENU_Init(); // Check
+    FAN_Init();      // Check
+    Joystick_Init(); // Check
+    LED_Init();      // Check
+    MENU_Init();     // Check
     PWM_Init();
     RAM_Init(); // Check
     TEMP_Init();
