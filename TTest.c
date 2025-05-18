@@ -10,6 +10,7 @@
 void print(const BYTE *log);
 void print_iterator(BYTE d, BYTE u);
 void println(void);
+void print_number(BYTE d, BYTE u);
 
 static BYTE iteration = 0;
 static BYTE buffer[TIMESTAMP_SIZE];
@@ -20,54 +21,63 @@ static SYS_STATUS status = SYS_STATUS_OFF;
  *          PUBLIC FUNCTION BODIES
  * ======================================= */
 
+void TEST_Init_PerifericsSimpleTest(void)
+{
+    // Starting message
+    println();
+    println();
+    SIO_PrintString(" ----> INIT TEST AT DATE (I2C): ");
+    I2C_TEST_PrintTimestamp();
+    println();
+
+    // Configure to start testing
+    SIO_PrintString("Prepare fake config on menu...\r\n");
+    MENU_TEST_SetDefaultConfig();
+    println();
+
+    // Update I2C time and print it
+    SIO_PrintString("Writing timestamp 10/10/2010 10:10:10 and waiting 3 seconds...\r\n");
+    I2C_SetTimestamp(10, 10, 10, 1, 10, 10, 10);
+    I2C_TEST_Wait1S();
+    I2C_TEST_Wait1S();
+    I2C_TEST_Wait1S();
+
+    SIO_PrintString("I2C Timestamp after 3 seconds: ");
+    I2C_TEST_PrintTimestamp();
+    println();
+
+    // Write first value of the RAM
+    SIO_PrintString("Writing a 25 on the RAM...\r\n");
+    RAM_Write(25);
+
+    // Read first value of the RAM and print it
+    SIO_PrintString("RAM stored a: ");
+    BYTE ram = RAM_TEST_Read_From_0();
+    print_number(ram / 10, ram % 10);
+    println();
+
+    // Write first log of the EEPROM
+    SIO_PrintString("Writing 12345678901234 on the EEPROM...\r\n");
+    while (EEPROM_StoreLog("12345678901234") == FALSE)
+        ;
+
+    // Read stored log of the EEPROM
+    SIO_PrintString("EEPROM stored a: ");
+    BYTE eeprom[15];
+    while (EEPROM_ReadLog(0, eeprom) == FALSE)
+        ;
+    SIO_PrintString(eeprom);
+    println();
+    println();
+
+    // Test timers
+}
+
 /*
  * Every second, prints EEPROM and RAM stored values. Every 10 seconds, updates the system state.
  */
-void TEST_print_results(void)
+void TEST_print_status(void)
 {
-    // Prepare testing
-    MENU_TEST_SetDefaultConfig();
-
-    // Check RAM stored temperatures
-    SIO_PrintString("\r\n-------- RAM (Temperatures) --------\r\n");
-    temperature = RAM_Read();
-    int i = 0;
-    while (temperature != 0 && i < 99)
-    {
-        temperature = RAM_Read();
-        print_iterator((BYTE)i / 10, (BYTE)i % 10);
-        SIO_SafePrint('0' + temperature);
-        println();
-        i++;
-    }
-    i = 0;
-
-    // Check EEPROM stored logs
-    SIO_PrintString("\r\n----------- EEPROM (Logs) ----------\r\n");
-    BYTE storedLogs = EEPROM_GetAmountOfStoredLogs();
-    for (BYTE i = 0; i < storedLogs; i++)
-    {
-        if (EEPROM_ReadLog(i, buffer) == TRUE)
-        {
-            print_iterator((BYTE)i / 10, (BYTE)i % 10);
-            print(buffer);
-            println();
-        }
-    }
-
-    // Increase iteration value
-    iteration++;
-
-    // Change system state if needed (each 10 seconds)
-    if (iteration % 10 == 0)
-    {
-        if (status == SYS_STATUS_CRIT)
-        {
-            status = SYS_STATUS_OFF;
-        }
-        status++;
-        TEMP_TEST_SimulateState(status);
-    }
 }
 
 /* =======================================
@@ -88,6 +98,14 @@ void print_iterator(BYTE d, BYTE u)
     SIO_SafePrint('0' + d);
     SIO_SafePrint('0' + u);
     SIO_PrintString(": ");
+}
+
+void print_number(BYTE d, BYTE u)
+{
+    SIO_PrintString("  ");
+    SIO_SafePrint('0' + d);
+    SIO_SafePrint('0' + u);
+    SIO_PrintString("\r\n");
 }
 
 void println(void)

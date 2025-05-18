@@ -30,29 +30,37 @@ void main(void);
  *               MAIN
  * ======================================= */
 
+void __interrupt() RSI_High(void)
+{
+    if (INTCONbits.TMR0IF == 1)
+    {
+        Timer0_ISR();
+    }
+}
+
 void main(void)
 {
     // Initialize all TADs
-    ADC_Init(); // Check
+    ADC_Init();
     CTR_Init();
-    FAN_Init();      // Check
-    Joystick_Init(); // Check
-    LED_Init();      // Check
-    MENU_Init();     // Check
-    PWM_Init();      // Check (Sets FAN and LED to OFF)
-    RAM_Init();      // Check (Resets RAM)
-    TEMP_Init();     // Check
-    I2C_Init();      // Check
+    FAN_Init();
+    Joystick_Init();
+    LED_Init();
+    MENU_Init();
+    PWM_Init(); // Sets FAN and LED to OFF
+    RAM_Init(); // Resets RAM
+    TEMP_Init();
+    I2C_Init();
 
-    // Unreviewed inits
+    // Init timer, sometimes problematic
     TiInit();
 
     // Test and inits I2C
     SIO_Init();
-    I2C_TEST_PrintTimestamp();
+    I2C_TEST_InitAlarmEverySecond();
 
     // Extras for testing
-    I2C_TEST_InitAlarmEverySecond();
+    TEST_Init_PerifericsSimpleTest();
 
     // Main loop — cooperative multitasking
     int i = 1;
@@ -62,13 +70,6 @@ void main(void)
         MENU_Motor();
         CTR_Motor();
         PWM_Motor();
-
-        // Every 5000 iterations, write actual state
-        if (i == 5000)
-        {
-            i = 0;
-            TEST_print_results();
-        }
-        i++;
+        TEST_print_status();
     }
 }
