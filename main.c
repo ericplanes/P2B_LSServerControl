@@ -30,14 +30,6 @@ void main(void);
  *               MAIN
  * ======================================= */
 
-void __interrupt() RSI_High(void)
-{
-    if (INTCONbits.TMR0IF == 1)
-    {
-        Timer0_ISR();
-    }
-}
-
 void main(void)
 {
     // Initialize all TADs

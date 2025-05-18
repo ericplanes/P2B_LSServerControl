@@ -16,7 +16,7 @@ void I2C_SetTimestamp(BYTE hour, BYTE min, BYTE sec, BYTE weekday, BYTE day, BYT
 
 // Testing
 void I2C_TEST_PrintTimestamp(void);
-static void I2C_TEST_Wait1S(void);
 void I2C_TEST_InitAlarmEverySecond(void);
+void I2C_TEST_Wait1S(void);
 
 #endif

@@ -83,7 +83,7 @@ void I2C_TEST_PrintTimestamp(void)
   SIO_PrintString("\r\n");
 }
 
-static void I2C_TEST_Wait1S(void)
+void I2C_TEST_Wait1S(void)
 {
   while (PORTBbits.RB1)
     ; // Wait for alarm flag (falling edge on RB1)
