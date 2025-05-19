@@ -55,6 +55,21 @@ static void write_byte(BYTE address, BYTE data)
  *          PUBLIC FUNCTION BODIES
  * ======================================= */
 
+void EEPROM_CleanMemory(void)
+{
+    // Set variables to initial value
+    mem_section = 0;
+    amount_of_stored_logs = 0;
+    pos = 0;
+    eeprom_state = EEPROM_IDLE;
+
+    // Write 0 to all positions from the EEPROM
+    for (BYTE i = 0; i < (MAX_LOGS * LOG_SIZE) + 1; i++) // Will do 14 * 15 + 1 iterations = 211
+    {
+        write_byte(i, (BYTE)'0');
+    }
+}
+
 BOOL EEPROM_StoreLog(const BYTE *log_data)
 {
     if (eeprom_state != EEPROM_IDLE || EECON1bits.WR)

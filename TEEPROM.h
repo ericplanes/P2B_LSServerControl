@@ -9,5 +9,6 @@ BOOL EEPROM_StoreLog(const BYTE *hhmmssDDMMYYYY);
 BOOL EEPROM_ReadLog(BYTE section, BYTE *hhmmssDDMMYYYY);
 BYTE EEPROM_GetAmountOfStoredLogs(void);
 BYTE EEPROM_CanBeUsed(void);
+void EEPROM_CleanMemory(void);
 
 #endif
