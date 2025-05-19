@@ -5,10 +5,17 @@
 /* =======================================
  *          PRIVATE FUNCTION HEADERS
  * ======================================= */
+
+// Assume Fosc = 8 MHz ⇒ Tosc = 125 ns
+// ⇒ Fosc/4 = 2 MHz ⇒ Ttick = 500 ns
+// With 1:256 prescaler ⇒ Ttick = 128 μs
+// For 1 ms overflow: 1 ms / 128 μs = 7.8125 ticks
+// So: preload = 65536 - 8 = 65528 = 0xFFF8
+
 static inline void TMR0_set_interruption_1ms(void)
 {
-    TMR0H = 0xF6;
-    TMR0L = 0x36;
+    TMR0H = 0xFF;
+    TMR0L = 0xF8;
 }
 
 // Internal timer structure
@@ -56,17 +63,19 @@ void TiInit(void)
 
     globalTics = 0;
 
-    T0CONbits.T08BIT = 0;
-    T0CONbits.T0CS = 0;
-    T0CONbits.PSA = 1;
+    T0CONbits.T08BIT = 0;   // 16-bit timer
+    T0CONbits.T0CS = 0;     // Internal instruction clock (Fosc/4)
+    T0CONbits.PSA = 0;      // Prescaler assigned
+    T0CONbits.T0PS = 0b111; // 1:256 prescaler
 
-    TMR0_set_interruption_1ms();
-    T0CONbits.TMR0ON = 1;
+    TMR0_set_interruption_1ms(); // Load TMR0 for 1ms overflow
 
-    INTCONbits.GIE = 1;
-    INTCONbits.PEIE = 1;
-    INTCONbits.TMR0IF = 0;
-    INTCONbits.TMR0IE = 1;
+    T0CONbits.TMR0ON = 1; // Turn on Timer0
+
+    INTCONbits.GIE = 1;    // Enable global interrupts
+    INTCONbits.PEIE = 1;   // Enable peripheral interrupts
+    INTCONbits.TMR0IF = 0; // Clear interrupt flag
+    INTCONbits.TMR0IE = 1; // Enable Timer0 interrupt
 }
 
 BYTE TiGetTimer(void)
