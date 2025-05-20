@@ -3,7 +3,7 @@
 
 #include "Utils.h"
 #include "TADC.h"
-#include "TTimer.h"
+#include "TAD_TIMER.h"
 #include "TMenu.h"
 #include "TJoystick.h"
 #include "TLed.h"

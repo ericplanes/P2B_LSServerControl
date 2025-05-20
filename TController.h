@@ -1,7 +1,7 @@
 #ifndef TCONTROLLER_H
 #define TCONTROLLER_H
 
-#include "TTimer.h"
+#include "TAD_TIMER.h"
 #include "TTemperature.h"
 #include "TMenu.h"
 #include "TI2C.h"

@@ -1,5 +1,5 @@
 #include "TPWM.h"
-#include "TTimer.h"
+#include "TAD_TIMER.h"
 #include "TLed.h"
 #include "TFan.h"
 #include "TController.h"
@@ -16,8 +16,8 @@
  *         PRIVATE VARIABLES
  * ======================================= */
 
-static BYTE timerPWM;
-static BYTE timerLED;
+static BYTE timerPWM = 1;
+static BYTE timerLED = 2;
 
 /* =======================================
  *         PUBLIC FUNCTION BODIES
@@ -25,10 +25,10 @@ static BYTE timerLED;
 
 void PWM_Init(void)
 {
-    timerPWM = TiGetTimer();
+    TiNewTimer(&timerPWM);
     TiResetTics(timerPWM);
 
-    timerLED = TiGetTimer();
+    TiNewTimer(&timerLED);
     TiResetTics(timerLED);
 
     FAN_SetPowerA(FALSE);

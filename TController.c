@@ -18,7 +18,7 @@
 static SYS_STATUS controller_status;
 static BYTE motor_state;
 
-static BYTE timer_id;
+static BYTE timer_id = 3;
 static BYTE wait_sample_time = 0;
 static BYTE timestamp_buffer[TIMESTAMP_SIZE];
 static BYTE temperature;
@@ -29,7 +29,7 @@ static BYTE temperature;
 
 void CTR_Init(void)
 {
-    timer_id = TiGetTimer();
+    TiNewTimer(&timer_id);
     TiResetTics(timer_id);
 
     controller_status = SYS_STATUS_OFF;

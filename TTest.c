@@ -6,7 +6,7 @@
 #include "TTemperature.h"
 #include "TMenu.h"
 #include "TI2C.h"
-#include "TTimer.h"
+#include "TAD_TIMER.h"
 #include "TController.h"
 
 #define ONE_SECOND 1000
@@ -37,7 +37,7 @@ static BYTE ram_data = 0;
  */
 void TEST_Init_PerifericsSimpleTest(void)
 {
-    /*
+    //*
     // Starting message
     println();
     println();
@@ -90,7 +90,7 @@ void TEST_Init_PerifericsSimpleTest(void)
     println();
 
     // Test timers
-    timer = TiGetTimer();
+    TiNewTimer(&timer);
     TiResetTics(timer);
     SIO_PrintString("Testing timer, should print hour every 1 second, during 10 seconds...\r\n");
     for (int i; i < 10;)
