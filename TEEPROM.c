@@ -72,7 +72,7 @@ void EEPROM_CleanMemory(void)
 
 BOOL EEPROM_StoreLog(const BYTE *log_data)
 {
-    if (eeprom_state != EEPROM_IDLE || EECON1bits.WR)
+    if (eeprom_state == EEPROM_READING || EECON1bits.WR)
         return FALSE;
 
     eeprom_state = EEPROM_WRITING;
@@ -105,7 +105,7 @@ BOOL EEPROM_StoreLog(const BYTE *log_data)
 
 BOOL EEPROM_ReadLog(BYTE section, BYTE *log_data)
 {
-    if (eeprom_state != EEPROM_IDLE)
+    if (eeprom_state == EEPROM_WRITING)
         return FALSE;
 
     eeprom_state = EEPROM_READING;
