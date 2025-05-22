@@ -55,7 +55,7 @@ BYTE RAM_Read(void)
     BYTE data = PORTD;  // Llegim dades
 
     LATBbits.LATB3 = 1; // Desactivem !OE
-    if (data != 0)
+    if (data != 0 && data != 0x00)
         inc_address(); // Incrementem adreça si no hem llegit un 0
     return data;
 }
