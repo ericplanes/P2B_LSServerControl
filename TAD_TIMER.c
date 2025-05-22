@@ -3,8 +3,8 @@
 #include "TAD_TIMER.h"
 
 #define T0CON_CONFIG 0x82
-#define RECARREGA_TMR0 64911 // 2 ms, suposant FOsc a 10MHz.
-#define TI_NUMTIMERS 4		 // Amount of timers being used on the system
+#define TMR0_INT_2MS 64911 // 2 ms, if FOsc is 10MHz.
+#define TI_NUMTIMERS 4	   // Amount of timers being used on the system
 
 struct Timer
 {
@@ -16,7 +16,7 @@ static volatile WORD Tics = 0;
 
 void Timer0_ISR()
 {
-	TMR0 = RECARREGA_TMR0;
+	TMR0 = TMR0_INT_2MS;
 	TMR0IF = 0;
 	Tics++;
 }
@@ -28,7 +28,7 @@ void TiInit()
 		Timers[counter].Busy = FALSE;
 	}
 	T0CON = T0CON_CONFIG;
-	TMR0 = RECARREGA_TMR0;
+	TMR0 = TMR0_INT_2MS;
 	INTCONbits.TMR0IF = 0;
 	INTCONbits.TMR0IE = 1;
 }
@@ -59,9 +59,4 @@ WORD TiGetTics(BYTE TimerHandle)
 	WORD CopiaTicsActual = Tics;
 	ei();
 	return (CopiaTicsActual - (Timers[TimerHandle].TicsInicials));
-}
-
-void TI_CloseTimer(BYTE TimerHandle)
-{
-	Timers[TimerHandle].Busy = TRUE;
 }

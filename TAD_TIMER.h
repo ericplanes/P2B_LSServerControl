@@ -3,7 +3,7 @@
 
 #include "Utils.h"
 
-#define ONE_SECOND 500 // 1 interruption each 2ms
+#define ONE_SECOND 500 // 1 interruption every 2ms
 
 #define TI_TEST 0
 #define TI_FAN 1
@@ -13,18 +13,18 @@
 void Timer0_ISR(void);
 
 void TiInit(void);
-// Post: Constructor. �s precondici� global haver cridat aquesta funci� quan es cridi qualsevol altra funci� del TAD
+// Post: Constructor. It is a global precondition to have called this function before calling any other function of the TAD.
 
 BYTE TiNewTimer(BYTE *TimerHandle);
-// Post: Retorna TI_CERT en cas que s'hagi creat adequadament un nou timer, i TI_FALS en cas contrati.
-// Posa a *TimerHandle l'identificador de timer assignat, necessari per usar les funcions TI_GetTics i TI_ResetTics.
+// Post: Returns TI_CERT if a new timer was successfully created, and TI_FALSE otherwise.
+// Sets *TimerHandle to the assigned timer identifier, which is needed to use TI_GetTics and TI_ResetTics.
 
 void TiResetTics(BYTE TimerHandle);
-// Pre: Handle ha estat retornat per Ti_NewTimer.
-// Post: Engega la temporitzaci� associada a 'TimerHandle', guardant la referencia temporal en el moment de la crida.
+// Pre: Handle has been returned by TiNewTimer.
+// Post: Starts the timing associated with 'TimerHandle', storing the time reference at the moment of the call.
 
 WORD TiGetTics(BYTE TimerHandle);
-// Pre: Handle ha estat retornat per TI_NewGetTimer.
-// Post: Retorna els tics transcorreguts des de la crida a TI_ResetTics per al mateix TimerHandle.
+// Pre: Handle has been returned by TiNewTimer.
+// Post: Returns the number of ticks elapsed since the call to TI_ResetTics for the same TimerHandle.
 
 #endif
