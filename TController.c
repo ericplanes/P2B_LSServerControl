@@ -18,7 +18,7 @@
 static SYS_STATUS controller_status;
 static BYTE motor_state;
 
-static BYTE timer_id = 3;
+static BYTE timer_id = TI_CONT;
 static BYTE wait_sample_time = 0;
 static BYTE timestamp_buffer[TIMESTAMP_SIZE];
 static BYTE temperature;

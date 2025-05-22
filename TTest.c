@@ -9,8 +9,6 @@
 #include "TAD_TIMER.h"
 #include "TController.h"
 
-#define ONE_SECOND 1000
-
 void print(const BYTE *log);
 void print_iterator(BYTE d, BYTE u);
 void println(void);
@@ -21,7 +19,7 @@ static BYTE iteration = 0;
 static BYTE buffer[TIMESTAMP_SIZE];
 static BYTE temperature = 1;
 static SYS_STATUS status = SYS_STATUS_OFF;
-static BYTE timer = 0;
+static BYTE timer = TI_TEST;
 static BYTE eeprom_amount_of_logs;
 static BYTE ram_amount = 0;
 static BYTE ram_data = 0;
@@ -113,7 +111,7 @@ void TEST_Init_PerifericsSimpleTest(void)
  */
 void TEST_print_status(void)
 {
-    /*
+    //*
     if (TiGetTics(timer) < ONE_SECOND * 2 || EEPROM_CanBeUsed() == FALSE) // Wait 2 seconds per iteration and make sure that EEPROM available
     {
         return;
