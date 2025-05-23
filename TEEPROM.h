@@ -5,6 +5,7 @@
 #include <pic18f4321.h>
 #include "Utils.h"
 
+void EEPROM_Init(void);
 BOOL EEPROM_StoreLog(const BYTE *hhmmssDDMMYYYY);
 BOOL EEPROM_ReadLog(BYTE section, BYTE *hhmmssDDMMYYYY);
 BYTE EEPROM_GetAmountOfStoredLogs(void);
