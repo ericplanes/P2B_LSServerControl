@@ -1,5 +1,3 @@
-#include <xc.h>
-#include "pic18f4321.h"
 #include "TAD_TIMER.h"
 
 #define T0CON_CONFIG 0x82
