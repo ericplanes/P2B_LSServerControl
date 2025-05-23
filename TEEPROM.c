@@ -141,3 +141,13 @@ BYTE EEPROM_CanBeUsed(void)
 {
     return eeprom_state == EEPROM_IDLE ? TRUE : FALSE;
 }
+
+BYTE EEPROM_GetFirstSection(void)
+{
+    return amount_of_stored_logs != MAX_LOGS ? 0 : mem_section;
+}
+
+BYTE EEPROM_GetNextSection(BYTE previous_section)
+{
+    return previous_section == MAX_LOGS ? 0 : previous_section + 1;
+}
