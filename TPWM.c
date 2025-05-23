@@ -16,8 +16,8 @@
  *         PRIVATE VARIABLES
  * ======================================= */
 
-static BYTE timerPWM = 1;
-static BYTE timerLED = 2;
+static BYTE timerFan = TI_FAN;
+static BYTE timerLED = TI_LED;
 
 /* =======================================
  *         PUBLIC FUNCTION BODIES
@@ -25,8 +25,8 @@ static BYTE timerLED = 2;
 
 void PWM_Init(void)
 {
-    TiNewTimer(&timerPWM);
-    TiResetTics(timerPWM);
+    TiNewTimer(&timerFan);
+    TiResetTics(timerFan);
 
     TiNewTimer(&timerLED);
     TiResetTics(timerLED);
@@ -39,7 +39,7 @@ void PWM_Init(void)
 void PWM_Motor(void)
 {
     SYS_STATUS status = CTR_GetStatus();
-    WORD ticsPWM = TiGetTics(timerPWM);
+    WORD ticsPWM = TiGetTics(timerFan);
     WORD ticsLED = TiGetTics(timerLED);
 
     switch (status)
@@ -82,11 +82,11 @@ void PWM_Motor(void)
         FAN_SetPowerA(FALSE);
         FAN_SetPowerB(FALSE);
         LED_SetColor(LED_OFF);
-        TiResetTics(timerPWM);
+        TiResetTics(timerFan);
         TiResetTics(timerLED);
         break;
     }
 
     if (ticsPWM >= PWM_PERIOD_MS)
-        TiResetTics(timerPWM);
+        TiResetTics(timerFan);
 }

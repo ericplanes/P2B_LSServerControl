@@ -9,8 +9,6 @@
 #include "TAD_TIMER.h"
 #include "TController.h"
 
-#define ONE_SECOND 1000
-
 void print(const BYTE *log);
 void print_iterator(BYTE d, BYTE u);
 void println(void);
@@ -21,7 +19,7 @@ static BYTE iteration = 0;
 static BYTE buffer[TIMESTAMP_SIZE];
 static BYTE temperature = 1;
 static SYS_STATUS status = SYS_STATUS_OFF;
-static BYTE timer = 0;
+static BYTE timer = TI_TEST;
 static BYTE eeprom_amount_of_logs;
 static BYTE ram_amount = 0;
 static BYTE ram_data = 0;
@@ -93,7 +91,7 @@ void TEST_Init_PerifericsSimpleTest(void)
     TiNewTimer(&timer);
     TiResetTics(timer);
     SIO_PrintString("Testing timer, should print hour every 1 second, during 10 seconds...\r\n");
-    for (int i; i < 10;)
+    for (int i = 0; i < 10;)
     {
         if (TiGetTics(timer) > ONE_SECOND)
         {
@@ -113,7 +111,7 @@ void TEST_Init_PerifericsSimpleTest(void)
  */
 void TEST_print_status(void)
 {
-    /*
+    //*
     if (TiGetTics(timer) < ONE_SECOND * 2 || EEPROM_CanBeUsed() == FALSE) // Wait 2 seconds per iteration and make sure that EEPROM available
     {
         return;
@@ -138,7 +136,7 @@ void TEST_print_status(void)
     TiResetTics(timer);
     for (BYTE i = 0; i < eeprom_amount_of_logs;)
     {
-        if (TiGetTics(timer) > ONE_SECOND * 2)
+        if (TiGetTics(timer) > ONE_SECOND * 2) // Print every 2 secons in case something goes wrong
         {
             SIO_PrintString("Inside the eeprom reading from the test...");
             TiResetTics(timer);
@@ -159,13 +157,15 @@ void TEST_print_status(void)
 
     while (TRUE)
     {
-        if (TiGetTics(timer) > ONE_SECOND)
+        if (TiGetTics(timer) > ONE_SECOND * 2)
         {
             SIO_PrintString("Computing amount of RAM values...\r\n");
             TiResetTics(timer);
+            if (ram_amount > 200) // Safe break in case the RAM gets blocked
+                break;
         }
         ram_data = RAM_Read();
-        if (ram_data == 0)
+        if (ram_data == 0 || ram_data == 0x00)
             break;
         ram_amount++;
     }
