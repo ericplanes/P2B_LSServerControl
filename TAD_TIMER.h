@@ -3,6 +3,9 @@
 
 #include "Utils.h"
 
+#include <xc.h>
+#include "pic18f4321.h"
+
 #define ONE_SECOND 500 // 1 interruption every 2ms
 
 #define TI_TEST 0
