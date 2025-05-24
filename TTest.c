@@ -171,7 +171,7 @@ void TEST_print_status(void)
     }
 
     SIO_PrintString("RAM has this amount of stored values: ");
-    print_long_number(ram_amount / 100, ram_amount / 10, ram_amount % 10);
+    print_long_number(ram_amount / 100, (ram_amount / 10) % 10, ram_amount % 10);
     println();
     // */
 }
