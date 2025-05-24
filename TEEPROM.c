@@ -7,6 +7,9 @@
 #define EEPROM_WRITING 1
 #define EEPROM_READING 2
 
+#define ADDR_STORED_LOGS 0
+#define ADDR_MEM_SECTION 1
+
 static BYTE mem_section = 0;
 static BYTE amount_of_stored_logs = 0;
 static BYTE pos = 0;
@@ -55,6 +58,14 @@ static void write_byte(BYTE address, BYTE data)
  *          PUBLIC FUNCTION BODIES
  * ======================================= */
 
+void EEPROM_Init(void)
+{
+    amount_of_stored_logs = read_byte(ADDR_STORED_LOGS);
+    mem_section = read_byte(ADDR_MEM_SECTION);
+    pos = 0;
+    eeprom_state = EEPROM_IDLE;
+}
+
 void EEPROM_CleanMemory(void)
 {
     // Set variables to initial value
@@ -79,7 +90,7 @@ BOOL EEPROM_StoreLog(const BYTE *log_data)
 
     if (pos < LOG_SIZE)
     {
-        write_byte(pos + (mem_section * LOG_SIZE) + 1, log_data[pos]);
+        write_byte(pos + (mem_section * LOG_SIZE) + 2, log_data[pos]);
         pos++;
     }
 
@@ -95,7 +106,8 @@ BOOL EEPROM_StoreLog(const BYTE *log_data)
             amount_of_stored_logs = MAX_LOGS;
         }
 
-        write_byte(0, amount_of_stored_logs);
+        write_byte(ADDR_STORED_LOGS, amount_of_stored_logs);
+        write_byte(ADDR_MEM_SECTION, mem_section);
         eeprom_state = EEPROM_IDLE;
         return TRUE;
     }
@@ -112,7 +124,7 @@ BOOL EEPROM_ReadLog(BYTE section, BYTE *log_data)
 
     if (pos < LOG_SIZE)
     {
-        log_data[pos] = read_byte(pos + (section * LOG_SIZE) + 1);
+        log_data[pos] = read_byte(pos + (section * LOG_SIZE) + 2);
         pos++;
     }
 
@@ -140,4 +152,14 @@ BYTE EEPROM_GetAmountOfStoredLogs(void)
 BYTE EEPROM_CanBeUsed(void)
 {
     return eeprom_state == EEPROM_IDLE ? TRUE : FALSE;
+}
+
+BYTE EEPROM_GetFirstSection(void)
+{
+    return amount_of_stored_logs != MAX_LOGS ? 0 : mem_section;
+}
+
+BYTE EEPROM_GetNextSection(BYTE previous_section)
+{
+    return previous_section == MAX_LOGS ? 0 : previous_section + 1;
 }

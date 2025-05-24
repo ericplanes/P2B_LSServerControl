@@ -42,6 +42,7 @@ void main(void)
 {
     // Initialize all TADs
     ADC_Init();
+    EEPROM_Init();
     CTR_Init();
     FAN_Init();
     Joystick_Init();
