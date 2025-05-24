@@ -131,13 +131,8 @@ BOOL EEPROM_ReadLog(BYTE section, BYTE *log_data)
     if (pos == LOG_SIZE)
     {
         log_data[pos] = '\0';
-        pos++;
-    }
-
-    if (pos > LOG_SIZE)
-    {
-        pos = 0;
         eeprom_state = EEPROM_IDLE;
+        pos = 0;
         return TRUE;
     }
 
