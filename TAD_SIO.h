@@ -3,24 +3,28 @@
 
 #include <xc.h>
 #include <pic18f4321.h>
-#include <stdint.h>
 
-#define _XTAL_FREQ 10000000 // 10 MHz
+//CONSTANTS
+#define CONFIGURACIO_TXSTA 0b00100000
+#define CONFIGURACIO_RCSTA 0b10010000
+#define CONFIGURACIO_BAUDC 0b00000000
+#define TRUE            1 // TRUE
+#define FALSE           0 // FALSE
 
-#define CONFIGURACIO_TXSTA 0x24 // Dades 8bits, TX EN, Asinc, BRGH=1
-#define CONFIGURACIO_RCSTA 0x90 // EN canal serie, 8 bits, asinc, RX EN
-#define DIVISOR_BAUDRATE 10
-#define TRUE 1  // TRUE
-#define FALSE 0 // FALSE
+#define MAX_LENGTH_CUA 80
 
-// FUNCIONS
+//FUNCIONS
 void SIO_Init();
-unsigned char SIO_RXAvail(void);
-unsigned char SIO_TXAvail(void); // Available == 1
-unsigned char SIO_GetChar(void);
-void SIO_PutChar(unsigned char lletra);
-void SIO_SafePrint(char lletra);
-void SIO_PrintString(const char *text);
-void itoa(unsigned int value, char *str, unsigned char base);
+
+// TX:
+void SIO_SendCharCua(char str);
+void SIO_SendString(char *str, unsigned char length);
+void SIO_MotorTX();
+
+// RX:
+unsigned char SIO_LastByteReceived();
+char SIO_GetCharCua();
+void SIO_PseudoMotorRX();
+unsigned char SIO_NewStringAvail();
 
 #endif
