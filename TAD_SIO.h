@@ -27,4 +27,13 @@ char SIO_GetCharCua();
 void SIO_PseudoMotorRX();
 unsigned char SIO_NewStringAvail();
 
+// future deprecated functions
+unsigned char SIO_RXAvail(void);
+unsigned char SIO_TXAvail(void); // Available == 1
+unsigned char SIO_GetChar(void);
+void SIO_PutChar(unsigned char lletra);
+void SIO_SafePrint(char lletra);
+void SIO_PrintString(const char *text);
+void itoa(unsigned int value, char *str, unsigned char base);
+
 #endif

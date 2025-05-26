@@ -73,6 +73,14 @@ void SIO_SendString(char *str, unsigned char length){
     }
 }
 
+// test function, might be better than SIO_SendString
+void SIO_SendStringUntilEnd(char *str){
+    while(*str){
+        //write
+        CuaTX[PtrGreenTx++] = *str++;
+    }
+}
+
 void SIO_SendCharCua(char str){
     CuaTX[PtrGreenTx++] = str;
     if(PtrGreenTx >= MAX_LENGTH_CUA) PtrGreenTx = 0;
@@ -101,4 +109,60 @@ void SIO_MotorTX(){
             }
         break;
     }
+}
+
+// future deprecated functions
+unsigned char SIO_TXAvail()
+{
+    return ((PIR1bits.TXIF == 1) ? TRUE : FALSE);
+}
+unsigned char SIO_GetChar()
+{
+    return RCREG;
+}
+void SIO_PutChar(unsigned char lletra)
+{
+    TXREG = lletra;
+}
+
+void SIO_SafePrint(char lletra)
+{ // NO COOPERATIU, NOMES PER DEBUGGING
+    while (!SIO_TXAvail())
+        ;
+    SIO_PutChar(lletra);
+}
+
+void SIO_PrintString(const char *text)
+{
+    while (*text != '\0')
+    {
+        SIO_SafePrint(*text++);
+    }
+}
+
+void itoa(unsigned int value, char *str, unsigned char base)
+{
+    char temp[6]; // Buffer temporal per invertir el n mero (fins a 65535 = 5 xifres + \0)
+    int i = 0;
+
+    if (value == 0)
+    {
+        str[0] = '0';
+        str[1] = '\0';
+        return;
+    }
+
+    while (value > 0 && i < 5)
+    {
+        temp[i++] = (value % base) + '0';
+        value /= base;
+    }
+
+    // Inverteix el resultat a str
+    int j = 0;
+    while (i > 0)
+    {
+        str[j++] = temp[--i];
+    }
+    str[j] = '\0'; // null terminador
 }
