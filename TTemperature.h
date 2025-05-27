@@ -11,6 +11,7 @@
 void TEMP_Init(void);
 SYS_STATUS TEMP_GetState(void);
 BYTE TEMP_GetTemperature(void);
+BOOL TEMP_StateChanged(void);
 
 // Testing
 void TEMP_TEST_SimulateState(SYS_STATUS state);

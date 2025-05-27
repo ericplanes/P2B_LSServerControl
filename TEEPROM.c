@@ -75,9 +75,9 @@ void EEPROM_CleanMemory(void)
     eeprom_state = EEPROM_IDLE;
 
     // Write 0 to all positions from the EEPROM
-    for (BYTE i = 0; i < (MAX_LOGS * LOG_SIZE) + 1; i++) // Will do 14 * 15 + 1 iterations = 211
+    for (BYTE i = 0; i < (MAX_LOGS * LOG_SIZE) + 2; i++) // Will do 14 * 15 + 2 iterations = 212
     {
-        write_byte(i, (BYTE)'0');
+        write_byte(i, 0x00);
     }
 }
 
