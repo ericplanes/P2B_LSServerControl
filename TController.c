@@ -17,6 +17,7 @@
 
 static SYS_STATUS controller_status;
 static BYTE motor_state;
+static BOOL eeprom_can_write;
 
 static BYTE timer_id = TI_CONT;
 static BYTE wait_sample_time = 0;
@@ -34,6 +35,7 @@ void CTR_Init(void)
 
     controller_status = SYS_STATUS_OFF;
     motor_state = S_WAIT_CONFIG;
+    eeprom_can_write = FALSE;
 }
 
 SYS_STATUS CTR_GetStatus(void)
@@ -67,7 +69,10 @@ void CTR_Motor(void)
         temperature = TEMP_GetTemperature();
 
         if (controller_status == SYS_STATUS_CRIT)
+        {
             motor_state = S_READ_TIME;
+            eeprom_can_write = TRUE;
+        }
         else
             motor_state = S_WRITE_RAM;
         break;
@@ -78,8 +83,11 @@ void CTR_Motor(void)
         break;
 
     case S_WRITE_EEPROM:
-        if (EEPROM_StoreLog(timestamp_buffer) == TRUE)
+        if (EEPROM_StoreLog(timestamp_buffer) == TRUE && eeprom_can_write == TRUE)
+        {
             motor_state = S_WRITE_RAM;
+            eeprom_can_write = FALSE;
+        }
         break;
 
     case S_WRITE_RAM:
