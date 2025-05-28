@@ -106,6 +106,11 @@ BOOL EEPROM_StoreLog(const BYTE *log_data)
             amount_of_stored_logs = MAX_LOGS;
         }
 
+        if (amount_of_stored_logs > MAX_LOGS)
+        {
+            amount_of_stored_logs = MAX_LOGS;
+        }
+
         write_byte(ADDR_STORED_LOGS, amount_of_stored_logs);
         write_byte(ADDR_MEM_SECTION, mem_section);
         eeprom_state = EEPROM_IDLE;
