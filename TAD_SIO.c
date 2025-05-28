@@ -124,6 +124,82 @@ void SIO_MotorTX(){
     }
 }
 
+/* =======================================
+ *       Funcions per parsejar java
+ * ======================================= */
+
+unsigned char SIO_GetCommandAndValue(unsigned char* value){
+    if(SIO_LastByteReceived() != '\n') return NO_COMMAND; // No hi ha cap comanda
+    switch(SIO_GetCharCua()){
+        case COMMAND_INITIALIZE:
+            for(unsigned char i = 0; i < LENGTH_INITIALIZE - 1; i++){
+                value[i] = SIO_GetCharCua();
+            }
+            SIO_GetCharCua();
+            SIO_GetCharCua(); // Llegeix els dos caracters de final de comanda
+            return COMMAND_INITIALIZE;
+            break;
+        case COMMAND_SET_TIME:
+            for(unsigned char i = 0; i < LENGTH_SET_TIME - 1; i++){
+                value[i] = SIO_GetCharCua();
+            }
+            SIO_GetCharCua();
+            SIO_GetCharCua(); // Llegeix els dos caracters de final de comanda
+            return COMMAND_SET_TIME;
+            break;
+        case COMMAND_GET_LOGS:
+            return COMMAND_GET_LOGS;
+        case COMMAND_GET_GRAPH:
+            return COMMAND_GET_GRAPH;
+        case COMMAND_RESET:
+            return COMMAND_RESET;
+        default:
+            return NO_COMMAND; // Comanda desconeguda
+    }
+}
+
+void parse_Initialize(unsigned char* value, unsigned char *hour, unsigned char *min, unsigned char *day, unsigned char *month, unsigned char *year, unsigned char *pollingRate, unsigned char *lowThreshold, unsigned char *moderateThreshold, unsigned char *highThreshold, unsigned char *criticalThreshold)
+{
+    // Format: "yyyy-MM-dd HH:mm$PR$LT$MT$HT$CT"
+    *year = (value[2] - '0') * 10 + (value[3] - '0');     // Solo los dos últimos dígitos
+    *month = (value[5] - '0') * 10 + (value[6] - '0');
+    *day = (value[8] - '0') * 10 + (value[9] - '0');
+    *hour = (value[11] - '0') * 10 + (value[12] - '0');
+    *min = (value[14] - '0') * 10 + (value[15] - '0');
+    *pollingRate = (value[17] - '0') * 10 + (value[18] - '0');
+    *lowThreshold = (value[20] - '0') * 10 + (value[21] - '0');
+    *moderateThreshold = (value[23] - '0') * 10 + (value[24] - '0');
+    *highThreshold = (value[26] - '0') * 10 + (value[27] - '0');
+    *criticalThreshold = (value[29] - '0') * 10 + (value[30] - '0');
+}
+
+void parse_SetTime(unsigned char* value, unsigned char *hour, unsigned char *min)
+{
+    // Format: "HH:mm"
+    *hour = (value[0] - '0') * 10 + (value[1] - '0');
+    *min = (value[3] - '0') * 10 + (value[4] - '0');
+}
+
+unsigned char SIO_SendInt(unsigned char value)
+{
+    // Envia un enter de 8 bits com a caràcter ASCII
+    if (value < 10)
+    {
+        SIO_SafePrint('0'+value);
+    }
+    else if (value < 100)
+    {
+        SIO_SafePrint((value / 10) + '0');
+        SIO_SafePrint((value % 10) + '0');
+    }
+    else
+    {
+        SIO_SafePrint('9');
+        SIO_SafePrint('9');
+    }
+    return TRUE;
+}
+
 // future deprecated functions
 unsigned char SIO_TXAvail()
 {
