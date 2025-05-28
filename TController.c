@@ -67,12 +67,12 @@ void CTR_Motor(void)
         break;
 
     case S_READ_TEMPERATURE:
+        previous_status = controller_status;
         controller_status = TEMP_GetState();
         temperature = TEMP_GetTemperature();
 
         if (controller_status == SYS_STATUS_CRIT && previous_status != SYS_STATUS_CRIT)
         {
-            previous_status = controller_status;
             eeprom_can_write = TRUE;
             motor_state = S_READ_TIME;
         }
