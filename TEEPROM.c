@@ -98,16 +98,13 @@ BOOL EEPROM_StoreLog(const BYTE *log_data)
     {
         pos = 0;
         mem_section++;
-        amount_of_stored_logs++;
+
+        if (amount_of_stored_logs < MAX_LOGS)
+            amount_of_stored_logs++;
 
         if (mem_section == MAX_LOGS)
         {
             mem_section = 0;
-            amount_of_stored_logs = MAX_LOGS;
-        }
-
-        if (amount_of_stored_logs > MAX_LOGS)
-        {
             amount_of_stored_logs = MAX_LOGS;
         }
 

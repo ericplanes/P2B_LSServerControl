@@ -16,6 +16,7 @@
  * ======================================= */
 
 static SYS_STATUS controller_status;
+static SYS_STATUS previous_status;
 static BYTE motor_state;
 static BOOL eeprom_can_write;
 
@@ -34,6 +35,7 @@ void CTR_Init(void)
     TiResetTics(timer_id);
 
     controller_status = SYS_STATUS_OFF;
+    previous_status = SYS_STATUS_OFF;
     motor_state = S_WAIT_CONFIG;
     eeprom_can_write = FALSE;
 }
@@ -65,13 +67,14 @@ void CTR_Motor(void)
         break;
 
     case S_READ_TEMPERATURE:
+        previous_status = controller_status;
         controller_status = TEMP_GetState();
         temperature = TEMP_GetTemperature();
 
-        if (controller_status == SYS_STATUS_CRIT)
+        if (controller_status == SYS_STATUS_CRIT && previous_status != SYS_STATUS_CRIT)
         {
-            motor_state = S_READ_TIME;
             eeprom_can_write = TRUE;
+            motor_state = S_READ_TIME;
         }
         else
             motor_state = S_WRITE_RAM;
