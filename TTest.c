@@ -152,22 +152,22 @@ void TEST_print_status(void)
 
     // Print RAM values
     ram_amount = 0;
-    ram_data = 1;
+    ram_data = RAM_TEST_Read_From_0();
     TiResetTics(timer);
 
-    while (TRUE)
+    while (ram_data != 0 && ram_data != 0x00)
     {
-        if (TiGetTics(timer) > ONE_SECOND * 2)
+        ram_amount++;
+        ram_data = RAM_Read();
+
+        // Debug option just in case
+        if (TiGetTics(timer) > ONE_SECOND * 5)
         {
-            SIO_PrintString("Computing amount of RAM values...\r\n");
+            SIO_PrintString("Computing amount of RAM values (5 seconds passed)...\r\n");
             TiResetTics(timer);
             if (ram_amount > 200) // Safe break in case the RAM gets blocked
                 break;
         }
-        ram_data = RAM_Read();
-        if (ram_data == 0 || ram_data == 0x00)
-            break;
-        ram_amount++;
     }
 
     SIO_PrintString("RAM has this amount of stored values: ");
