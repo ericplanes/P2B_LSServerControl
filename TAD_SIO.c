@@ -17,22 +17,6 @@ char CuaRX[MAX_LENGTH_CUA] = {0};
 char CuaTX[MAX_LENGTH_CUA] = {0};
 
 void SIO_Init(){
-    /*
-    TRISCbits.TRISC6 = 1;
-    TRISCbits.TRISC7 = 1;
-    
-    TXSTA = CONFIGURACIO_TXSTA;
-    RCSTA = CONFIGURACIO_RCSTA;
-    BAUDCON = CONFIGURACIO_BAUDC;
-    SPBRG = 64;
-   
-
-    EstatSIOTx = E_IDLE_ENDED;
-    PtrRedTx = 0;
-    PtrGreenTx = 0;
-    PtrRedRx = 0;
-    PtrGreenRx = 0;
-    */
     TRISCbits.TRISC6 = 0;
     TRISCbits.TRISC7 = 1;
 
@@ -44,6 +28,11 @@ void SIO_Init(){
     TXSTAbits.TXEN = 1; // Habilitar transmisio?n
     RCSTAbits.SPEN = 1; // Habilitar puerto serie
     RCSTAbits.CREN = 1; // Habilitar recepció
+    EstatSIOTx = E_IDLE_ENDED;
+    PtrRedTx = 0;
+    PtrGreenTx = 0;
+    PtrRedRx = 0;
+    PtrGreenRx = 0;
 }
 
 // SIO RX:
@@ -83,14 +72,6 @@ void SIO_SendString(char *str, unsigned char length){
     for(unsigned char i = 0; i < length; i++){
         CuaTX[PtrGreenTx++] = str[i];
         if(PtrGreenTx >= MAX_LENGTH_CUA) PtrGreenTx = 0;
-    }
-}
-
-// test function, might be better than SIO_SendString
-void SIO_SendStringUntilEnd(char *str){
-    while(*str){
-        //write
-        CuaTX[PtrGreenTx++] = *str++;
     }
 }
 
@@ -158,7 +139,7 @@ unsigned char SIO_GetCommandAndValue(unsigned char* value){
     }
 }
 
-void parse_Initialize(unsigned char* value, unsigned char *hour, unsigned char *min, unsigned char *day, unsigned char *month, unsigned char *year, unsigned char *pollingRate, unsigned char *lowThreshold, unsigned char *moderateThreshold, unsigned char *highThreshold, unsigned char *criticalThreshold)
+void SIO_parse_Initialize(unsigned char* value, unsigned char *hour, unsigned char *min, unsigned char *day, unsigned char *month, unsigned char *year, unsigned char *pollingRate, unsigned char *lowThreshold, unsigned char *moderateThreshold, unsigned char *highThreshold, unsigned char *criticalThreshold)
 {
     // Format: "yyyy-MM-dd HH:mm$PR$LT$MT$HT$CT"
     *year = (value[2] - '0') * 10 + (value[3] - '0');     // Solo los dos últimos dígitos
@@ -173,7 +154,7 @@ void parse_Initialize(unsigned char* value, unsigned char *hour, unsigned char *
     *criticalThreshold = (value[29] - '0') * 10 + (value[30] - '0');
 }
 
-void parse_SetTime(unsigned char* value, unsigned char *hour, unsigned char *min)
+void SIO_parse_SetTime(unsigned char* value, unsigned char *hour, unsigned char *min)
 {
     // Format: "HH:mm"
     *hour = (value[0] - '0') * 10 + (value[1] - '0');

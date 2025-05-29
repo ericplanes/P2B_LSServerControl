@@ -58,8 +58,8 @@ unsigned char SIO_NewStringAvail();
 
 
 unsigned char SIO_GetCommandAndValue(unsigned char* value);
-void parse_Initialize(unsigned char* value, unsigned char *hour, unsigned char *min, unsigned char *day, unsigned char *month, unsigned char *year, unsigned char *pollingRate, unsigned char *lowThreshold, unsigned char *moderateThreshold, unsigned char *highThreshold, unsigned char *criticalThreshold);
-void parse_SetTime(unsigned char* value, unsigned char *hour, unsigned char *min);
+void SIO_parse_Initialize(unsigned char* value, unsigned char *hour, unsigned char *min, unsigned char *day, unsigned char *month, unsigned char *year, unsigned char *pollingRate, unsigned char *lowThreshold, unsigned char *moderateThreshold, unsigned char *highThreshold, unsigned char *criticalThreshold);
+void SIO_parse_SetTime(unsigned char* value, unsigned char *hour, unsigned char *min);
 unsigned char SIO_SendInt(unsigned char value);
 
 
