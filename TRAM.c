@@ -7,6 +7,7 @@
  * ======================================= */
 
 static void inc_address(void);
+static void reset_address(void);
 
 /* =======================================
  *        PUBLIC FUNCTION BODIES
@@ -96,7 +97,7 @@ static void inc_address(void)
 /*
  * RAM COUNTER: Pulse to the !Reset signal to make the address of the RAM = 0
  */
-void reset_address(void)
+static void reset_address(void)
 {
     LATCbits.LATC0 = 0; // Activate Reset
     LATCbits.LATC0 = 1; // Deactivate Reset

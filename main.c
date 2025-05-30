@@ -71,7 +71,7 @@ void main(void)
         MENU_Motor();
         CTR_Motor();
         PWM_Motor();
-        SIO_MotorTX();
+
         /*
          * Every 2 seconds:
          * Prints Controller status.
