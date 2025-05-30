@@ -12,5 +12,6 @@ void RAM_Reset(void);
 
 // Testing
 BYTE RAM_TEST_Read_From_0(void);
+void reset_address(void);
 
 #endif
