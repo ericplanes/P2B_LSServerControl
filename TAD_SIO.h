@@ -51,25 +51,11 @@ void SIO_SendString(char *str, unsigned char length);
 void SIO_MotorTX();
 
 // RX:
-unsigned char SIO_LastByteReceived();
-char SIO_GetCharCua();
 void SIO_PseudoMotorRX();
-unsigned char SIO_NewStringAvail();
 
 
 unsigned char SIO_GetCommandAndValue(unsigned char* value);
 void SIO_parse_Initialize(unsigned char* value, unsigned char *hour, unsigned char *min, unsigned char *day, unsigned char *month, unsigned char *year, unsigned char *pollingRate, unsigned char *lowThreshold, unsigned char *moderateThreshold, unsigned char *highThreshold, unsigned char *criticalThreshold);
 void SIO_parse_SetTime(unsigned char* value, unsigned char *hour, unsigned char *min);
-unsigned char SIO_SendInt(unsigned char value);
-
-
-// future deprecated functions
-unsigned char SIO_RXAvail(void);
-unsigned char SIO_TXAvail(void); // Available == 1
-unsigned char SIO_GetChar(void);
-void SIO_PutChar(unsigned char lletra);
-void SIO_SafePrint(char lletra);
-void SIO_PrintString(const char *text);
-void itoa(unsigned int value, char *str, unsigned char base);
 
 #endif

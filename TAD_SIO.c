@@ -36,19 +36,12 @@ void SIO_Init(){
 }
 
 // SIO RX:
-unsigned char SIO_RXAvail(){
-    return ((PIR1bits.RCIF==1)?TRUE:FALSE);
-}
 
 char SIO_GetCharCua(){
     char caractero = CuaRX[PtrGreenRx];
     CuaRX[PtrGreenRx++] = '\0';
     if(PtrGreenRx >= MAX_LENGTH_CUA) PtrGreenRx = 0;
     return caractero;
-}
-
-unsigned char SIO_NewStringAvail(){
-    return (PtrGreenRx != PtrRedRx);
 }
 
 unsigned char SIO_LastByteReceived(){
@@ -60,11 +53,6 @@ void SIO_PseudoMotorRX(){
         CuaRX[PtrRedRx++] = RCREG;
         if(PtrRedRx >= MAX_LENGTH_CUA) PtrRedRx = 0;
     }
-}
-
-unsigned char SIO_CheckCuaRx(){
-    // Retorna 1 si hi ha algo a llegir
-    return (PtrGreenRx != PtrRedRx);
 }
 
 // SIO TX:
@@ -161,78 +149,8 @@ void SIO_parse_SetTime(unsigned char* value, unsigned char *hour, unsigned char 
     *min = (value[3] - '0') * 10 + (value[4] - '0');
 }
 
-unsigned char SIO_SendInt(unsigned char value)
-{
-    // Envia un enter de 8 bits com a caràcter ASCII
-    if (value < 10)
-    {
-        SIO_SafePrint('0'+value);
-    }
-    else if (value < 100)
-    {
-        SIO_SafePrint((value / 10) + '0');
-        SIO_SafePrint((value % 10) + '0');
-    }
-    else
-    {
-        SIO_SafePrint('9');
-        SIO_SafePrint('9');
-    }
-    return TRUE;
-}
 
-// future deprecated functions
-unsigned char SIO_TXAvail()
-{
-    return ((PIR1bits.TXIF == 1) ? TRUE : FALSE);
-}
 unsigned char SIO_GetChar()
 {
     return RCREG;
-}
-void SIO_PutChar(unsigned char lletra)
-{
-    TXREG = lletra;
-}
-
-void SIO_SafePrint(char lletra)
-{ // NO COOPERATIU, NOMES PER DEBUGGING
-    while (!SIO_TXAvail())
-        ;
-    SIO_PutChar(lletra);
-}
-
-void SIO_PrintString(const char *text)
-{
-    while (*text != '\0')
-    {
-        SIO_SafePrint(*text++);
-    }
-}
-
-void itoa(unsigned int value, char *str, unsigned char base)
-{
-    char temp[6]; // Buffer temporal per invertir el n mero (fins a 65535 = 5 xifres + \0)
-    int i = 0;
-
-    if (value == 0)
-    {
-        str[0] = '0';
-        str[1] = '\0';
-        return;
-    }
-
-    while (value > 0 && i < 5)
-    {
-        temp[i++] = (value % base) + '0';
-        value /= base;
-    }
-
-    // Inverteix el resultat a str
-    int j = 0;
-    while (i > 0)
-    {
-        str[j++] = temp[--i];
-    }
-    str[j] = '\0'; // null terminador
 }
