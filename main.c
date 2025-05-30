@@ -62,6 +62,7 @@ void main(void)
 
     // Extras for testing
     TEST_Init_PerifericsSimpleTest();
+    MENU_TEST_SetDefaultConfig();
 
     // Main loop — cooperative multitasking
     while (TRUE)
