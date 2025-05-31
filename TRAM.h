@@ -13,5 +13,6 @@ void RAM_PrepareReadFrom0(void);
 
 // Testing
 BYTE RAM_TEST_Read_From_0(void);
+void reset_address(void);
 
 #endif

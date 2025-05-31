@@ -7,7 +7,6 @@
  * ======================================= */
 
 static void inc_address(void);
-static void reset_address(void);
 
 /* =======================================
  *        PUBLIC FUNCTION BODIES

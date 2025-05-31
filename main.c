@@ -62,6 +62,7 @@ void main(void)
 
     // Extras for testing
     TEST_Init_PerifericsSimpleTest();
+    MENU_TEST_SetDefaultConfig();
 
     // Main loop — cooperative multitasking
     while (TRUE)
@@ -70,7 +71,7 @@ void main(void)
         MENU_Motor();
         CTR_Motor();
         PWM_Motor();
-
+        SIO_MotorTX();
         /*
          * Every 2 seconds:
          * Prints Controller status.
