@@ -5,7 +5,6 @@
 #include <pic18f4321.h>
 #include "Utils.h"
 #include "TAD_SIO.h"
-#include "Utils.h"
 
 #define I2C_BAUDRATE 0x24 // Adjust for 100kHz at 10MHz Fosc
 
@@ -22,6 +21,5 @@ void I2C_TEST_Wait1S(void);
 
 // Added functions
 void I2C_ReadTimestamp(BYTE *hhmmssDDMMYYYY);
-void testLectura(void);
 
 #endif

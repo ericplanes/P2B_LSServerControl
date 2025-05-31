@@ -9,6 +9,7 @@ void RAM_Init(void);
 void RAM_Write(BYTE data);
 BYTE RAM_Read(void);
 void RAM_Reset(void);
+void RAM_PrepareReadFrom0(void);
 
 // Testing
 BYTE RAM_TEST_Read_From_0(void);
