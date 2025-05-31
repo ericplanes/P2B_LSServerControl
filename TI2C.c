@@ -1,6 +1,7 @@
 #include "TI2C.h"
 
 #define DS3231_ADDRESS (0x68 << 1)
+BYTE SECOND_PASSED = 0; // Flag to indicate if one second has passed
 
 /* =======================================
  *         PRIVATE FUNCTION HEADERS
@@ -277,4 +278,20 @@ static void fill_timestamp(BYTE *log, BYTE sec, BYTE min, BYTE hour, BYTE day, B
   log[11] = '0';
   log[12] = '0' + (year / 10);
   log[13] = '0' + (year % 10);
+}
+
+BOOL ds3231_HAS_ONE_MINUTE_PASSED_YET(void)
+{
+  if(SECOND_PASSED < 59) // Check if one minute has passed
+    return FALSE; // Indicate that one minute has not passed yet
+  SECOND_PASSED = 0; // Reset the second passed counter
+  return TRUE; // Indicate that one minute has passed
+}
+
+void ds3231_HAS_ONE_SECOND_PASSED_YET(void)
+{
+  if(PORTBbits.RB1 != 0) // Check if alarm flag is set (RB1 low)
+    return;
+  ds3231_clear_alarm_flag(); // Clear the alarm flag
+  SECOND_PASSED++; // Set the flag indicating one second has passed
 }

@@ -67,11 +67,13 @@ void main(void)
     // Main loop — cooperative multitasking
     while (TRUE)
     {
+        ds3231_HAS_ONE_SECOND_PASSED_YET();
         ADC_Motor();
         MENU_Motor();
         CTR_Motor();
         PWM_Motor();
         SIO_MotorTX();
+        SIO_PseudoMotorRX();
         /*
          * Every 2 seconds:
          * Prints Controller status.
