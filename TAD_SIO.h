@@ -42,33 +42,7 @@
 
 #define MAX_LENGTH_CUA 80
 
-// Commands sent from java to the pic
-#define COMMAND_INITIALIZE  'N'
-#define COMMAND_SET_TIME    'I'
-#define COMMAND_GET_LOGS    'G'
-#define COMMAND_GET_GRAPH   'E'
-#define COMMAND_RESET       'X'
-
-// Commands sent from pic to java
-#define COMMAND_FINISH      'F'
-#define COMMAND_DATAGRAPH   'A'
-#define COMMAND_DATALOGS    'C'
-#define COMMAND_UPDATETIME  'T'
-#define COMMAND_UP          'U'
-#define COMMAND_DOWN        'D'
-#define COMMAND_LEFT        'L'
-#define COMMAND_RIGHT       'R'
-#define COMMAND_SELECT      'S'
-
-
-#define EOC '\n' // End of Command, sent from pic to java, the last character of the string
-#define NO_COMMAND 0 // End of Command, sent from pic to java, the last character of the string
-#define TRUE 1
-#define FALSE 0
-
-#define MAX_LENGTH_CUA 80
-
-//FUNCIONS
+// FUNCIONS
 void SIO_Init();
 
 // TX:

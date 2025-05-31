@@ -202,41 +202,4 @@ void itoa(unsigned int value, char *str, unsigned char base)
         str[1] = '\0';
         return;
     }
-
-unsigned char SIO_GetCommandAndValue(unsigned char* value){
-    if(SIO_LastByteReceived() != '\n') return NO_COMMAND; // No hi ha cap comanda
-    switch(SIO_GetCharCua()){
-        case COMMAND_INITIALIZE:
-            for(unsigned char i = 0; i < LENGTH_INITIALIZE - 1; i++){
-                value[i] = SIO_GetCharCua();
-            }
-            SIO_GetCharCua();
-            SIO_GetCharCua(); // Llegeix els dos caracters de final de comanda
-            return COMMAND_INITIALIZE;
-            break;
-        case COMMAND_SET_TIME:
-            for(unsigned char i = 0; i < LENGTH_SET_TIME - 1; i++){
-                value[i] = SIO_GetCharCua();
-            }
-            SIO_GetCharCua();
-            SIO_GetCharCua(); // Llegeix els dos caracters de final de comanda
-            return COMMAND_SET_TIME;
-            break;
-        case COMMAND_GET_LOGS:
-            return COMMAND_GET_LOGS;
-        case COMMAND_GET_GRAPH:
-            return COMMAND_GET_GRAPH;
-        case COMMAND_RESET:
-            return COMMAND_RESET;
-        default:
-            return NO_COMMAND; // Comanda desconeguda
-    }
-}
-    // Inverteix el resultat a str
-    int j = 0;
-    while (i > 0)
-    {
-        str[j++] = temp[--i];
-    }
-    str[j] = '\0'; // null terminador
 }

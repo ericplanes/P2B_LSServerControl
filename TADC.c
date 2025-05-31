@@ -31,8 +31,8 @@ void ADC_Init(void)
     TRISAbits.TRISA0 = 1; // AN0 (Joystick X)
     TRISAbits.TRISA1 = 1; // AN1 (Joystick Y)
     TRISAbits.TRISA2 = 1; // AN2 (TMP36)
-  
-    ADCON1 = 0b00001110;       // Configure AN0–AN2 as analog, rest as digital
+
+    ADCON1 = 0b00001110; // Configure AN0–AN2 as analog, rest as digital
     ADCON2 = 0b00011110; // Right justified result, acquisition time = 2 TAD
     ADCON0 = 0x00;       // Start with channel AN0
     ADCON0bits.ADON = 1; // Enable ADC module    channel = 0;
