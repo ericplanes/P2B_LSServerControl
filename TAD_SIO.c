@@ -188,7 +188,8 @@ void SIO_PrintString(const char *text)
 
 void SIO_SafePrint(char lletra)
 {
-    // Keep to allow compilation
+    if (PIR1bits.TXIF == 1)
+        TXREG = lletra;
 }
 
 void itoa(unsigned int value, char *str, unsigned char base)
