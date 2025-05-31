@@ -90,7 +90,7 @@ void MENU_Motor(void)
         menu_state = prepare_command_and_get_next_state(command);
         break;
 
-    case MENU_STATE_CHECK_TIMER:
+    case MENU_STATE_CHECK_TIMER: // default if no command was sent on MENU_STATE_WAIT_COMMAND
         if (TiGetTics(time_timer) >= ONE_SECOND * 60)
         {
             send_timestamp_update();
@@ -177,6 +177,11 @@ void MENU_TEST_SetDefaultConfig(void)
 /* =======================================
  *         PRIVATE FUNCTION BODIES
  * ======================================= */
+
+/*
+ * Gets the command. If it's either LOGS, GRAPH, SET_TIME, or RESET, does the previous steps before the loop from the command.asm
+ * If no command, it returns the next state as CHECK_TIMER.
+ */
 static BYTE prepare_command_and_get_next_state(BYTE command)
 {
     switch (command)
@@ -193,7 +198,7 @@ static BYTE prepare_command_and_get_next_state(BYTE command)
 
     case COMMAND_SET_TIME: // TODO: Address fix of I2C_SetTimestamp
         SIO_parse_SetTime(command_buffer, &hour, &min);
-        I2C_SetTimestamp(hour, min, 0, 1, 1, 1, 0); // dummy date
+        I2C_UpdateTimestamp(hour, min);
         send_timestamp_update();
         return MENU_STATE_WAIT_COMMAND;
 

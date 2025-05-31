@@ -13,6 +13,7 @@
 void I2C_Init(void);
 void I2C_ReadTimestamp(BYTE *timestamp);
 void I2C_SetTimestamp(BYTE hour, BYTE min, BYTE sec, BYTE weekday, BYTE day, BYTE month, BYTE year);
+void I2C_UpdateTimestamp(BYTE hour, BYTE min);
 
 // Testing
 void I2C_TEST_PrintTimestamp(void);

@@ -18,6 +18,7 @@ static BYTE bin_to_bcd(BYTE val);
 static BYTE bcd_to_bin(BYTE val);
 static void ds3231_read_raw(BYTE *h, BYTE *m, BYTE *s, BYTE *dow, BYTE *d, BYTE *mo, BYTE *y);
 static void ds3231_write_raw(BYTE h, BYTE m, BYTE s, BYTE dow, BYTE d, BYTE mo, BYTE y);
+static void ds3231_update_raw(BYTE h, BYTE m);
 static void ds3231_clear_alarm_flag(void);
 static void fill_timestamp(BYTE *log, BYTE sec, BYTE min, BYTE hour, BYTE day, BYTE month, BYTE year);
 
@@ -109,6 +110,11 @@ void I2C_TEST_InitAlarmEverySecond(void)
 
   // Clear Alarm1 flag (A1F bit in status register 0x0F)
   ds3231_clear_alarm_flag();
+}
+
+void I2C_UpdateTimestamp(BYTE hour, BYTE min)
+{
+  ds3231_update_raw(hour, min);
 }
 
 /* =======================================
@@ -241,6 +247,17 @@ static void ds3231_write_raw(BYTE h, BYTE m, BYTE s, BYTE dow, BYTE d, BYTE mo, 
   i2c_write(bin_to_bcd(d & 0x3F));
   i2c_write(bin_to_bcd(mo & 0x1F));
   i2c_write(bin_to_bcd(y));
+  i2c_stop(); // End I2C comunication
+}
+
+/*
+ * The goal is to only update minutes and hour from the I2C.
+ */
+static void ds3231_update_raw(BYTE h, BYTE m)
+{
+  i2c_start(DS3231_ADDRESS);
+  i2c_write(bin_to_bcd(m & 0x7F));
+  i2c_write(bin_to_bcd(h & 0x3F));
   i2c_stop(); // End I2C comunication
 }
 
