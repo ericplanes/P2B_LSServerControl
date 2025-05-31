@@ -257,6 +257,7 @@ static void ds3231_write_raw(BYTE h, BYTE m, BYTE s, BYTE dow, BYTE d, BYTE mo, 
 static void ds3231_update_raw(BYTE h, BYTE m)
 {
   i2c_start(DS3231_ADDRESS);
+  i2c_write(0x01);
   i2c_write(bin_to_bcd(m & 0x7F));
   i2c_write(bin_to_bcd(h & 0x3F));
   i2c_stop(); // End I2C comunication
