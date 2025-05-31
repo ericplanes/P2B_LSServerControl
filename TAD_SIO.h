@@ -54,7 +54,7 @@ void SIO_MotorTX();
 void SIO_PseudoMotorRX();
 
 unsigned char SIO_GetCommandAndValue(unsigned char *value);
-void SIO_parse_Initialize(unsigned char *value, unsigned char *hour, unsigned char *min, unsigned char *day, unsigned char *month, unsigned char *year, unsigned char *pollingRate, unsigned char *lowThreshold, unsigned char *moderateThreshold, unsigned char *highThreshold, unsigned char *criticalThreshold);
+void SIO_parse_Initialize(unsigned char *value, unsigned char *hour, unsigned char *min, unsigned char *day, unsigned char *month, unsigned char *year, unsigned char *pollingRate, unsigned char *lowThreshold, unsigned char *moderateThreshold, unsigned char *highThreshold);
 void SIO_parse_SetTime(unsigned char *value, unsigned char *hour, unsigned char *min);
 
 // Old methods that we need to keep ATM

@@ -152,7 +152,7 @@ unsigned char SIO_GetCommandAndValue(unsigned char *value)
     }
 }
 
-void SIO_parse_Initialize(unsigned char *value, unsigned char *hour, unsigned char *min, unsigned char *day, unsigned char *month, unsigned char *year, unsigned char *pollingRate, unsigned char *lowThreshold, unsigned char *moderateThreshold, unsigned char *highThreshold, unsigned char *criticalThreshold)
+void SIO_parse_Initialize(unsigned char *value, unsigned char *hour, unsigned char *min, unsigned char *day, unsigned char *month, unsigned char *year, unsigned char *pollingRate, unsigned char *lowThreshold, unsigned char *moderateThreshold, unsigned char *highThreshold)
 {
     // Format: "yyyy-MM-dd HH:mm$PR$LT$MT$HT$CT"
     *year = (value[2] - '0') * 10 + (value[3] - '0'); // Solo los dos últimos dígitos
@@ -164,7 +164,6 @@ void SIO_parse_Initialize(unsigned char *value, unsigned char *hour, unsigned ch
     *lowThreshold = (value[20] - '0') * 10 + (value[21] - '0');
     *moderateThreshold = (value[23] - '0') * 10 + (value[24] - '0');
     *highThreshold = (value[26] - '0') * 10 + (value[27] - '0');
-    *criticalThreshold = (value[29] - '0') * 10 + (value[30] - '0');
 }
 
 void SIO_parse_SetTime(unsigned char *value, unsigned char *hour, unsigned char *min)
@@ -189,10 +188,8 @@ void SIO_PrintString(const char *text)
 }
 
 void SIO_SafePrint(char lletra)
-{ // NO COOPERATIU, NOMES PER DEBUGGING
-    while (!SIO_TXAvail())
-        ;
-    SIO_PutChar(lletra);
+{
+    // Keep to allow compilation
 }
 
 void itoa(unsigned int value, char *str, unsigned char base)
