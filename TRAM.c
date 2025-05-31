@@ -64,7 +64,7 @@ BYTE RAM_Read(void)
  */
 void RAM_Reset(void)
 {
-    reset_address();
+    RAM_PrepareReadFrom0();
     for (WORD i = 0; i < MAX_RAM_ADDRESS; i++)
     {
         RAM_Write(0x00); // Write 0 to all the positions
@@ -76,7 +76,7 @@ void RAM_Reset(void)
  */
 BYTE RAM_TEST_Read_From_0(void)
 {
-    reset_address();
+    RAM_PrepareReadFrom0();
     return RAM_Read();
 }
 
@@ -96,7 +96,7 @@ static void inc_address(void)
 /*
  * RAM COUNTER: Pulse to the !Reset signal to make the address of the RAM = 0
  */
-void reset_address(void)
+void RAM_PrepareReadFrom0(void)
 {
     LATCbits.LATC0 = 0; // Activate Reset
     LATCbits.LATC0 = 1; // Deactivate Reset
