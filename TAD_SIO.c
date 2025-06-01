@@ -116,7 +116,7 @@ void SIO_MotorTX()
  *       Funcions per parsejar java
  * ======================================= */
 
-unsigned char SIO_GetCommandAndValue(unsigned char *value)
+unsigned char  SIO_GetCommandAndValue(unsigned char *value)
 {
     if (SIO_LastByteReceived() != '\n')
         return NO_COMMAND; // No hi ha cap comanda
@@ -130,7 +130,6 @@ unsigned char SIO_GetCommandAndValue(unsigned char *value)
         SIO_GetCharCua();
         SIO_GetCharCua(); // Llegeix els dos caracters de final de comanda
         return COMMAND_INITIALIZE;
-        break;
     case COMMAND_SET_TIME:
         for (unsigned char i = 0; i < LENGTH_SET_TIME - 1; i++)
         {
@@ -139,12 +138,17 @@ unsigned char SIO_GetCommandAndValue(unsigned char *value)
         SIO_GetCharCua();
         SIO_GetCharCua(); // Llegeix els dos caracters de final de comanda
         return COMMAND_SET_TIME;
-        break;
     case COMMAND_GET_LOGS:
+        SIO_GetCharCua();
+        SIO_GetCharCua();
         return COMMAND_GET_LOGS;
     case COMMAND_GET_GRAPH:
+        SIO_GetCharCua();
+        SIO_GetCharCua();
         return COMMAND_GET_GRAPH;
     case COMMAND_RESET:
+        SIO_GetCharCua();
+        SIO_GetCharCua();
         return COMMAND_RESET;
     default:
         return NO_COMMAND; // Comanda desconeguda

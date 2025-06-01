@@ -10,7 +10,7 @@
  *           PRIVATE DEFINES
  * ======================================= */
 
-#define MENU_STATE_WAIT_INIT 0
+#define MENU_STATE_INIT 0
 #define MENU_STATE_WAIT_COMMAND 1
 #define MENU_STATE_SEND_LOGS 2
 #define MENU_STATE_SEND_GRAPH 3
@@ -43,6 +43,7 @@ static BYTE current_log_section = 0;
 static BYTE time_timer = TI_TEST;
 static BYTE hour, min;
 static BYTE command;
+static BYTE button_pressed = FALSE; // This variable is used to check if the button was pressed in the last loop
 
 /* =======================================
  *         PRIVATE FUNCTION HEADERS
@@ -67,7 +68,7 @@ void MENU_Init(void)
     config.thresholds[2] = 0;
     config.initialTime[0] = '\0';
 
-    menu_state = MENU_STATE_WAIT_INIT;
+    menu_state = MENU_STATE_WAIT_COMMAND;
     TiNewTimer(&time_timer);
     TiResetTics(time_timer);
 }
@@ -76,18 +77,20 @@ void MENU_Motor(void)
 {
     switch (menu_state)
     {
-    case MENU_STATE_WAIT_INIT:
-        command = SIO_GetCommandAndValue(command_buffer);
-        if (command == COMMAND_INITIALIZE)
-        {
-            initialize_system_with_config();
-            menu_state = MENU_STATE_WAIT_COMMAND;
-        }
-        break;
-
     case MENU_STATE_WAIT_COMMAND:
         command = SIO_GetCommandAndValue(command_buffer);
         menu_state = prepare_command_and_get_next_state(command);
+        break;
+
+    case MENU_STATE_INIT:
+        initialize_system_with_config();
+        menu_state = MENU_STATE_WAIT_COMMAND;
+        break;
+
+    case MENU_STATE_UPDATE_TIME:
+        SIO_parse_SetTime(command_buffer, &hour, &min);
+        I2C_UpdateTimestamp(hour, min);
+        menu_state = MENU_STATE_WAIT_COMMAND;
         break;
 
     case MENU_STATE_CHECK_TIMER: // default if no command was sent on MENU_STATE_WAIT_COMMAND
@@ -98,8 +101,18 @@ void MENU_Motor(void)
         else
         {
             BYTE joy = Joystick_GetDirection();
-            if (joy != JOY_CENTER)
+            if (joy != JOY_CENTER){
                 SIO_SendCharCua(joy);
+                send_end_of_line();
+            }
+            if (Joystick_IsButtonPressed() && !button_pressed){
+                SIO_SendCharCua(COMMAND_SELECT);
+                send_end_of_line();
+                button_pressed = TRUE; // Set the button pressed flag to TRUE
+            } else if(!Joystick_IsButtonPressed()){
+                button_pressed = FALSE; // Reset the button pressed flag
+            }
+
         }
         menu_state = MENU_STATE_WAIT_COMMAND;
         break;
@@ -118,6 +131,7 @@ void MENU_Motor(void)
         if (logs_remaining == 0)
         {
             SIO_SendCharCua(COMMAND_FINISH);
+            send_end_of_line();
             menu_state = MENU_STATE_WAIT_COMMAND;
         }
         break;
@@ -127,11 +141,15 @@ void MENU_Motor(void)
         BYTE stored_temp = RAM_Read();
         if (stored_temp != 0x00)
         {
-            SIO_SendCharCua(stored_temp);
+            SIO_SendCharCua(COMMAND_DATAGRAPH);
+            SIO_SendCharCua('0' + (stored_temp / 10));
+            SIO_SendCharCua('0' + (stored_temp % 10));
+            send_end_of_line();
         }
         else
         {
             SIO_SendCharCua(COMMAND_FINISH);
+            send_end_of_line();
             menu_state = MENU_STATE_WAIT_COMMAND;
         }
     }
@@ -192,18 +210,17 @@ static BYTE prepare_command_and_get_next_state(BYTE command)
 
     case COMMAND_GET_GRAPH:
         RAM_PrepareReadFrom0();
-        SIO_SendCharCua(COMMAND_DATAGRAPH);
         return MENU_STATE_SEND_GRAPH;
 
-    case COMMAND_SET_TIME: // TODO: Address fix of I2C_SetTimestamp
-        SIO_parse_SetTime(command_buffer, &hour, &min);
-        I2C_UpdateTimestamp(hour, min);
-        send_timestamp_update();
-        return MENU_STATE_WAIT_COMMAND;
+    case COMMAND_SET_TIME:
+        return MENU_STATE_UPDATE_TIME;
 
     case COMMAND_RESET:
         reset_config();
         return MENU_STATE_WAIT_COMMAND;
+
+    case COMMAND_INITIALIZE:
+        return MENU_STATE_INIT;
 
     default:
         return MENU_STATE_CHECK_TIMER;
@@ -224,7 +241,6 @@ static void initialize_system_with_config(void)
     config.isConfigured = TRUE;
 
     I2C_SetTimestamp(hour, min, 0, 1, day, month, year);
-    send_timestamp_update();
 }
 
 static void send_timestamp_update(void)
@@ -232,7 +248,11 @@ static void send_timestamp_update(void)
     static BYTE now[TIMESTAMP_SIZE];
     I2C_ReadTimestamp(now);
     SIO_SendCharCua(COMMAND_UPDATETIME);
-    SIO_SendString((char *)now, TIMESTAMP_SIZE - 1);
+    SIO_SendCharCua(now[0]);
+    SIO_SendCharCua(now[1]);
+    SIO_SendCharCua(':');
+    SIO_SendCharCua(now[2]);
+    SIO_SendCharCua(now[3]);
     send_end_of_line();
 }
 
