@@ -134,20 +134,22 @@ unsigned char SIO_GetCommandAndValue(unsigned char *value)
         len = LENGTH_SET_TIME - 1;
         break;
     case COMMAND_GET_LOGS:
+        consume_EOC();
+        return command;
     case COMMAND_GET_GRAPH:
+        consume_EOC();
+        return command;
     case COMMAND_RESET:
-        SIO_GetCharCua();
-        SIO_GetCharCua();
+        consume_EOC();
         return command;
     default:
         return NO_COMMAND;
     }
 
+    // If INIT or SET TIME then read the rest of the code
     for (BYTE i = 0; i < len; i++)
         value[i] = SIO_GetCharCua();
 
-    SIO_GetCharCua();
-    SIO_GetCharCua(); // consume EOC
     return command;
 }
 
@@ -168,4 +170,14 @@ void SIO_parse_SetTime(unsigned char *value, BYTE *hour, BYTE *min)
 {
     *hour = (value[0] - '0') * 10 + (value[1] - '0');
     *min = (value[3] - '0') * 10 + (value[4] - '0');
+}
+
+/* =======================================
+ *        PRIVATE FUNCTION BODIES
+ * ======================================= */
+
+void consume_EOC(void)
+{
+    SIO_GetCharCua(); // \r
+    SIO_GetCharCua(); // \n
 }

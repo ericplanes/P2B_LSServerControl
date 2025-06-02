@@ -5,7 +5,7 @@
  * ======================================= */
 
 static SYS_STATUS compute_temperature_state(BYTE value, const BYTE *thresholds);
-static BYTE compute_temperature_degrees(WORD adc);
+static BYTE compute_temperature_degrees(BYTE adc);
 
 /* =======================================
  *          PRIVATE VARIABLES
@@ -64,16 +64,14 @@ void TEMP_TEST_SimulateState(SYS_STATUS state)
  * ======================================= */
 
 /*
- * Computes the value of the temperature from the value readed at the ADC (XXXXXX-HH LLLLLLLL).
- * Function used -> TMP36: Vout = 0.5 + 10mV/°C → 0.5V = 0 °C
- * Each step ADC ≈ 4.88 mV → 1 step = 0.488°C
+ * Computes the value of the temperature from the value readed at the ADC
  */
-static BYTE compute_temperature_degrees(WORD adc)
+static BYTE compute_temperature_degrees(BYTE adc)
 {
     if (simulation == TRUE)
         return temperature;
 
-    return 20; // Provisional number until the conversion works correctly
+    return (adc - 0.5) * 100; // Provisional number until the conversion works correctly
 }
 
 /**
