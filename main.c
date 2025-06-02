@@ -59,7 +59,6 @@ void main(void)
 
     TiInit();
     SIO_Init();
-    MENU_TEST_SetDefaultConfig();
 
     while (TRUE)
     {

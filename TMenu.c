@@ -175,20 +175,6 @@ const BYTE *MENU_GetInitialTimeString(void)
     return config.initialTime;
 }
 
-void MENU_TEST_SetDefaultConfig(void)
-{
-    config.isConfigured = TRUE;
-    config.thresholds[0] = 20;
-    config.thresholds[1] = 25;
-    config.thresholds[2] = 30;
-    config.samplingTime = 1;
-
-    const BYTE *defaultTime = (const BYTE *)"00000001012025";
-    for (BYTE i = 0; i < 14; i++)
-        config.initialTime[i] = defaultTime[i];
-    config.initialTime[14] = '\0';
-}
-
 /* =======================================
  *         PRIVATE FUNCTION BODIES
  * ======================================= */
