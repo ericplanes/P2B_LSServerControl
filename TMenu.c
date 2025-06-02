@@ -41,6 +41,7 @@ static BYTE log_buffer[TIMESTAMP_SIZE];
 static BYTE logs_remaining = 0;
 static BYTE current_log_section = 0;
 static BYTE time_timer = TI_TEST;
+static BYTE timer_sio = TI_SIO;
 static BYTE hour, min;
 static BYTE command;
 
@@ -71,6 +72,9 @@ void MENU_Init(void)
     menu_state = MENU_STATE_WAIT_COMMAND;
     TiNewTimer(&time_timer);
     TiResetTics(time_timer);
+
+    TiNewTimer(&timer_sio);
+    TiResetTics(timer_sio);
 }
 
 void MENU_Motor(void)
@@ -267,8 +271,11 @@ static void send_end_of_line(void)
 
 static void send_temperature(BYTE stored_temp)
 {
+    while (TiGetTics(timer_sio) < ONE_SECOND / 250)
+        ;
     SIO_SendCharCua(COMMAND_DATAGRAPH);
     SIO_SendCharCua('0' + (stored_temp / 10));
     SIO_SendCharCua('0' + (stored_temp % 10));
     send_end_of_line();
+    TiResetTics(timer_sio);
 }

@@ -12,6 +12,7 @@
 #define TI_FAN 1
 #define TI_LED 2
 #define TI_CONT 3
+#define TI_SIO 4
 
 void Timer0_ISR(void);
 
