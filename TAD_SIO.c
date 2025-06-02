@@ -18,6 +18,8 @@ static BYTE rx_head = 0, rx_tail = 0;
 static char tx_buffer[MAX_LENGTH_CUA] = {0};
 static char rx_buffer[MAX_LENGTH_CUA] = {0};
 
+void consume_EOC(void);
+
 /* =======================================
  *         PUBLIC FUNCTION BODIES
  * ======================================= */
