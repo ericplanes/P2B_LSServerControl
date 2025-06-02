@@ -4,11 +4,6 @@
 #include <xc.h>
 #include <pic18f4321.h>
 
-// CONSTANTS
-#define CONFIGURACIO_TXSTA 0b00100000
-#define CONFIGURACIO_RCSTA 0b10010000
-#define CONFIGURACIO_BAUDC 0b00000000
-
 // Length of the commands sent from java to the pic excluding the EOC characters
 #define LENGTH_INITIALIZE sizeof("Nyyyy-MM-dd HH:mm$RR$LT$MT$HT$CT") //  "yyyy-MM-ddHH:mm$pollingRate$lowThreshold$moderateThreshold$highThreshold$criticalThreshold\r\n"
 #define LENGTH_SET_TIME sizeof("IHH:mm")                             // HH:mm format

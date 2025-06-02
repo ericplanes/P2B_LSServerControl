@@ -116,7 +116,7 @@ void SIO_MotorTX()
  *       Funcions per parsejar java
  * ======================================= */
 
-unsigned char  SIO_GetCommandAndValue(unsigned char *value)
+unsigned char SIO_GetCommandAndValue(unsigned char *value)
 {
     if (SIO_LastByteReceived() != '\n')
         return NO_COMMAND; // No hi ha cap comanda

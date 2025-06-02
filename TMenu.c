@@ -271,7 +271,7 @@ static void send_end_of_line(void)
 
 static void send_temperature(BYTE stored_temp)
 {
-    while (TiGetTics(timer_sio) < ONE_SECOND / 250)
+    while (TiGetTics(timer_sio) < 2) // Wait 4ms
         ;
     SIO_SendCharCua(COMMAND_DATAGRAPH);
     SIO_SendCharCua('0' + (stored_temp / 10));

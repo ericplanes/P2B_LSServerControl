@@ -61,7 +61,6 @@ void main(void)
     I2C_TEST_InitAlarmEverySecond();
 
     // Extras for testing
-    TEST_Init_PerifericsSimpleTest();
     MENU_TEST_SetDefaultConfig();
 
     // Main loop — cooperative multitasking
@@ -74,13 +73,5 @@ void main(void)
         PWM_Motor();
         SIO_MotorTX();
         SIO_PseudoMotorRX();
-        /*
-         * Every 2 seconds:
-         * Prints Controller status.
-         * Prints all EEPROM logs.
-         * Prins amount of stored temperatures in RAM.
-         * Changes state of the system (changes temperature status)
-         */
-        TEST_print_status();
     }
 }
