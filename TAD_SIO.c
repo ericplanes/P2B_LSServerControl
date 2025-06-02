@@ -67,7 +67,8 @@ void SIO_MotorTX(void)
         if (PIR1bits.TXIF)
         {
             TXREG = tx_buffer[tx_tail];
-            tx_buffer[tx_tail++] = '\0';
+            tx_buffer[tx_tail] = '\0';
+            tx_tail++;
             if (tx_tail >= MAX_LENGTH_CUA)
                 tx_tail = 0;
             tx_state = STATE_TX_WAIT;
@@ -152,6 +153,7 @@ unsigned char SIO_GetCommandAndValue(unsigned char *value)
     for (BYTE i = 0; i < len; i++)
         value[i] = SIO_GetCharCua();
 
+    consume_EOC();
     return command;
 }
 
