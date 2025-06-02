@@ -71,7 +71,7 @@ static BYTE compute_temperature_degrees(BYTE adc)
     if (simulation == TRUE)
         return temperature;
 
-    return (adc - 0.5) * 100; // Provisional number until the conversion works correctly
+    return adc * 100 - 50; // Provisional number until the conversion works correctly
 }
 
 /**
