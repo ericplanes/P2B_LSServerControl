@@ -90,6 +90,7 @@ void MENU_Motor(void)
     case MENU_STATE_UPDATE_TIME:
         SIO_parse_SetTime(command_buffer, &hour, &min);
         I2C_UpdateTimestamp(hour, min);
+        send_timestamp_update();
         menu_state = MENU_STATE_WAIT_COMMAND;
         break;
 
