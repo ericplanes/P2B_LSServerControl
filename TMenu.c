@@ -99,7 +99,7 @@ void MENU_Motor(void)
         break;
 
     case MENU_STATE_CHECK_TIMER: // default if no command was sent on MENU_STATE_WAIT_COMMAND
-        if (ds3231_HAS_ONE_MINUTE_PASSED_YET())
+        if (I2C_OneMinutePassed())
         {
             send_timestamp_update();
         }

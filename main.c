@@ -10,7 +10,6 @@
 #include "TFan.h"
 #include "TPWM.h"
 #include "TController.h"
-#include "TTest.h"
 #include "TI2C.h"
 #include "TRAM.h"
 #include "TTemperature.h"
@@ -60,12 +59,11 @@ void main(void)
 
     TiInit();
     SIO_Init();
-    I2C_TEST_InitAlarmEverySecond();
     MENU_TEST_SetDefaultConfig();
 
     while (TRUE)
     {
-        ds3231_HAS_ONE_SECOND_PASSED_YET();
+        I2C_CheckCounter1S();
         ADC_Motor();
         MENU_Motor();
         CTR_Motor();

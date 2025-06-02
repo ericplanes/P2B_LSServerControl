@@ -1,162 +1,161 @@
 #include "TAD_SIO.h"
 
-#define E_IDLE_ENDED 0
-#define E_RX_1 1
-#define E_TX_1 2
-#define E_TX_2 5
-#define E_SET_LLINDARS_TEMP 3
-#define E_SET_T_MOSTREIG 4
+/* =======================================
+ *           PRIVATE DEFINES
+ * ======================================= */
 
-unsigned char EstatSIOTx,
-    EstatSIORx,
-    PtrRedTx,
-    PtrGreenTx,
-    PtrRedRx,
-    PtrGreenRx;
-char CuaRX[MAX_LENGTH_CUA] = {0};
-char CuaTX[MAX_LENGTH_CUA] = {0};
+#define STATE_TX_IDLE 0
+#define STATE_TX_SEND 1
+#define STATE_TX_WAIT 2
 
-void SIO_Init()
+/* =======================================
+ *         PRIVATE VARIABLES
+ * ======================================= */
+
+static BYTE tx_state = STATE_TX_IDLE;
+static BYTE tx_head = 0, tx_tail = 0;
+static BYTE rx_head = 0, rx_tail = 0;
+static char tx_buffer[MAX_LENGTH_CUA] = {0};
+static char rx_buffer[MAX_LENGTH_CUA] = {0};
+
+/* =======================================
+ *         PUBLIC FUNCTION BODIES
+ * ======================================= */
+
+void SIO_Init(void)
 {
-    TRISCbits.TRISC6 = 0; // TX pin (output)
-    TRISCbits.TRISC7 = 1; // RX pin (input)
+    TRISCbits.TRISC6 = 0; // TX output
+    TRISCbits.TRISC7 = 1; // RX input
 
-    TXSTAbits.BRGH = 1;    // High Baud Rate Select bit (more precise)
-    BAUDCONbits.BRG16 = 0; // Use 8-bit Baud Rate Generator
-    SPBRG = 207;           // For 9600 baud with Fosc = 32 MHz
+    TXSTAbits.BRGH = 1;
+    BAUDCONbits.BRG16 = 0;
+    SPBRG = 207; // 9600 baud @ 32 MHz
 
-    TXSTAbits.SYNC = 0; // Asynchronous mode
-    TXSTAbits.TXEN = 1; // Enable transmitter
-    RCSTAbits.SPEN = 1; // Enable serial port (TX/ RX)
-    RCSTAbits.CREN = 1; // Enable receiver
+    TXSTAbits.SYNC = 0;
+    TXSTAbits.TXEN = 1;
+    RCSTAbits.SPEN = 1;
+    RCSTAbits.CREN = 1;
 
-    EstatSIOTx = E_IDLE_ENDED;
-    PtrRedTx = PtrGreenTx = PtrRedRx = PtrGreenRx = 0;
+    tx_state = STATE_TX_IDLE;
+    tx_head = tx_tail = 0;
+    rx_head = rx_tail = 0;
 }
 
-// SIO RX:
-char SIO_GetCharCua()
+void SIO_PseudoMotorRX(void)
 {
-    char caractero = CuaRX[PtrGreenRx];
-    CuaRX[PtrGreenRx++] = '\0';
-    if (PtrGreenRx >= MAX_LENGTH_CUA)
-        PtrGreenRx = 0;
-    return caractero;
-}
-
-unsigned char SIO_LastByteReceived()
-{
-    return CuaRX[PtrRedRx - 1];
-}
-
-void SIO_PseudoMotorRX()
-{
-    if (PIR1bits.RC1IF == 1)
+    if (PIR1bits.RC1IF)
     {
-        CuaRX[PtrRedRx++] = RCREG;
-        if (PtrRedRx >= MAX_LENGTH_CUA)
-            PtrRedRx = 0;
+        rx_buffer[rx_head++] = RCREG;
+        if (rx_head >= MAX_LENGTH_CUA)
+            rx_head = 0;
     }
 }
 
-// SIO TX:
+void SIO_MotorTX(void)
+{
+    switch (tx_state)
+    {
+    case STATE_TX_IDLE:
+        if (tx_tail != tx_head)
+            tx_state = STATE_TX_SEND;
+        break;
+
+    case STATE_TX_SEND:
+        if (PIR1bits.TXIF)
+        {
+            TXREG = tx_buffer[tx_tail];
+            tx_buffer[tx_tail++] = '\0';
+            if (tx_tail >= MAX_LENGTH_CUA)
+                tx_tail = 0;
+            tx_state = STATE_TX_WAIT;
+        }
+        break;
+
+    case STATE_TX_WAIT:
+        tx_state = (tx_tail == tx_head) ? STATE_TX_IDLE : STATE_TX_SEND;
+        break;
+    }
+}
+
+char SIO_GetCharCua(void)
+{
+    char character = rx_buffer[rx_tail];
+
+    // Clear the character from the buffer
+    rx_buffer[rx_tail] = '\0';
+    rx_tail++;
+
+    if (rx_tail >= MAX_LENGTH_CUA)
+    {
+        rx_tail = 0;
+    }
+
+    return character;
+}
+
+unsigned char SIO_LastByteReceived(void)
+{
+    return (rx_head == 0) ? rx_buffer[MAX_LENGTH_CUA - 1] : rx_buffer[rx_head - 1];
+}
+
+void SIO_SendCharCua(char character)
+{
+    // Store the character in the buffer at the current head position
+    tx_buffer[tx_head] = character;
+
+    // Move to the next position in the buffer
+    tx_head = tx_head + 1;
+
+    // If we reach the end of the buffer, wrap around to the beginning
+    if (tx_head >= MAX_LENGTH_CUA)
+    {
+        tx_head = 0;
+    }
+}
+
 void SIO_SendString(char *str, unsigned char length)
 {
     for (unsigned char i = 0; i < length; i++)
-    {
-        CuaTX[PtrGreenTx++] = str[i];
-        if (PtrGreenTx >= MAX_LENGTH_CUA)
-            PtrGreenTx = 0;
-    }
+        SIO_SendCharCua(str[i]);
 }
-
-void SIO_SendCharCua(char str)
-{
-    CuaTX[PtrGreenTx++] = str;
-    if (PtrGreenTx >= MAX_LENGTH_CUA)
-        PtrGreenTx = 0;
-}
-
-void SIO_MotorTX()
-{
-    switch (EstatSIOTx)
-    {
-    case 0:
-        if (PtrGreenTx != PtrRedTx)
-        {
-            EstatSIOTx = 1;
-        }
-        break;
-    case 1:
-        if (PIR1bits.TXIF == 1)
-        {
-            TXREG = CuaTX[PtrRedTx];
-            CuaTX[PtrRedTx++] = '\0';
-            if (PtrRedTx >= MAX_LENGTH_CUA)
-                PtrRedTx = 0;
-            EstatSIOTx = 2;
-        }
-        break;
-    case 2:
-        if (PtrGreenTx == PtrRedTx)
-        {
-            EstatSIOTx = 0;
-        }
-        else
-        {
-            EstatSIOTx = 1;
-        }
-        break;
-    }
-}
-
-/* =======================================
- *       Funcions per parsejar java
- * ======================================= */
 
 unsigned char SIO_GetCommandAndValue(unsigned char *value)
 {
     if (SIO_LastByteReceived() != '\n')
-        return NO_COMMAND; // No hi ha cap comanda
-    switch (SIO_GetCharCua())
+        return NO_COMMAND;
+
+    BYTE command = SIO_GetCharCua();
+    BYTE len = 0;
+
+    switch (command)
     {
     case COMMAND_INITIALIZE:
-        for (unsigned char i = 0; i < LENGTH_INITIALIZE - 1; i++)
-        {
-            value[i] = SIO_GetCharCua();
-        }
-        SIO_GetCharCua();
-        SIO_GetCharCua(); // Llegeix els dos caracters de final de comanda
-        return COMMAND_INITIALIZE;
+        len = LENGTH_INITIALIZE - 1;
+        break;
     case COMMAND_SET_TIME:
-        for (unsigned char i = 0; i < LENGTH_SET_TIME - 1; i++)
-        {
-            value[i] = SIO_GetCharCua();
-        }
-        SIO_GetCharCua();
-        SIO_GetCharCua(); // Llegeix els dos caracters de final de comanda
-        return COMMAND_SET_TIME;
+        len = LENGTH_SET_TIME - 1;
+        break;
     case COMMAND_GET_LOGS:
-        SIO_GetCharCua();
-        SIO_GetCharCua();
-        return COMMAND_GET_LOGS;
     case COMMAND_GET_GRAPH:
-        SIO_GetCharCua();
-        SIO_GetCharCua();
-        return COMMAND_GET_GRAPH;
     case COMMAND_RESET:
         SIO_GetCharCua();
         SIO_GetCharCua();
-        return COMMAND_RESET;
+        return command;
     default:
-        return NO_COMMAND; // Comanda desconeguda
+        return NO_COMMAND;
     }
+
+    for (BYTE i = 0; i < len; i++)
+        value[i] = SIO_GetCharCua();
+
+    SIO_GetCharCua();
+    SIO_GetCharCua(); // consume EOC
+    return command;
 }
 
-void SIO_parse_Initialize(unsigned char *value, unsigned char *hour, unsigned char *min, unsigned char *day, unsigned char *month, unsigned char *year, unsigned char *pollingRate, unsigned char *lowThreshold, unsigned char *moderateThreshold, unsigned char *highThreshold)
+void SIO_parse_Initialize(unsigned char *value, BYTE *hour, BYTE *min, BYTE *day, BYTE *month, BYTE *year, BYTE *pollingRate, BYTE *lowThreshold, BYTE *moderateThreshold, BYTE *highThreshold)
 {
-    // Format: "yyyy-MM-dd HH:mm$PR$LT$MT$HT$CT"
-    *year = (value[2] - '0') * 10 + (value[3] - '0'); // Solo los dos últimos dígitos
+    *year = (value[2] - '0') * 10 + (value[3] - '0');
     *month = (value[5] - '0') * 10 + (value[6] - '0');
     *day = (value[8] - '0') * 10 + (value[9] - '0');
     *hour = (value[11] - '0') * 10 + (value[12] - '0');
@@ -167,42 +166,8 @@ void SIO_parse_Initialize(unsigned char *value, unsigned char *hour, unsigned ch
     *highThreshold = (value[26] - '0') * 10 + (value[27] - '0');
 }
 
-void SIO_parse_SetTime(unsigned char *value, unsigned char *hour, unsigned char *min)
+void SIO_parse_SetTime(unsigned char *value, BYTE *hour, BYTE *min)
 {
-    // Format: "HH:mm"
     *hour = (value[0] - '0') * 10 + (value[1] - '0');
     *min = (value[3] - '0') * 10 + (value[4] - '0');
-}
-
-unsigned char SIO_GetChar()
-{
-    return RCREG;
-}
-
-// Old methods that we need to keep ATM
-void SIO_PrintString(const char *text)
-{
-    while (*text != '\0')
-    {
-        SIO_SafePrint(*text++);
-    }
-}
-
-void SIO_SafePrint(char lletra)
-{
-    if (PIR1bits.TXIF == 1)
-        TXREG = lletra;
-}
-
-void itoa(unsigned int value, char *str, unsigned char base)
-{
-    char temp[6]; // Buffer temporal per invertir el n�mero (fins a 65535 = 5 xifres + \0)
-    int i = 0;
-
-    if (value == 0)
-    {
-        str[0] = '0';
-        str[1] = '\0';
-        return;
-    }
 }
