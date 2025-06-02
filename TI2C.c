@@ -257,7 +257,8 @@ static void ds3231_write_raw(BYTE h, BYTE m, BYTE s, BYTE dow, BYTE d, BYTE mo, 
 static void ds3231_update_raw(BYTE h, BYTE m)
 {
   i2c_start(DS3231_ADDRESS);
-  i2c_write(0x01);
+  i2c_write(0x00);
+  i2c_write(bin_to_bcd(0x00 & 0x7F));
   i2c_write(bin_to_bcd(m & 0x7F));
   i2c_write(bin_to_bcd(h & 0x3F));
   i2c_stop(); // End I2C comunication
@@ -283,16 +284,16 @@ static void fill_timestamp(BYTE *log, BYTE sec, BYTE min, BYTE hour, BYTE day, B
 
 BOOL ds3231_HAS_ONE_MINUTE_PASSED_YET(void)
 {
-  if(SECOND_PASSED < 59) // Check if one minute has passed
-    return FALSE; // Indicate that one minute has not passed yet
-  SECOND_PASSED = 0; // Reset the second passed counter
-  return TRUE; // Indicate that one minute has passed
+  if (SECOND_PASSED < 59) // Check if one minute has passed
+    return FALSE;         // Indicate that one minute has not passed yet
+  SECOND_PASSED = 0;      // Reset the second passed counter
+  return TRUE;            // Indicate that one minute has passed
 }
 
 void ds3231_HAS_ONE_SECOND_PASSED_YET(void)
 {
-  if(PORTBbits.RB1 != 0) // Check if alarm flag is set (RB1 low)
+  if (PORTBbits.RB1 != 0) // Check if alarm flag is set (RB1 low)
     return;
   ds3231_clear_alarm_flag(); // Clear the alarm flag
-  SECOND_PASSED++; // Set the flag indicating one second has passed
+  SECOND_PASSED++;           // Set the flag indicating one second has passed
 }
