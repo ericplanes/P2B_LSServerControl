@@ -63,6 +63,10 @@ void CTR_Motor(void)
             TiResetTics(timer_id);
             motor_state = S_READ_TEMPERATURE;
         }
+        if (!MENU_isConfigured()) // If reset, menu will not be configured anymore
+        {
+            motor_state = S_WAIT_CONFIG;
+        }
         break;
 
     case S_READ_TEMPERATURE:
