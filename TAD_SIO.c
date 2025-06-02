@@ -21,6 +21,7 @@ static char rx_buffer[MAX_LENGTH_CUA] = {0};
 void consume_EOC(void);
 void SIO_PrintString(const char *text);
 void SIO_SafePrint(char lletra);
+static BOOL isCommandComplete(void);
 
 /* =======================================
  *         PUBLIC FUNCTION BODIES
@@ -127,7 +128,7 @@ void SIO_SendString(char *str, unsigned char length)
 
 unsigned char SIO_GetCommandAndValue(unsigned char *value)
 {
-    if (SIO_LastByteReceived() != '\n')
+    if (!isCommandComplete())
         return NO_COMMAND;
 
     BYTE command = SIO_GetCharCua();
@@ -203,4 +204,19 @@ void SIO_SafePrint(char lletra)
 {
     if (PIR1bits.TXIF == 1)
         TXREG = lletra;
+}
+
+static BOOL isCommandComplete(void)
+{
+    BYTE i = rx_tail;
+    while (i != rx_head)
+    {
+        if (rx_buffer[i] == '\n')
+            return TRUE;
+
+        i++;
+        if (i >= MAX_LENGTH_CUA)
+            i = 0;
+    }
+    return FALSE;
 }

@@ -71,15 +71,6 @@ void RAM_Reset(void)
     }
 }
 
-/*
- * Visible for testing, reads the first byte of the RAM.
- */
-BYTE RAM_TEST_Read_From_0(void)
-{
-    RAM_PrepareReadFrom0();
-    return RAM_Read();
-}
-
 /* =======================================
  *        PRIVATE FUNCTION BODIES
  * ======================================= */

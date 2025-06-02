@@ -9,7 +9,6 @@ void EEPROM_Init(void);
 BOOL EEPROM_StoreLog(const BYTE *hhmmssDDMMYYYY);
 BOOL EEPROM_ReadLog(BYTE section, BYTE *hhmmssDDMMYYYY);
 BYTE EEPROM_GetAmountOfStoredLogs(void);
-BYTE EEPROM_CanBeUsed(void);
 void EEPROM_CleanMemory(void);
 BYTE EEPROM_GetFirstSection(void);
 BYTE EEPROM_GetNextSection(BYTE previous_section);

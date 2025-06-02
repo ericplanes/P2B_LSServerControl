@@ -139,10 +139,7 @@ void MENU_Motor(void)
         BYTE stored_temp = RAM_Read();
         if (stored_temp != 0x00)
         {
-            SIO_SendCharCua(COMMAND_DATAGRAPH);
-            SIO_SendCharCua('0' + (stored_temp / 10));
-            SIO_SendCharCua('0' + (stored_temp % 10));
-            send_end_of_line();
+            send_temperature(stored_temp);
         }
         else
         {
@@ -168,11 +165,6 @@ const BYTE *MENU_GetTMPThresholds(void)
 BYTE MENU_GetSamplingTime(void)
 {
     return config.samplingTime;
-}
-
-const BYTE *MENU_GetInitialTimeString(void)
-{
-    return config.initialTime;
 }
 
 /* =======================================

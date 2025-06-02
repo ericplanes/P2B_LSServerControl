@@ -139,17 +139,6 @@ static char i2c_start(char address)
   return i2c_write(address);
 }
 
-static char i2c_restart(char address)
-{
-  SSPCON2bits.RSEN = 1;
-  while (SSPCON2bits.RSEN)
-    ;
-  PIR1bits.SSPIF = 0;
-  if (!(SSPSTATbits.S))
-    return 0;
-  return i2c_write(address);
-}
-
 static char i2c_write(BYTE data)
 {
   SSPBUF = data; // Write data to SSPBUF

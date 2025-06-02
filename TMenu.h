@@ -13,6 +13,5 @@ void MENU_Motor(void);
 BOOL MENU_isConfigured(void);
 const BYTE *MENU_GetTMPThresholds(void);
 BYTE MENU_GetSamplingTime(void);
-const BYTE *MENU_GetInitialTimeString(void);
 
 #endif

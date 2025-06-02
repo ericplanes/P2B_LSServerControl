@@ -146,11 +146,6 @@ BYTE EEPROM_GetAmountOfStoredLogs(void)
     return amount_of_stored_logs;
 }
 
-BYTE EEPROM_CanBeUsed(void)
-{
-    return eeprom_state == EEPROM_IDLE ? TRUE : FALSE;
-}
-
 BYTE EEPROM_GetFirstSection(void)
 {
     return amount_of_stored_logs != MAX_LOGS ? 0 : mem_section;
