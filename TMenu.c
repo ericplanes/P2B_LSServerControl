@@ -36,7 +36,7 @@ typedef struct
 
 static MenuConfig config;
 static BYTE menu_state = MENU_STATE_WAIT_COMMAND;
-static BYTE command_buffer[32];
+static BYTE command_buffer[35];
 static BYTE log_buffer[TIMESTAMP_SIZE];
 static BYTE logs_remaining = 0;
 static BYTE current_log_section = 0;
