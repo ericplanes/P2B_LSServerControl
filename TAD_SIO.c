@@ -18,22 +18,20 @@ char CuaTX[MAX_LENGTH_CUA] = {0};
 
 void SIO_Init()
 {
-    TRISCbits.TRISC6 = 0;
-    TRISCbits.TRISC7 = 1;
+    TRISCbits.TRISC6 = 0; // TX pin (output)
+    TRISCbits.TRISC7 = 1; // RX pin (input)
 
-    TXSTAbits.BRGH = 1;    // High Baud Rate Select bit (para mayor precisio?n)
-    BAUDCONbits.BRG16 = 0; // Usar el Baud Rate Generator de 8 bits
-    SPBRG = 64;            // Para 9600 baudios con Fosc = 10 MHz
+    TXSTAbits.BRGH = 1;    // High Baud Rate Select bit (more precise)
+    BAUDCONbits.BRG16 = 0; // Use 8-bit Baud Rate Generator
+    SPBRG = 207;           // For 9600 baud with Fosc = 32 MHz
 
-    TXSTAbits.SYNC = 0; // Modo asi?ncrono
-    TXSTAbits.TXEN = 1; // Habilitar transmisio?n
-    RCSTAbits.SPEN = 1; // Habilitar puerto serie
-    RCSTAbits.CREN = 1; // Habilitar recepció
+    TXSTAbits.SYNC = 0; // Asynchronous mode
+    TXSTAbits.TXEN = 1; // Enable transmitter
+    RCSTAbits.SPEN = 1; // Enable serial port (TX/ RX)
+    RCSTAbits.CREN = 1; // Enable receiver
+
     EstatSIOTx = E_IDLE_ENDED;
-    PtrRedTx = 0;
-    PtrGreenTx = 0;
-    PtrRedRx = 0;
-    PtrGreenRx = 0;
+    PtrRedTx = PtrGreenTx = PtrRedRx = PtrGreenRx = 0;
 }
 
 // SIO RX:

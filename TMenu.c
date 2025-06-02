@@ -203,7 +203,6 @@ static BYTE prepare_command_and_get_next_state(BYTE command)
     {
     case COMMAND_GET_LOGS:
         logs_remaining = EEPROM_GetAmountOfStoredLogs();
-        SIO_SendCharCua(logs_remaining);
         current_log_section = EEPROM_GetFirstSection();
         return MENU_STATE_SEND_LOGS;
 
@@ -257,8 +256,7 @@ static void send_timestamp_update(void)
 
 static void reset_config(void)
 {
-    MENU_Init();
-    TiInit(); // The goal is to clear the stored timers, but should check if it's ok
+    config.isConfigured = FALSE;
     EEPROM_CleanMemory();
     RAM_Reset();
 }
