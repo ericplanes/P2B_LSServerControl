@@ -19,6 +19,8 @@ static char tx_buffer[MAX_LENGTH_CUA] = {0};
 static char rx_buffer[MAX_LENGTH_CUA] = {0};
 
 void consume_EOC(void);
+void SIO_PrintString(const char *text);
+void SIO_SafePrint(char lletra);
 
 /* =======================================
  *         PUBLIC FUNCTION BODIES
@@ -184,4 +186,18 @@ void consume_EOC(void)
 {
     SIO_GetCharCua(); // \r
     SIO_GetCharCua(); // \n
+}
+
+void SIO_PrintString(const char *text)
+{
+    while (*text != '\0')
+    {
+        SIO_SafePrint(*text++);
+    }
+}
+
+void SIO_SafePrint(char lletra)
+{
+    if (PIR1bits.TXIF == 1)
+        TXREG = lletra;
 }
