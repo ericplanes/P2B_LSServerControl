@@ -54,6 +54,7 @@ static void send_timestamp_update(void);
 static void reset_config(void);
 static void send_end_of_line(void);
 static BYTE prepare_command_and_get_next_state(BYTE command);
+static void send_temperature(BYTE stored_temp);
 
 /* =======================================
  *         PUBLIC FUNCTION BODIES
@@ -102,18 +103,21 @@ void MENU_Motor(void)
         else
         {
             BYTE joy = Joystick_GetDirection();
-            if (joy != JOY_CENTER){
+            if (joy != JOY_CENTER)
+            {
                 SIO_SendCharCua(joy);
                 send_end_of_line();
             }
-            if (Joystick_IsButtonPressed() && !button_pressed){
+            if (Joystick_IsButtonPressed() && !button_pressed)
+            {
                 SIO_SendCharCua(COMMAND_SELECT);
                 send_end_of_line();
                 button_pressed = TRUE; // Set the button pressed flag to TRUE
-            } else if(!Joystick_IsButtonPressed()){
+            }
+            else if (!Joystick_IsButtonPressed())
+            {
                 button_pressed = FALSE; // Reset the button pressed flag
             }
-
         }
         menu_state = MENU_STATE_WAIT_COMMAND;
         break;
@@ -206,6 +210,7 @@ static BYTE prepare_command_and_get_next_state(BYTE command)
     {
     case COMMAND_GET_LOGS:
         logs_remaining = EEPROM_GetAmountOfStoredLogs();
+        SIO_SendCharCua(logs_remaining);
         current_log_section = EEPROM_GetFirstSection();
         return MENU_STATE_SEND_LOGS;
 
@@ -269,4 +274,12 @@ static void send_end_of_line(void)
 {
     SIO_SendCharCua(EOC1);
     SIO_SendCharCua(EOC2);
+}
+
+static void send_temperature(BYTE stored_temp)
+{
+    SIO_SendCharCua(COMMAND_DATAGRAPH);
+    SIO_SendCharCua('0' + (stored_temp / 10));
+    SIO_SendCharCua('0' + (stored_temp % 10));
+    send_end_of_line();
 }
