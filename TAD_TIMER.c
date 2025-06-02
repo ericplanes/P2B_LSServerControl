@@ -1,6 +1,6 @@
 #include "TAD_TIMER.h"
 
-#define TMR0_INT_2MS 49536 // 2 ms, if FOsc is 10MHz.
+#define TMR0_INT_2MS 63536 // 2 ms con Fosc = 32 MHz y prescaler 1:8
 #define TI_NUMTIMERS 4	   // Amount of timers being used on the system
 #define T0CON_CONFIG 0b10000010
 // TMR0 ON | 16-bit | Prescaler 1:8 | Internal Clock
