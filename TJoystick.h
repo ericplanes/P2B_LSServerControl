@@ -8,9 +8,9 @@
 #define JOY_DOWN 'D'
 #define JOY_LEFT 'L'
 #define JOY_RIGHT 'R'
+#define JOY_PRESSED 'S'
 
 void Joystick_Init(void);
 BYTE Joystick_GetDirection(void);
-BOOL Joystick_IsButtonPressed(void);
 
 #endif

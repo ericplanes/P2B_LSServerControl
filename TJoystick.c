@@ -22,10 +22,9 @@ BYTE currentDirection = JOY_CENTER;
  *        PRIVATE FUNCTION HEADERS
  * ======================================= */
 
-BYTE classify_axis(BYTE value);
-BYTE direction_from_axes(BYTE x, BYTE y);
-BYTE get_updated_direction(void);
-BYTE get_next_direction(BYTE xDirection, BYTE yDirection);
+static BYTE classify_axis(BYTE value);
+static BYTE direction_from_axes(BYTE x, BYTE y);
+static BYTE get_next_direction(BYTE xDirection, BYTE yDirection);
 
 /* =======================================
  *        PUBLIC FUNCTION BODIES
@@ -47,16 +46,11 @@ BYTE Joystick_GetDirection(void)
     return get_next_direction(xDirection, yDirection);
 }
 
-BOOL Joystick_IsButtonPressed(void)
-{
-    return (PORTBbits.RB2 == 0) ? TRUE : FALSE;
-}
-
 /* =======================================
  *        PRIVATE FUNCTION BODIES
  * ======================================= */
 
-BYTE classify_axis(BYTE value)
+static BYTE classify_axis(BYTE value)
 {
     if (value < THRESHOLD_LOW)
         return AXIS_LOW;
@@ -65,8 +59,10 @@ BYTE classify_axis(BYTE value)
     return AXIS_NEUTRAL;
 }
 
-BYTE direction_from_axes(BYTE x, BYTE y)
+static BYTE direction_from_axes(BYTE x, BYTE y)
 {
+    if (PORTBbits.RB2 == 0)
+        return JOY_PRESSED;
     if (x == AXIS_HIGH)
         return JOY_RIGHT;
     if (x == AXIS_LOW)
@@ -78,7 +74,7 @@ BYTE direction_from_axes(BYTE x, BYTE y)
     return JOY_CENTER;
 }
 
-BYTE get_next_direction(BYTE xDirection, BYTE yDirection)
+static BYTE get_next_direction(BYTE xDirection, BYTE yDirection)
 {
     BYTE previousDirection = currentDirection;
     currentDirection = direction_from_axes(xDirection, yDirection);

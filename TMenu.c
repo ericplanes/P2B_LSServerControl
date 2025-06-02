@@ -43,7 +43,6 @@ static BYTE current_log_section = 0;
 static BYTE time_timer = TI_TEST;
 static BYTE hour, min;
 static BYTE command;
-static BYTE button_pressed = FALSE; // This variable is used to check if the button was pressed in the last loop
 
 /* =======================================
  *         PRIVATE FUNCTION HEADERS
@@ -101,18 +100,11 @@ void MENU_Motor(void)
         else
         {
             BYTE joy = Joystick_GetDirection();
-            if (joy != JOY_CENTER){
+            if (joy != JOY_CENTER)
+            {
                 SIO_SendCharCua(joy);
                 send_end_of_line();
             }
-            if (Joystick_IsButtonPressed() && !button_pressed){
-                SIO_SendCharCua(COMMAND_SELECT);
-                send_end_of_line();
-                button_pressed = TRUE; // Set the button pressed flag to TRUE
-            } else if(!Joystick_IsButtonPressed()){
-                button_pressed = FALSE; // Reset the button pressed flag
-            }
-
         }
         menu_state = MENU_STATE_WAIT_COMMAND;
         break;
