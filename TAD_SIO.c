@@ -127,6 +127,9 @@ void SIO_SendString(char *str, unsigned char length)
 
 unsigned char SIO_GetCommandAndValue(unsigned char *value)
 {
+    if (SIO_LastByteReceived() != '\n')
+        return NO_COMMAND;
+
     BYTE command = SIO_GetCharCua();
     BYTE len = 0;
 
