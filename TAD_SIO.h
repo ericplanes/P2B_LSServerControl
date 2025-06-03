@@ -46,18 +46,18 @@
 void SIO_Init(void);
 
 // TX
-void SIO_SendCharCua(char c);
-void SIO_SendString(char *str, unsigned char length);
+void SIO_SendCharCua(BYTE c);
+void SIO_SendString(BYTE *str, BYTE length);
 void SIO_MotorTX(void);
 
 // RX
 void SIO_PseudoMotorRX(void);
 char SIO_GetCharCua(void);
-unsigned char SIO_LastByteReceived(void);
+BYTE SIO_LastByteReceived(void);
 
 // Parsing
-unsigned char SIO_GetCommandAndValue(unsigned char *value);
-void SIO_parse_Initialize(unsigned char *value, BYTE *hour, BYTE *min, BYTE *day, BYTE *month, BYTE *year, BYTE *pollingRate, BYTE *lowThreshold, BYTE *moderateThreshold, BYTE *highThreshold);
-void SIO_parse_SetTime(unsigned char *value, BYTE *hour, BYTE *min);
+BYTE SIO_GetCommandAndValue(BYTE *value);
+void SIO_parse_Initialize(BYTE *value, BYTE *hour, BYTE *min, BYTE *day, BYTE *month, BYTE *year, BYTE *pollingRate, BYTE *lowThreshold, BYTE *moderateThreshold, BYTE *highThreshold);
+void SIO_parse_SetTime(BYTE *value, BYTE *hour, BYTE *min);
 
 #endif
