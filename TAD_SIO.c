@@ -59,6 +59,10 @@ void SIO_PseudoMotorRX(void)
         BYTE c = RCREG;
         rx_buffer[rx_head] = c;
         rx_head = (rx_head + 1) % MAX_LENGTH_CUA;
+        if (c == COMMAND_RESET)
+        {
+            LED_SetColor(LED_WHITE);
+        }
     }
 }
 
