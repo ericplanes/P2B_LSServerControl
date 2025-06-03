@@ -9,9 +9,6 @@
  *              CONSTANTS
  * ======================================= */
 
-#define MAX_LENGTH_CUA 80
-#define NO_COMMAND 0
-
 // Java → PIC commands
 #define COMMAND_INITIALIZE 'N'
 #define COMMAND_SET_TIME 'I'
@@ -37,6 +34,10 @@
 // Command lengths
 #define LENGTH_INITIALIZE sizeof("Nyyyy-MM-dd HH:mm$RR$LT$MT$HT$CT")
 #define LENGTH_SET_TIME sizeof("IHH:mm")
+
+// Extra
+#define MAX_LENGTH_CUA 35
+#define NO_COMMAND 0
 
 /* =======================================
  *         PUBLIC FUNCTION HEADERS

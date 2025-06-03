@@ -23,6 +23,7 @@ static void printString(const BYTE *text);
 static void safePrint(BYTE lletra);
 static BYTE getCharQueue(void);
 static BYTE getLastByteReveived(void);
+static BOOL isCommandInBuffer(void);
 
 /* =======================================
  *         PUBLIC FUNCTION BODIES
@@ -54,10 +55,9 @@ void SIO_PseudoMotorRX(void)
 
     if (PIR1bits.RC1IF)
     {
-        rx_buffer[rx_head] = RCREG;
-        rx_head++;
-        if (rx_head >= MAX_LENGTH_CUA)
-            rx_head = 0;
+        BYTE c = RCREG;
+        rx_buffer[rx_head] = c;
+        rx_head = (rx_head + 1) % MAX_LENGTH_CUA;
     }
 }
 
@@ -75,9 +75,7 @@ void SIO_MotorTX(void)
         {
             TXREG = tx_buffer[tx_tail];
             tx_buffer[tx_tail] = '\0';
-            tx_tail++;
-            if (tx_tail >= MAX_LENGTH_CUA)
-                tx_tail = 0;
+            tx_tail = (tx_tail + 1) % MAX_LENGTH_CUA;
             tx_state = STATE_TX_WAIT;
         }
         break;
@@ -90,17 +88,8 @@ void SIO_MotorTX(void)
 
 void SIO_SendCharCua(BYTE character)
 {
-    // Store the character in the buffer at the current head position
     tx_buffer[tx_head] = character;
-
-    // Move to the next position in the buffer
-    tx_head = tx_head + 1;
-
-    // If we reach the end of the buffer, wrap around to the beginning
-    if (tx_head >= MAX_LENGTH_CUA)
-    {
-        tx_head = 0;
-    }
+    tx_head = (tx_head + 1) % MAX_LENGTH_CUA;
 }
 
 void SIO_SendString(BYTE *str, BYTE length)
@@ -111,7 +100,7 @@ void SIO_SendString(BYTE *str, BYTE length)
 
 BYTE SIO_GetCommandAndValue(BYTE *value)
 {
-    if (getLastByteReveived() != '\n')
+    if (!isCommandInBuffer())
         return NO_COMMAND;
 
     BYTE command = getCharQueue();
@@ -126,11 +115,7 @@ BYTE SIO_GetCommandAndValue(BYTE *value)
         len = LENGTH_SET_TIME - 1;
         break;
     case COMMAND_GET_LOGS:
-        consume_EOC();
-        return command;
     case COMMAND_GET_GRAPH:
-        consume_EOC();
-        return command;
     case COMMAND_RESET:
         consume_EOC();
         return command;
@@ -138,7 +123,6 @@ BYTE SIO_GetCommandAndValue(BYTE *value)
         return NO_COMMAND;
     }
 
-    // If INIT or SET TIME then read the rest of the code
     for (BYTE i = 0; i < len; i++)
         value[i] = getCharQueue();
 
@@ -172,28 +156,32 @@ void SIO_parse_SetTime(BYTE *value, BYTE *hour, BYTE *min)
 static BYTE getCharQueue(void)
 {
     BYTE character = rx_buffer[rx_tail];
-
-    // Clear the character from the buffer
-    rx_buffer[rx_tail] = '\0';
-    rx_tail++;
-
-    if (rx_tail >= MAX_LENGTH_CUA)
-    {
-        rx_tail = 0;
-    }
-
+    rx_tail = (rx_tail + 1) % MAX_LENGTH_CUA;
     return character;
 }
 
 static BYTE getLastByteReveived(void)
 {
-    return (rx_head == 0) ? rx_buffer[MAX_LENGTH_CUA - 1] : rx_buffer[rx_head - 1];
+    return (rx_head == 0) ? rx_buffer[MAX_LENGTH_CUA - 1] : rx_buffer[(rx_head - 1) % MAX_LENGTH_CUA];
 }
 
 static void consume_EOC(void)
 {
-    getCharQueue(); // \r
-    getCharQueue(); // \n
+    while (getCharQueue() != '\n')
+        ;
+}
+
+static BOOL isCommandInBuffer(void)
+{
+    BYTE i = rx_tail;
+    while (i != rx_head)
+    {
+        if (rx_buffer[i] == '\n')
+            return TRUE;
+
+        i = (i + 1) % MAX_LENGTH_CUA;
+    }
+    return FALSE;
 }
 
 static void printString(const BYTE *text)
