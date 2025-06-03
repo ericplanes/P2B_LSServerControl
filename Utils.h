@@ -9,7 +9,7 @@
 #define BYTE unsigned char
 #define WORD unsigned short
 
-#define TIMESTAMP_SIZE sizeof("hhmmssDDMMYYYY")
+#define TIMESTAMP_SIZE sizeof("hhmmssDDMMYYYY") - 1
 
 // Diferent status that we have
 #define SYS_STATUS_OFF 0
