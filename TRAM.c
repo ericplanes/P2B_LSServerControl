@@ -81,6 +81,8 @@ void RAM_Reset(void)
 static void inc_address(void)
 {
     LATCbits.LATC5 = 1;
+    NOP();
+    NOP();
     LATCbits.LATC5 = 0;
 }
 
@@ -90,5 +92,7 @@ static void inc_address(void)
 void RAM_PrepareReadFrom0(void)
 {
     LATCbits.LATC0 = 0; // Activate Reset
+    NOP();
+    NOP();
     LATCbits.LATC0 = 1; // Deactivate Reset
 }
