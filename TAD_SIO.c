@@ -1,5 +1,4 @@
 #include "TAD_SIO.h"
-#include <string.h>
 
 /* =======================================
  *           PRIVATE DEFINES
@@ -15,17 +14,16 @@
 
 static BYTE tx_state = STATE_TX_IDLE;
 static BYTE tx_head = 0, tx_tail = 0;
-static char tx_buffer[MAX_LENGTH_CUA] = {0};
+static BYTE rx_head = 0, rx_tail = 0;
+static BYTE tx_buffer[MAX_LENGTH_CUA] = {0};
+static BYTE rx_buffer[MAX_LENGTH_CUA] = {0};
 
-static BYTE rx_index = 0;
-static BYTE rx_read_index = 0;
-static BOOL rx_ready = FALSE;
-static char rx_buffer[MAX_LENGTH_CUA] = {0};
-
-void consume_EOC(void);
-void SIO_PrintString(const char *text);
-void SIO_SafePrint(char lletra);
-static void reset_rx_buffer(void);
+static void consume_EOC(void);
+static void printString(const BYTE *text);
+static void safePrint(BYTE lletra);
+static BYTE getCharQueue(void);
+static BYTE getLastByteReveived(void);
+static BOOL isCommandInBuffer(void);
 
 /* =======================================
  *         PUBLIC FUNCTION BODIES
@@ -47,28 +45,16 @@ void SIO_Init(void)
 
     tx_state = STATE_TX_IDLE;
     tx_head = tx_tail = 0;
-    rx_index = rx_read_index = 0;
-    rx_ready = FALSE;
-    memset(rx_buffer, 0, sizeof(rx_buffer));
+    rx_head = rx_tail = 0;
 }
 
 void SIO_PseudoMotorRX(void)
 {
-    if (rx_ready)
-        return; // already received a command
-
     if (PIR1bits.RC1IF)
     {
-        char c = RCREG;
-        if (rx_index < MAX_LENGTH_CUA - 1)
-        {
-            rx_buffer[rx_index++] = c;
-            if (c == '\n')
-            {
-                rx_buffer[rx_index] = '\0';
-                rx_ready = TRUE;
-            }
-        }
+        BYTE c = RCREG;
+        rx_buffer[rx_head] = c;
+        rx_head = (rx_head + 1) % MAX_LENGTH_CUA;
     }
 }
 
@@ -86,9 +72,7 @@ void SIO_MotorTX(void)
         {
             TXREG = tx_buffer[tx_tail];
             tx_buffer[tx_tail] = '\0';
-            tx_tail++;
-            if (tx_tail >= MAX_LENGTH_CUA)
-                tx_tail = 0;
+            tx_tail = (tx_tail + 1) % MAX_LENGTH_CUA;
             tx_state = STATE_TX_WAIT;
         }
         break;
@@ -99,18 +83,24 @@ void SIO_MotorTX(void)
     }
 }
 
-char SIO_GetCharCua(void)
+void SIO_SendCharCua(BYTE character)
 {
-    return rx_buffer[rx_read_index++];
+    tx_buffer[tx_head] = character;
+    tx_head = (tx_head + 1) % MAX_LENGTH_CUA;
 }
 
-unsigned char SIO_GetCommandAndValue(unsigned char *value)
+void SIO_SendString(BYTE *str, BYTE length)
 {
-    if (!rx_ready)
+    for (BYTE i = 0; i < length; i++)
+        SIO_SendCharCua(str[i]);
+}
+
+BYTE SIO_GetCommandAndValue(BYTE *value)
+{
+    if (!isCommandInBuffer())
         return NO_COMMAND;
 
-    rx_read_index = 0; // reset for reading
-    BYTE command = SIO_GetCharCua();
+    BYTE command = getCharQueue();
     BYTE len = 0;
 
     switch (command)
@@ -125,21 +115,19 @@ unsigned char SIO_GetCommandAndValue(unsigned char *value)
     case COMMAND_GET_GRAPH:
     case COMMAND_RESET:
         consume_EOC();
-        break;
+        return command;
     default:
-        reset_rx_buffer();
         return NO_COMMAND;
     }
 
     for (BYTE i = 0; i < len; i++)
-        value[i] = SIO_GetCharCua();
+        value[i] = getCharQueue();
 
     consume_EOC();
-    reset_rx_buffer();
     return command;
 }
 
-void SIO_parse_Initialize(unsigned char *value, BYTE *hour, BYTE *min, BYTE *day, BYTE *month, BYTE *year, BYTE *pollingRate, BYTE *lowThreshold, BYTE *moderateThreshold, BYTE *highThreshold)
+void SIO_parse_Initialize(BYTE *value, BYTE *hour, BYTE *min, BYTE *day, BYTE *month, BYTE *year, BYTE *pollingRate, BYTE *lowThreshold, BYTE *moderateThreshold, BYTE *highThreshold)
 {
     *year = (value[2] - '0') * 10 + (value[3] - '0');
     *month = (value[5] - '0') * 10 + (value[6] - '0');
@@ -152,52 +140,57 @@ void SIO_parse_Initialize(unsigned char *value, BYTE *hour, BYTE *min, BYTE *day
     *highThreshold = (value[26] - '0') * 10 + (value[27] - '0');
 }
 
-void SIO_parse_SetTime(unsigned char *value, BYTE *hour, BYTE *min)
+void SIO_parse_SetTime(BYTE *value, BYTE *hour, BYTE *min)
 {
     *hour = (value[0] - '0') * 10 + (value[1] - '0');
     *min = (value[3] - '0') * 10 + (value[4] - '0');
 }
 
-void SIO_SendCharCua(char character)
+/* =======================================
+ *        PRIVATE FUNCTION BODIES
+ * ======================================= */
+
+static BYTE getCharQueue(void)
 {
-    tx_buffer[tx_head] = character;
-    tx_head = tx_head + 1;
-    if (tx_head >= MAX_LENGTH_CUA)
+    BYTE character = rx_buffer[rx_tail];
+    rx_tail = (rx_tail + 1) % MAX_LENGTH_CUA;
+    return character;
+}
+
+static BYTE getLastByteReveived(void)
+{
+    return (rx_head == 0) ? rx_buffer[MAX_LENGTH_CUA - 1] : rx_buffer[(rx_head - 1) % MAX_LENGTH_CUA];
+}
+
+static void consume_EOC(void)
+{
+    while (getCharQueue() != '\n')
+        ;
+}
+
+static BOOL isCommandInBuffer(void)
+{
+    BYTE i = rx_tail;
+    while (i != rx_head)
     {
-        tx_head = 0;
+        if (rx_buffer[i] == '\n')
+            return TRUE;
+
+        i = (i + 1) % MAX_LENGTH_CUA;
     }
+    return FALSE;
 }
 
-void SIO_SendString(char *str, unsigned char length)
-{
-    for (unsigned char i = 0; i < length; i++)
-        SIO_SendCharCua(str[i]);
-}
-
-void consume_EOC(void)
-{
-    SIO_GetCharCua(); // \r
-    SIO_GetCharCua(); // \n
-}
-
-void SIO_PrintString(const char *text)
+static void printString(const BYTE *text)
 {
     while (*text != '\0')
     {
-        SIO_SafePrint(*text++);
+        safePrint(*text++);
     }
 }
 
-void SIO_SafePrint(char lletra)
+static void safePrint(BYTE lletra)
 {
     if (PIR1bits.TXIF == 1)
         TXREG = lletra;
-}
-
-static void reset_rx_buffer(void)
-{
-    rx_index = 0;
-    rx_read_index = 0;
-    rx_ready = FALSE;
-    memset(rx_buffer, 0, sizeof(rx_buffer));
 }
