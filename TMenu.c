@@ -38,7 +38,7 @@ typedef struct
 static MenuConfig config;
 static BYTE menu_state = MENU_STATE_WAIT_COMMAND;
 static BYTE command_buffer[35] = {0};
-static BYTE log_buffer[TIMESTAMP_SIZE];
+static BYTE log_buffer[TIMESTAMP_SIZE + 1];
 static BYTE logs_remaining = 0;
 static BYTE current_log_section = 0;
 static BYTE time_timer = TI_TEST;
@@ -128,7 +128,7 @@ void MENU_Motor(void)
         {
             TiResetTics(timer_sio);
             SIO_SendCharCua(COMMAND_DATALOGS);
-            SIO_SendString(log_buffer, TIMESTAMP_SIZE - 1);
+            SIO_SendString(log_buffer, TIMESTAMP_SIZE);
             send_end_of_line();
 
             logs_remaining--;
@@ -225,7 +225,7 @@ static void initialize_system_with_config(void)
 
 static void send_timestamp_update(void)
 {
-    static BYTE now[TIMESTAMP_SIZE];
+    static BYTE now[TIMESTAMP_SIZE + 1];
     I2C_ReadTimestamp(now);
     SIO_SendCharCua(COMMAND_UPDATETIME);
     SIO_SendCharCua(now[0]);
