@@ -49,6 +49,7 @@ void SIO_Init(void);
 void SIO_SendCharCua(BYTE c);
 void SIO_SendString(BYTE *str, BYTE length);
 void SIO_MotorTX(void);
+BOOL SIO_isSentCompleted(void);
 
 // RX
 void SIO_PseudoMotorRX(void);
