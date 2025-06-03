@@ -38,8 +38,8 @@ void EEPROM_Init(void)
 void EEPROM_CleanMemory(void)
 {
     // Reset state variables
-    mem_section = 0;
-    amount_of_stored_logs = 0;
+    mem_section = 0x00;
+    amount_of_stored_logs = 0x00;
     pos = 0;
     eeprom_state = EEPROM_IDLE;
 

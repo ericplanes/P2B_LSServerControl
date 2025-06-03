@@ -118,7 +118,7 @@ void MENU_Motor(void)
         break;
 
     case MENU_STATE_SEND_LOGS:
-        if (logs_remaining == 0)
+        if (logs_remaining <= 0)
         {
             SIO_SendCharCua(COMMAND_FINISH);
             send_end_of_line();
