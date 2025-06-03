@@ -65,8 +65,8 @@ static void write_byte(BYTE address, BYTE data)
 
 void EEPROM_Init(void)
 {
-    amount_of_stored_logs = read_byte(ADDR_STORED_LOGS);
-    mem_section = read_byte(ADDR_MEM_SECTION);
+    amount_of_stored_logs = 0x00;
+    mem_section = 0x00;
     pos = 0;
     eeprom_state = EEPROM_IDLE;
 }
