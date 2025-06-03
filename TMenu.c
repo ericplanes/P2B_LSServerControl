@@ -124,8 +124,9 @@ void MENU_Motor(void)
             send_end_of_line();
             menu_state = MENU_STATE_WAIT_COMMAND;
         }
-        else if (EEPROM_ReadLog(current_log_section, log_buffer) == TRUE && SIO_isSentCompleted())
+        else if (TiGetTics(timer_sio) > 1 && EEPROM_ReadLog(current_log_section, log_buffer) == TRUE)
         {
+            TiResetTics(timer_sio);
             SIO_SendCharCua(COMMAND_DATALOGS);
             SIO_SendString(log_buffer, TIMESTAMP_SIZE - 1);
             send_end_of_line();
@@ -184,6 +185,7 @@ static BYTE prepare_command_and_get_next_state(BYTE command)
     case COMMAND_GET_LOGS:
         logs_remaining = EEPROM_GetAmountOfStoredLogs();
         current_log_section = EEPROM_GetFirstSection();
+        TiResetTics(timer_sio);
         return MENU_STATE_SEND_LOGS;
 
     case COMMAND_GET_GRAPH:
