@@ -1,4 +1,5 @@
 #include "TAD_SIO.h"
+#include <string.h>
 
 /* =======================================
  *           PRIVATE DEFINES
@@ -14,14 +15,17 @@
 
 static BYTE tx_state = STATE_TX_IDLE;
 static BYTE tx_head = 0, tx_tail = 0;
-static BYTE rx_head = 0, rx_tail = 0;
 static char tx_buffer[MAX_LENGTH_CUA] = {0};
+
+static BYTE rx_index = 0;
+static BYTE rx_read_index = 0;
+static BOOL rx_ready = FALSE;
 static char rx_buffer[MAX_LENGTH_CUA] = {0};
 
 void consume_EOC(void);
 void SIO_PrintString(const char *text);
 void SIO_SafePrint(char lletra);
-static BOOL isCommandComplete(void);
+static void reset_rx_buffer(void);
 
 /* =======================================
  *         PUBLIC FUNCTION BODIES
@@ -43,17 +47,28 @@ void SIO_Init(void)
 
     tx_state = STATE_TX_IDLE;
     tx_head = tx_tail = 0;
-    rx_head = rx_tail = 0;
+    rx_index = rx_read_index = 0;
+    rx_ready = FALSE;
+    memset(rx_buffer, 0, sizeof(rx_buffer));
 }
 
 void SIO_PseudoMotorRX(void)
 {
+    if (rx_ready)
+        return; // already received a command
+
     if (PIR1bits.RC1IF)
     {
-        rx_buffer[rx_head] = RCREG;
-        rx_head++;
-        if (rx_head >= MAX_LENGTH_CUA)
-            rx_head = 0;
+        char c = RCREG;
+        if (rx_index < MAX_LENGTH_CUA - 1)
+        {
+            rx_buffer[rx_index++] = c;
+            if (c == '\n')
+            {
+                rx_buffer[rx_index] = '\0';
+                rx_ready = TRUE;
+            }
+        }
     }
 }
 
@@ -86,51 +101,15 @@ void SIO_MotorTX(void)
 
 char SIO_GetCharCua(void)
 {
-    char character = rx_buffer[rx_tail];
-
-    // Clear the character from the buffer
-    rx_buffer[rx_tail] = '\0';
-    rx_tail++;
-
-    if (rx_tail >= MAX_LENGTH_CUA)
-    {
-        rx_tail = 0;
-    }
-
-    return character;
-}
-
-unsigned char SIO_LastByteReceived(void)
-{
-    return (rx_head == 0) ? rx_buffer[MAX_LENGTH_CUA - 1] : rx_buffer[rx_head - 1];
-}
-
-void SIO_SendCharCua(char character)
-{
-    // Store the character in the buffer at the current head position
-    tx_buffer[tx_head] = character;
-
-    // Move to the next position in the buffer
-    tx_head = tx_head + 1;
-
-    // If we reach the end of the buffer, wrap around to the beginning
-    if (tx_head >= MAX_LENGTH_CUA)
-    {
-        tx_head = 0;
-    }
-}
-
-void SIO_SendString(char *str, unsigned char length)
-{
-    for (unsigned char i = 0; i < length; i++)
-        SIO_SendCharCua(str[i]);
+    return rx_buffer[rx_read_index++];
 }
 
 unsigned char SIO_GetCommandAndValue(unsigned char *value)
 {
-    if (!isCommandComplete())
+    if (!rx_ready)
         return NO_COMMAND;
 
+    rx_read_index = 0; // reset for reading
     BYTE command = SIO_GetCharCua();
     BYTE len = 0;
 
@@ -143,23 +122,20 @@ unsigned char SIO_GetCommandAndValue(unsigned char *value)
         len = LENGTH_SET_TIME - 1;
         break;
     case COMMAND_GET_LOGS:
-        consume_EOC();
-        return command;
     case COMMAND_GET_GRAPH:
-        consume_EOC();
-        return command;
     case COMMAND_RESET:
         consume_EOC();
-        return command;
+        break;
     default:
+        reset_rx_buffer();
         return NO_COMMAND;
     }
 
-    // If INIT or SET TIME then read the rest of the code
     for (BYTE i = 0; i < len; i++)
         value[i] = SIO_GetCharCua();
 
     consume_EOC();
+    reset_rx_buffer();
     return command;
 }
 
@@ -182,9 +158,21 @@ void SIO_parse_SetTime(unsigned char *value, BYTE *hour, BYTE *min)
     *min = (value[3] - '0') * 10 + (value[4] - '0');
 }
 
-/* =======================================
- *        PRIVATE FUNCTION BODIES
- * ======================================= */
+void SIO_SendCharCua(char character)
+{
+    tx_buffer[tx_head] = character;
+    tx_head = tx_head + 1;
+    if (tx_head >= MAX_LENGTH_CUA)
+    {
+        tx_head = 0;
+    }
+}
+
+void SIO_SendString(char *str, unsigned char length)
+{
+    for (unsigned char i = 0; i < length; i++)
+        SIO_SendCharCua(str[i]);
+}
 
 void consume_EOC(void)
 {
@@ -206,17 +194,10 @@ void SIO_SafePrint(char lletra)
         TXREG = lletra;
 }
 
-static BOOL isCommandComplete(void)
+static void reset_rx_buffer(void)
 {
-    BYTE i = rx_tail;
-    while (i != rx_head)
-    {
-        if (rx_buffer[i] == '\n')
-            return TRUE;
-
-        i++;
-        if (i >= MAX_LENGTH_CUA)
-            i = 0;
-    }
-    return FALSE;
+    rx_index = 0;
+    rx_read_index = 0;
+    rx_ready = FALSE;
+    memset(rx_buffer, 0, sizeof(rx_buffer));
 }
