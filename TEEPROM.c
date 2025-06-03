@@ -37,13 +37,18 @@ static void prepare_write_info(BYTE address, BYTE data)
 
 static void write_prepared_info(void)
 {
-    EECON1bits.EEPGD = 0;
-    EECON1bits.CFGS = 0;
+    EECON1bits.EEPGD = 0; // Data EEPROM
+    EECON1bits.CFGS = 0;  // Access EEPROM
     EECON1bits.WREN = 1;
+
     EECON2 = 0x55;
     EECON2 = 0xAA;
-    EECON1bits.WR = 1;
-    EECON1bits.WREN = 0;
+    EECON1bits.WR = 1; // Start write
+
+    while (EECON1bits.WR)
+        ;                // Espera que WR es posi a 0 (final de l'escriptura)
+    PIR2bits.EEIF = 0;   // Neteja el flag d'escriptura
+    EECON1bits.WREN = 0; // Desactiva escriptura
 }
 
 static void write_byte(BYTE address, BYTE data)
@@ -68,17 +73,24 @@ void EEPROM_Init(void)
 
 void EEPROM_CleanMemory(void)
 {
-    // Set variables to initial value
+    // Reset state variables
     mem_section = 0;
     amount_of_stored_logs = 0;
     pos = 0;
     eeprom_state = EEPROM_IDLE;
 
-    // Write 0 to all positions from the EEPROM
-    for (BYTE i = 0; i < (MAX_LOGS * LOG_SIZE) + 2; i++) // Will do 14 * 15 + 2 iterations = 212
+    // Total EEPROM space used:
+    BYTE total_bytes = (MAX_LOGS * LOG_SIZE) + 2;
+
+    // Clean all used EEPROM bytes
+    for (BYTE addr = 0; addr < total_bytes; addr++)
     {
-        write_byte(i, 0x00);
+        write_byte(addr, 0x00);
     }
+
+    // Optionally store reset header
+    write_byte(ADDR_STORED_LOGS, 0);
+    write_byte(ADDR_MEM_SECTION, 0);
 }
 
 BOOL EEPROM_StoreLog(const BYTE *log_data)
