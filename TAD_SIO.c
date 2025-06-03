@@ -48,6 +48,9 @@ void SIO_Init(void)
 
 void SIO_PseudoMotorRX(void)
 {
+    if (SIO_LastByteReceived() == '\n' && rx_tail != rx_head)
+        return;
+
     if (PIR1bits.RC1IF)
     {
         rx_buffer[rx_head] = RCREG;
@@ -128,7 +131,7 @@ void SIO_SendString(char *str, unsigned char length)
 
 unsigned char SIO_GetCommandAndValue(unsigned char *value)
 {
-    if (!isCommandComplete())
+    if (SIO_LastByteReceived() != '\n')
         return NO_COMMAND;
 
     BYTE command = SIO_GetCharCua();
