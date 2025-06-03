@@ -5,6 +5,7 @@
 #include "TRAM.h"
 #include "TEEPROM.h"
 #include "TI2C.h"
+#include <string.h> // Make sure this is included
 
 /* =======================================
  *           PRIVATE DEFINES
@@ -36,7 +37,7 @@ typedef struct
 
 static MenuConfig config;
 static BYTE menu_state = MENU_STATE_WAIT_COMMAND;
-static BYTE command_buffer[35];
+static BYTE command_buffer[35] = {0};
 static BYTE log_buffer[TIMESTAMP_SIZE];
 static BYTE logs_remaining = 0;
 static BYTE current_log_section = 0;
@@ -82,6 +83,7 @@ void MENU_Motor(void)
     switch (menu_state)
     {
     case MENU_STATE_WAIT_COMMAND:
+        memset(command_buffer, 0x00, sizeof(command_buffer));
         command = SIO_GetCommandAndValue(command_buffer);
         menu_state = prepare_command_and_get_next_state(command);
         break;
