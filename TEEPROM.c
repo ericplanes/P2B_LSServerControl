@@ -7,8 +7,8 @@
 #define EEPROM_WRITING 1
 #define EEPROM_READING 2
 
-#define ADDR_STORED_LOGS 0
-#define ADDR_MEM_SECTION 1
+#define ADDR_STORED_LOGS 0x00
+#define ADDR_MEM_SECTION 0x01
 
 static BYTE mem_section = 0;
 static BYTE amount_of_stored_logs = 0;
@@ -89,8 +89,8 @@ void EEPROM_CleanMemory(void)
     }
 
     // Optionally store reset header
-    write_byte(ADDR_STORED_LOGS, 0);
-    write_byte(ADDR_MEM_SECTION, 0);
+    write_byte(ADDR_STORED_LOGS, 0x00);
+    write_byte(ADDR_MEM_SECTION, 0x00);
 }
 
 BOOL EEPROM_StoreLog(const BYTE *log_data)

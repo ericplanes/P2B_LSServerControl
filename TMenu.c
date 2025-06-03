@@ -118,6 +118,13 @@ void MENU_Motor(void)
         break;
 
     case MENU_STATE_SEND_LOGS:
+        if (logs_remaining == 0)
+        {
+            SIO_SendCharCua(COMMAND_FINISH);
+            send_end_of_line();
+            menu_state = MENU_STATE_WAIT_COMMAND;
+        }
+
         if (EEPROM_ReadLog(current_log_section, log_buffer) == TRUE)
         {
             SIO_SendCharCua(COMMAND_DATALOGS);
@@ -128,12 +135,6 @@ void MENU_Motor(void)
             current_log_section = EEPROM_GetNextSection(current_log_section);
         }
 
-        if (logs_remaining == 0)
-        {
-            SIO_SendCharCua(COMMAND_FINISH);
-            send_end_of_line();
-            menu_state = MENU_STATE_WAIT_COMMAND;
-        }
         break;
 
     case MENU_STATE_SEND_GRAPH:
