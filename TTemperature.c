@@ -45,20 +45,6 @@ BYTE TEMP_GetTemperature(void)
     return temperature;
 }
 
-/**
- * TESTING METHOD -> Forces a state of the temperature to tweak the system
- */
-void TEMP_TEST_SimulateState(SYS_STATUS state)
-{
-    const BYTE *thresholds = MENU_GetTMPThresholds();
-    if (state == SYS_STATUS_OFF)
-        TEMP_Init();
-
-    simulation = TRUE;
-    fake = state;
-    temperature = state * (11 - state); // 0 (OFF), 10 (LOW), 18 (MID), 24 (HIGH), 28 (CRIT)
-}
-
 /* =======================================
  *          PRIVATE FUNCTION BODIES
  * ======================================= */
@@ -68,10 +54,7 @@ void TEMP_TEST_SimulateState(SYS_STATUS state)
  */
 static BYTE compute_temperature_degrees(BYTE adc)
 {
-    if (simulation == TRUE)
-        return temperature;
-
-    return adc * 100 - 50; // Provisional number until the conversion works correctly
+    return adc * 100 - 50;
 }
 
 /**
@@ -79,9 +62,6 @@ static BYTE compute_temperature_degrees(BYTE adc)
  */
 static SYS_STATUS compute_temperature_state(BYTE value, const BYTE *thresholds)
 {
-    if (simulation == TRUE)
-        return fake;
-
     if (value < thresholds[0])
         return SYS_STATUS_LOW;
 

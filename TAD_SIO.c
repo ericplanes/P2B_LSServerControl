@@ -23,6 +23,7 @@ static void printString(const BYTE *text);
 static void safePrint(BYTE lletra);
 static BYTE getCharQueue(void);
 static BYTE getLastByteReveived(void);
+static BOOL isCommandInBuffer(void);
 
 /* =======================================
  *         PUBLIC FUNCTION BODIES
@@ -148,7 +149,6 @@ void SIO_parse_SetTime(BYTE *value, BYTE *hour, BYTE *min)
     *min = (value[3] - '0') * 10 + (value[4] - '0');
 }
 
-
 /* =======================================
  *        PRIVATE FUNCTION BODIES
  * ======================================= */
@@ -197,4 +197,3 @@ static void safePrint(BYTE lletra)
     if (PIR1bits.TXIF == 1)
         TXREG = lletra;
 }
-
