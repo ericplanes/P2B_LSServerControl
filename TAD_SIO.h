@@ -52,8 +52,6 @@ void SIO_MotorTX(void);
 
 // RX
 void SIO_PseudoMotorRX(void);
-char SIO_GetCharCua(void);
-BYTE SIO_LastByteReceived(void);
 
 // Parsing
 BYTE SIO_GetCommandAndValue(BYTE *value);
