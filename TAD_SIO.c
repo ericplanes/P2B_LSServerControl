@@ -111,15 +111,7 @@ BYTE SIO_GetCommandAndValue(BYTE *value)
     BYTE command = getCharQueue();
     BYTE len = 0;
 
-    if (command == 'X')
-    {
-        LED_SetColor(LED_OFF);
-    }
-
-    if (command == 'x')
-    {
-        LED_SetColor(LED_GREEN);
-    }
+    LED_Toggle();
 
     switch (command)
     {
