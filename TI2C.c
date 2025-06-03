@@ -64,10 +64,10 @@ void I2C_UpdateTimestamp(BYTE hour, BYTE min)
 
 BOOL I2C_OneMinutePassed(void)
 {
-  if (SECOND_PASSED < 59) // Check if one minute has passed
-    return FALSE;         // Indicate that one minute has not passed yet
-  SECOND_PASSED = 0;      // Reset the second passed counter
-  return TRUE;            // Indicate that one minute has passed
+  if (SECOND_PASSED < 7) // Check if one minute has passed
+    return FALSE;        // Indicate that one minute has not passed yet
+  SECOND_PASSED = 0;     // Reset the second passed counter
+  return TRUE;           // Indicate that one minute has passed
 }
 
 void I2C_CheckCounter1S(void)
