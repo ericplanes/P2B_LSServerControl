@@ -12,7 +12,6 @@ static BYTE compute_temperature_degrees(BYTE adc);
  * ======================================= */
 
 static BYTE temperature;
-static BOOL simulation;
 static SYS_STATUS fake;
 
 /* =======================================
@@ -22,7 +21,6 @@ static SYS_STATUS fake;
 void TEMP_Init(void)
 {
     temperature = 0;
-    simulation = FALSE;
     fake = SYS_STATUS_OFF;
 }
 
