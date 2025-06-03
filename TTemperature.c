@@ -52,7 +52,7 @@ BYTE TEMP_GetTemperature(void)
  */
 static BYTE compute_temperature_degrees(BYTE adc)
 {
-    return adc * 100 - 50;
+    return (adc * 6) / 10;
 }
 
 /**
