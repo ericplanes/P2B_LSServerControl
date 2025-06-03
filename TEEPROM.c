@@ -16,48 +16,12 @@ static BYTE pos = 0;
 static BYTE eeprom_state = EEPROM_IDLE;
 
 /* =======================================
- *          PRIVATE FUNCTION BODIES
+ *       PRIVATE FUNCTION HEADERS
  * ======================================= */
-
-static BYTE read_byte(BYTE address)
-{
-    EEADR = address;
-    EECON1bits.EEPGD = 0;
-    EECON1bits.CFGS = 0;
-    EECON1bits.RD = 1;
-    return EEDATA;
-}
-
-static void prepare_write_info(BYTE address, BYTE data)
-{
-    EECON1bits.WREN = 1;
-    EEADR = address;
-    EEDATA = data;
-}
-
-static void write_prepared_info(void)
-{
-    EECON1bits.EEPGD = 0; // Data EEPROM
-    EECON1bits.CFGS = 0;  // Access EEPROM
-    EECON1bits.WREN = 1;
-
-    EECON2 = 0x55;
-    EECON2 = 0xAA;
-    EECON1bits.WR = 1; // Start write
-
-    while (EECON1bits.WR)
-        ;                // Espera que WR es posi a 0 (final de l'escriptura)
-    PIR2bits.EEIF = 0;   // Neteja el flag d'escriptura
-    EECON1bits.WREN = 0; // Desactiva escriptura
-}
-
-static void write_byte(BYTE address, BYTE data)
-{
-    prepare_write_info(address, data);
-    di();
-    write_prepared_info();
-    ei();
-}
+static BYTE read_byte(BYTE address);
+static void prepare_write_info(BYTE address, BYTE data);
+static void write_prepared_info(void);
+static void write_byte(BYTE address, BYTE data);
 
 /* =======================================
  *          PUBLIC FUNCTION BODIES
@@ -166,4 +130,48 @@ BYTE EEPROM_GetFirstSection(void)
 BYTE EEPROM_GetNextSection(BYTE previous_section)
 {
     return previous_section == MAX_LOGS ? 0 : previous_section + 1;
+}
+
+/* =======================================
+ *          PRIVATE FUNCTION BODIES
+ * ======================================= */
+
+static BYTE read_byte(BYTE address)
+{
+    EEADR = address;
+    EECON1bits.EEPGD = 0;
+    EECON1bits.CFGS = 0;
+    EECON1bits.RD = 1;
+    return EEDATA;
+}
+
+static void prepare_write_info(BYTE address, BYTE data)
+{
+    EECON1bits.WREN = 1;
+    EEADR = address;
+    EEDATA = data;
+}
+
+static void write_prepared_info(void)
+{
+    EECON1bits.EEPGD = 0; // Data EEPROM
+    EECON1bits.CFGS = 0;  // Access EEPROM
+    EECON1bits.WREN = 1;
+
+    EECON2 = 0x55;
+    EECON2 = 0xAA;
+    EECON1bits.WR = 1; // Start write
+
+    while (EECON1bits.WR)
+        ;                // Espera que WR es posi a 0 (final de l'escriptura)
+    PIR2bits.EEIF = 0;   // Neteja el flag d'escriptura
+    EECON1bits.WREN = 0; // Desactiva escriptura
+}
+
+static void write_byte(BYTE address, BYTE data)
+{
+    prepare_write_info(address, data);
+    di();
+    write_prepared_info();
+    ei();
 }
