@@ -121,7 +121,7 @@ void MENU_Motor(void)
         if (EEPROM_ReadLog(current_log_section, log_buffer) == TRUE)
         {
             SIO_SendCharCua(COMMAND_DATALOGS);
-            SIO_SendString((char *)log_buffer, TIMESTAMP_SIZE - 1);
+            SIO_SendString(log_buffer, TIMESTAMP_SIZE - 1);
             send_end_of_line();
 
             logs_remaining--;
