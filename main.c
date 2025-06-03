@@ -42,7 +42,7 @@ void main(void)
     // Set internal oscillator to 8 MHz
     OSCCONbits.IRCF = 0b111; // IRCF = 111: 8 MHz
     OSCTUNEbits.PLLEN = 1;   // Enable 4x PLL => 32 MHz
-    OSCCONbits.SCS = 0b00;   // Use clock defined by CONFIG (INTIO67)
+    OSCCONbits.SCS = 0b00;   // Use clock defined by CONFIG
 
     // Now initialize subsystems
     ADC_Init();
