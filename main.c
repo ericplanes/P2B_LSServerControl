@@ -14,7 +14,7 @@
 #include "TRAM.h"
 #include "TTemperature.h"
 
-#pragma config OSC = INTIO2
+#pragma config OSC = HS
 #pragma config PBADEN = DIG
 #pragma config MCLRE = OFF
 #pragma config DEBUG = OFF
@@ -39,12 +39,6 @@ void __interrupt() RSI_High(void)
 
 void main(void)
 {
-    // Set internal oscillator to 8 MHz
-    OSCCONbits.IRCF = 0b111; // IRCF = 111: 8 MHz
-    OSCTUNEbits.PLLEN = 1;   // Enable 4x PLL => 32 MHz
-    OSCCONbits.SCS = 0b00;   // Use clock defined by CONFIG (INTIO67)
-
-    // Now initialize subsystems
     ADC_Init();
     EEPROM_Init();
     CTR_Init();

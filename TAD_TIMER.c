@@ -1,15 +1,8 @@
 #include "TAD_TIMER.h"
 
-#define TMR0_INT_2MS 63536 // 2 ms con Fosc = 32 MHz y prescaler 1:8
+#define T0CON_CONFIG 0x82
+#define TMR0_INT_2MS 64911 // 2 ms, if FOsc is 10MHz.
 #define TI_NUMTIMERS 4	   // Amount of timers being used on the system
-#define T0CON_CONFIG 0b10000010
-// TMR0 ON | 16-bit | Prescaler 1:8 | Internal Clock
-// Bit 7: TMR0ON = 1
-// Bit 6: T08BIT = 0 (16-bit)
-// Bit 5: T0CS = 0 (Internal clock)
-// Bit 4: T0SE = 0 (irrelevant for internal clock)
-// Bit 3: PSA = 0 (prescaler assigned)
-// Bits 2-0: T0PS = 010 → 1:8 prescaler
 
 struct Timer
 {

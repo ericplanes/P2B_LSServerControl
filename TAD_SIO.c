@@ -36,7 +36,7 @@ void SIO_Init(void)
 
     TXSTAbits.BRGH = 1;
     BAUDCONbits.BRG16 = 0;
-    SPBRG = 207; // 9600 baud @ 32 MHz
+    SPBRG = 64; // 9600 baud @ 32 MHz
 
     TXSTAbits.SYNC = 0;
     TXSTAbits.TXEN = 1;
