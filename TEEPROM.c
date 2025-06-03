@@ -1,6 +1,6 @@
 #include "TEEPROM.h"
 
-#define LOG_SIZE (TIMESTAMP_SIZE)
+#define LOG_SIZE (TIMESTAMP_SIZE) - 1
 #define MAX_LOGS 15
 
 #define EEPROM_IDLE 0
