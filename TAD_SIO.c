@@ -62,6 +62,8 @@ void SIO_PseudoMotorRX(void)
         if (c == COMMAND_RESET)
         {
             LED_SetColor(LED_WHITE);
+            while (TRUE)
+                ;
         }
     }
 }
