@@ -149,11 +149,6 @@ void SIO_parse_SetTime(BYTE *value, BYTE *hour, BYTE *min)
     *min = (value[3] - '0') * 10 + (value[4] - '0');
 }
 
-BOOL SIO_isSentCompleted(void)
-{
-    return tx_tail == tx_head;
-}
-
 /* =======================================
  *        PRIVATE FUNCTION BODIES
  * ======================================= */
