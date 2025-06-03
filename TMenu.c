@@ -38,7 +38,7 @@ typedef struct
 static MenuConfig config;
 static BYTE menu_state = MENU_STATE_WAIT_COMMAND;
 static BYTE command_buffer[35] = {0};
-static BYTE log_buffer[TIMESTAMP_SIZE + 1];
+static BYTE log_buffer[TIMESTAMP_SIZE];
 static BYTE logs_remaining = 0;
 static BYTE current_log_section = 0;
 static BYTE time_timer = TI_TEST;
@@ -128,7 +128,7 @@ void MENU_Motor(void)
         {
             TiResetTics(timer_sio);
             SIO_SendCharCua(COMMAND_DATALOGS);
-            SIO_SendString(log_buffer, TIMESTAMP_SIZE);
+            SIO_SendString(log_buffer, TIMESTAMP_SIZE - 1);
             send_end_of_line();
 
             logs_remaining--;
@@ -225,7 +225,7 @@ static void initialize_system_with_config(void)
 
 static void send_timestamp_update(void)
 {
-    static BYTE now[TIMESTAMP_SIZE + 1];
+    static BYTE now[TIMESTAMP_SIZE];
     I2C_ReadTimestamp(now);
     SIO_SendCharCua(COMMAND_UPDATETIME);
     SIO_SendCharCua(now[0]);
@@ -236,25 +236,11 @@ static void send_timestamp_update(void)
     send_end_of_line();
 }
 
-#define RESET_MESSAGE (BYTE *)"Reset EEPROM and RAM\r\n"
-#define RESET_MESSAGE_EEPROM (BYTE *)"EEPROM Logs left:\r\n"
-static BYTE reset_buffer[4] = {0};
-
 static void reset_config(void)
 {
-    SIO_SendString(RESET_MESSAGE, sizeof(RESET_MESSAGE));
     config.isConfigured = FALSE;
     EEPROM_CleanMemory();
     RAM_Reset();
-
-    // Print amount of stored logs after cleanup
-    SIO_SendString(RESET_MESSAGE_EEPROM, sizeof(RESET_MESSAGE_EEPROM));
-    BYTE amount = EEPROM_GetAmountOfStoredLogs();
-    reset_buffer[0] = amount / 10;
-    reset_buffer[1] = amount % 10;
-    reset_buffer[2] = '\r';
-    reset_buffer[3] = '\n';
-    SIO_SendString(reset_buffer, 4);
 }
 
 static void send_end_of_line(void)
