@@ -124,11 +124,10 @@ void MENU_Motor(void)
             send_end_of_line();
             menu_state = MENU_STATE_WAIT_COMMAND;
         }
-
-        if (EEPROM_ReadLog(current_log_section, log_buffer) == TRUE)
+        else if (EEPROM_ReadLog(current_log_section, log_buffer) == TRUE && SIO_isSentCompleted())
         {
             SIO_SendCharCua(COMMAND_DATALOGS);
-            SIO_SendString(log_buffer, TIMESTAMP_SIZE);
+            SIO_SendString(log_buffer, TIMESTAMP_SIZE - 1);
             send_end_of_line();
 
             logs_remaining--;
