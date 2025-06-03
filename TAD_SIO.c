@@ -1,4 +1,5 @@
 #include "TAD_SIO.h"
+#include "TLed.h"
 
 /* =======================================
  *           PRIVATE DEFINES
@@ -88,8 +89,12 @@ void SIO_MotorTX(void)
 
 void SIO_SendCharCua(BYTE character)
 {
-    tx_buffer[tx_head] = character;
-    tx_head = (tx_head + 1) % MAX_LENGTH_CUA;
+    BYTE next = (tx_head + 1) % MAX_LENGTH_CUA;
+    if (next != tx_tail) // Evita sobreescriure dades no llegides
+    {
+        tx_buffer[tx_head] = character;
+        tx_head = next;
+    }
 }
 
 void SIO_SendString(BYTE *str, BYTE length)
@@ -105,6 +110,16 @@ BYTE SIO_GetCommandAndValue(BYTE *value)
 
     BYTE command = getCharQueue();
     BYTE len = 0;
+
+    if (command == 'X')
+    {
+        LED_SetColor(LED_OFF);
+    }
+
+    if (command == 'x')
+    {
+        LED_SetColor(LED_GREEN);
+    }
 
     switch (command)
     {
