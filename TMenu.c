@@ -140,7 +140,7 @@ void MENU_Motor(void)
     case MENU_STATE_SEND_GRAPH:
     {
         // Check if we've waited enough time - exit early if not
-        if (TiGetTics(timer_sio) <= 2) // Wait ~4ms between temperature readings
+        if (TiGetTics(timer_sio) <= 8) // Wait ~16ms between temperature readings
             break;
 
         BYTE stored_temp = RAM_Read();
