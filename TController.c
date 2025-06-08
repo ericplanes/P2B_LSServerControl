@@ -47,6 +47,13 @@ SYS_STATUS CTR_GetStatus(void)
 
 void CTR_Motor(void)
 {
+    // Global reset check - if menu is not configured, always return to wait config
+    if (!MENU_isConfigured() && motor_state != S_WAIT_CONFIG)
+    {
+        motor_state = S_WAIT_CONFIG;
+        TiResetTics(timer_id); // Reset timer when returning to config wait
+    }
+
     switch (motor_state)
     {
     case S_WAIT_CONFIG:
@@ -62,10 +69,6 @@ void CTR_Motor(void)
         {
             TiResetTics(timer_id);
             motor_state = S_READ_TEMPERATURE;
-        }
-        if (!MENU_isConfigured()) // If reset, menu will not be configured anymore
-        {
-            motor_state = S_WAIT_CONFIG;
         }
         break;
 
