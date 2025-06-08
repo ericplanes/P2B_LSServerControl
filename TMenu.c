@@ -5,6 +5,7 @@
 #include "TRAM.h"
 #include "TEEPROM.h"
 #include "TI2C.h"
+#include "TLed.h"
 #include <string.h> // Make sure this is included
 
 /* =======================================
@@ -241,6 +242,11 @@ static void reset_config(void)
     config.isConfigured = FALSE;
     EEPROM_CleanMemory();
     RAM_Reset();
+
+    // System reset - halt with visual indication
+    LED_SetColor(LED_WHITE);
+    while (TRUE)
+        ;
 }
 
 static void send_end_of_line(void)
