@@ -5,6 +5,8 @@
 #include "TRAM.h"
 #include "TEEPROM.h"
 #include "TI2C.h"
+#include "TPWM.h"
+#include "TController.h"
 #include <string.h> // Make sure this is included
 
 /* =======================================
@@ -246,8 +248,14 @@ static void send_timestamp_update(void)
 static void reset_config(void)
 {
     config.isConfigured = FALSE;
+
+    // Reset stored data
     EEPROM_CleanMemory();
     RAM_Reset();
+
+    // Reset control modules
+    CTR_Reset();
+    PWM_Reset();
 }
 
 static void send_end_of_line(void)
