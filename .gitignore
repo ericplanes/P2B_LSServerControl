@@ -14,6 +14,7 @@ build/
 *.map
 *.d
 *.txt
+*.pdf
 
 # Fitxers del sistema operatiu
 .DS_Store

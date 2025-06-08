@@ -5,6 +5,7 @@
 #include "TRAM.h"
 #include "TEEPROM.h"
 #include "TI2C.h"
+#include "TLed.h"
 #include <string.h> // Make sure this is included
 
 /* =======================================
@@ -124,7 +125,7 @@ void MENU_Motor(void)
             send_end_of_line();
             menu_state = MENU_STATE_WAIT_COMMAND;
         }
-        else if (TiGetTics(timer_sio) > 1 && EEPROM_ReadLog(current_log_section, log_buffer) == TRUE)
+        else if (TiGetTics(timer_sio) > 9 && EEPROM_ReadLog(current_log_section, log_buffer) == TRUE) // Wait 20ms to send each log
         {
             TiResetTics(timer_sio);
             SIO_SendCharCua(COMMAND_DATALOGS);
@@ -139,17 +140,17 @@ void MENU_Motor(void)
 
     case MENU_STATE_SEND_GRAPH:
     {
-        BYTE stored_temp = RAM_Read();
-        if (stored_temp != 0x00)
+        // Read all RAM data in one atomic operation
+        BYTE stored_temp;
+        while ((stored_temp = RAM_Read()) != 0x00)
         {
             send_temperature(stored_temp);
         }
-        else
-        {
-            SIO_SendCharCua(COMMAND_FINISH);
-            send_end_of_line();
-            menu_state = MENU_STATE_WAIT_COMMAND;
-        }
+
+        // Send finish command
+        SIO_SendCharCua(COMMAND_FINISH);
+        send_end_of_line();
+        menu_state = MENU_STATE_WAIT_COMMAND;
     }
     break;
     }
@@ -241,6 +242,11 @@ static void reset_config(void)
     config.isConfigured = FALSE;
     EEPROM_CleanMemory();
     RAM_Reset();
+
+    // System reset - halt with visual indication
+    LED_SetColor(LED_WHITE);
+    while (TRUE)
+        ;
 }
 
 static void send_end_of_line(void)
@@ -251,7 +257,7 @@ static void send_end_of_line(void)
 
 static void send_temperature(BYTE stored_temp)
 {
-    while (TiGetTics(timer_sio) < 1) // Wait 2ms
+    while (TiGetTics(timer_sio) < 2) // Wait 4ms
         ;
     SIO_SendCharCua(COMMAND_DATAGRAPH);
     SIO_SendCharCua('0' + (stored_temp / 10));
