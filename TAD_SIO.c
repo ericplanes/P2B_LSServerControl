@@ -33,8 +33,6 @@ static BYTE getLastByteReveived(void);
 static BOOL isCommandInBuffer(void);
 static BOOL isValidCommand(BYTE command);
 static void clearRXBuffer(void);
-static BOOL isValidDigit(BYTE c);
-static BYTE safeParseDigitPair(BYTE *value, BYTE index);
 
 /* =======================================
  *         PUBLIC FUNCTION BODIES
@@ -193,75 +191,21 @@ BYTE SIO_GetCommandAndValue(BYTE *value)
 
 void SIO_parse_Initialize(BYTE *value, BYTE *hour, BYTE *min, BYTE *day, BYTE *month, BYTE *year, BYTE *pollingRate, BYTE *lowThreshold, BYTE *moderateThreshold, BYTE *highThreshold)
 {
-    // Validate command length first
-    BYTE len = 0;
-    while (value[len] != '\0' && len < 35)
-        len++;
-    if (len < 28) // Minimum required length
-    {
-        // Set safe defaults for invalid input
-        *year = 24;
-        *month = 1;
-        *day = 1;
-        *hour = 0;
-        *min = 0;
-        *pollingRate = 10;
-        *lowThreshold = 20;
-        *moderateThreshold = 30;
-        *highThreshold = 40;
-        return;
-    }
-
-    *year = safeParseDigitPair(value, 2);
-    *month = safeParseDigitPair(value, 5);
-    *day = safeParseDigitPair(value, 8);
-    *hour = safeParseDigitPair(value, 11);
-    *min = safeParseDigitPair(value, 14);
-    *pollingRate = safeParseDigitPair(value, 17);
-    *lowThreshold = safeParseDigitPair(value, 20);
-    *moderateThreshold = safeParseDigitPair(value, 23);
-    *highThreshold = safeParseDigitPair(value, 26);
-
-    // Validate ranges
-    if (*month == 0 || *month > 12)
-        *month = 1;
-    if (*day == 0 || *day > 31)
-        *day = 1;
-    if (*hour > 23)
-        *hour = 0;
-    if (*min > 59)
-        *min = 0;
-    if (*pollingRate == 0 || *pollingRate > 60)
-        *pollingRate = 10;
-
-    // Ensure thresholds are in ascending order
-    if (*lowThreshold >= *moderateThreshold)
-        *moderateThreshold = *lowThreshold + 5;
-    if (*moderateThreshold >= *highThreshold)
-        *highThreshold = *moderateThreshold + 5;
+    *year = (value[2] - '0') * 10 + (value[3] - '0');
+    *month = (value[5] - '0') * 10 + (value[6] - '0');
+    *day = (value[8] - '0') * 10 + (value[9] - '0');
+    *hour = (value[11] - '0') * 10 + (value[12] - '0');
+    *min = (value[14] - '0') * 10 + (value[15] - '0');
+    *pollingRate = (value[17] - '0') * 10 + (value[18] - '0');
+    *lowThreshold = (value[20] - '0') * 10 + (value[21] - '0');
+    *moderateThreshold = (value[23] - '0') * 10 + (value[24] - '0');
+    *highThreshold = (value[26] - '0') * 10 + (value[27] - '0');
 }
 
 void SIO_parse_SetTime(BYTE *value, BYTE *hour, BYTE *min)
 {
-    // Validate command length first
-    BYTE len = 0;
-    while (value[len] != '\0' && len < 35)
-        len++;
-    if (len < 5) // Minimum required length "HH:MM"
-    {
-        *hour = 0;
-        *min = 0;
-        return;
-    }
-
-    *hour = safeParseDigitPair(value, 0);
-    *min = safeParseDigitPair(value, 3);
-
-    // Validate ranges
-    if (*hour > 23)
-        *hour = 0;
-    if (*min > 59)
-        *min = 0;
+    *hour = (value[0] - '0') * 10 + (value[1] - '0');
+    *min = (value[3] - '0') * 10 + (value[4] - '0');
 }
 
 /* =======================================
@@ -327,16 +271,4 @@ static void clearRXBuffer(void)
     rx_head = rx_tail = 0;
     for (BYTE i = 0; i < MAX_LENGTH_CUA; i++)
         rx_buffer[i] = 0;
-}
-
-static BOOL isValidDigit(BYTE c)
-{
-    return (c >= '0' && c <= '9');
-}
-
-static BYTE safeParseDigitPair(BYTE *value, BYTE index)
-{
-    if (!isValidDigit(value[index]) || !isValidDigit(value[index + 1]))
-        return 0; // Return 0 for invalid input
-    return (value[index] - '0') * 10 + (value[index + 1] - '0');
 }
