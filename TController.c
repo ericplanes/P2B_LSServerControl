@@ -52,6 +52,7 @@ void CTR_Motor(void)
     {
         motor_state = S_WAIT_CONFIG;
         TiResetTics(timer_id); // Reset timer when returning to config wait
+        TEMP_Init();
     }
 
     switch (motor_state)
