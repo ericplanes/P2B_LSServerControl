@@ -7,6 +7,7 @@
 #define EEPROM_WRITING 1
 #define EEPROM_READING 2
 
+#define ADDR_JUMP 3
 #define ADDR_STORED_LOGS 0x00
 #define ADDR_MEM_SECTION 0x01
 
@@ -49,7 +50,7 @@ void EEPROM_CleanMemory(void)
     eeprom_state = EEPROM_IDLE;
 
     // Total EEPROM space used:
-    BYTE total_bytes = (MAX_LOGS * LOG_SIZE) + 2;
+    BYTE total_bytes = (MAX_LOGS * LOG_SIZE) + ADDR_JUMP;
 
     // Clean all used EEPROM bytes
     for (BYTE addr = 0; addr < total_bytes; addr++)
@@ -71,7 +72,7 @@ BOOL EEPROM_StoreLog(const BYTE *log_data)
 
     if (write_pos < LOG_SIZE)
     {
-        write_byte(write_pos + (mem_section * LOG_SIZE) + 2, log_data[write_pos]);
+        write_byte(write_pos + (mem_section * LOG_SIZE) + ADDR_JUMP, log_data[write_pos]);
         write_pos++;
     }
 
@@ -107,7 +108,7 @@ BOOL EEPROM_ReadLog(BYTE section, BYTE *log_data)
 
     if (read_pos < LOG_SIZE)
     {
-        log_data[read_pos] = read_byte(read_pos + (section * LOG_SIZE) + 2);
+        log_data[read_pos] = read_byte(read_pos + (section * LOG_SIZE) + ADDR_JUMP);
         read_pos++;
     }
 
