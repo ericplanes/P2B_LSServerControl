@@ -71,15 +71,6 @@ void RAM_Reset(void)
     }
 }
 
-/*
- * Visible for testing, reads the first byte of the RAM.
- */
-BYTE RAM_TEST_Read_From_0(void)
-{
-    RAM_PrepareReadFrom0();
-    return RAM_Read();
-}
-
 /* =======================================
  *        PRIVATE FUNCTION BODIES
  * ======================================= */
@@ -90,6 +81,8 @@ BYTE RAM_TEST_Read_From_0(void)
 static void inc_address(void)
 {
     LATCbits.LATC5 = 1;
+    NOP();
+    NOP();
     LATCbits.LATC5 = 0;
 }
 
@@ -99,5 +92,7 @@ static void inc_address(void)
 void RAM_PrepareReadFrom0(void)
 {
     LATCbits.LATC0 = 0; // Activate Reset
+    NOP();
+    NOP();
     LATCbits.LATC0 = 1; // Deactivate Reset
 }

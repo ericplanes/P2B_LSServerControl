@@ -10,8 +10,10 @@
 #define LED_GREEN 2
 #define LED_BLUE 3
 #define LED_MAGENTA 4
+#define LED_WHITE 5
 
 void LED_Init(void);
 void LED_SetColor(BYTE color);
+void LED_Toggle(void);
 
 #endif

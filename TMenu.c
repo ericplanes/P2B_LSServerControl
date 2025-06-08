@@ -5,6 +5,8 @@
 #include "TRAM.h"
 #include "TEEPROM.h"
 #include "TI2C.h"
+#include "TLed.h"
+#include <string.h> // Make sure this is included
 
 /* =======================================
  *           PRIVATE DEFINES
@@ -36,11 +38,12 @@ typedef struct
 
 static MenuConfig config;
 static BYTE menu_state = MENU_STATE_WAIT_COMMAND;
-static BYTE command_buffer[32];
+static BYTE command_buffer[35] = {0};
 static BYTE log_buffer[TIMESTAMP_SIZE];
 static BYTE logs_remaining = 0;
 static BYTE current_log_section = 0;
 static BYTE time_timer = TI_TEST;
+static BYTE timer_sio = TI_SIO;
 static BYTE hour, min;
 static BYTE command;
 
@@ -53,6 +56,7 @@ static void send_timestamp_update(void);
 static void reset_config(void);
 static void send_end_of_line(void);
 static BYTE prepare_command_and_get_next_state(BYTE command);
+static void send_temperature(BYTE stored_temp);
 
 /* =======================================
  *         PUBLIC FUNCTION BODIES
@@ -70,6 +74,9 @@ void MENU_Init(void)
     menu_state = MENU_STATE_WAIT_COMMAND;
     TiNewTimer(&time_timer);
     TiResetTics(time_timer);
+
+    TiNewTimer(&timer_sio);
+    TiResetTics(timer_sio);
 }
 
 void MENU_Motor(void)
@@ -77,6 +84,7 @@ void MENU_Motor(void)
     switch (menu_state)
     {
     case MENU_STATE_WAIT_COMMAND:
+        memset(command_buffer, 0x00, sizeof(command_buffer));
         command = SIO_GetCommandAndValue(command_buffer);
         menu_state = prepare_command_and_get_next_state(command);
         break;
@@ -89,11 +97,12 @@ void MENU_Motor(void)
     case MENU_STATE_UPDATE_TIME:
         SIO_parse_SetTime(command_buffer, &hour, &min);
         I2C_UpdateTimestamp(hour, min);
+        send_timestamp_update();
         menu_state = MENU_STATE_WAIT_COMMAND;
         break;
 
     case MENU_STATE_CHECK_TIMER: // default if no command was sent on MENU_STATE_WAIT_COMMAND
-        if (ds3231_HAS_ONE_MINUTE_PASSED_YET())
+        if (I2C_OneMinutePassed())
         {
             send_timestamp_update();
         }
@@ -110,40 +119,38 @@ void MENU_Motor(void)
         break;
 
     case MENU_STATE_SEND_LOGS:
-        if (EEPROM_ReadLog(current_log_section, log_buffer) == TRUE)
+        if (logs_remaining <= 0)
         {
+            SIO_SendCharCua(COMMAND_FINISH);
+            send_end_of_line();
+            menu_state = MENU_STATE_WAIT_COMMAND;
+        }
+        else if (TiGetTics(timer_sio) > 9 && EEPROM_ReadLog(current_log_section, log_buffer) == TRUE) // Wait 20ms to send each log
+        {
+            TiResetTics(timer_sio);
             SIO_SendCharCua(COMMAND_DATALOGS);
-            SIO_SendString((char *)log_buffer, TIMESTAMP_SIZE - 1);
+            SIO_SendString(log_buffer, TIMESTAMP_SIZE - 1);
             send_end_of_line();
 
             logs_remaining--;
             current_log_section = EEPROM_GetNextSection(current_log_section);
         }
 
-        if (logs_remaining == 0)
-        {
-            SIO_SendCharCua(COMMAND_FINISH);
-            send_end_of_line();
-            menu_state = MENU_STATE_WAIT_COMMAND;
-        }
         break;
 
     case MENU_STATE_SEND_GRAPH:
     {
-        BYTE stored_temp = RAM_Read();
-        if (stored_temp != 0x00)
+        // Read all RAM data in one atomic operation
+        BYTE stored_temp;
+        while ((stored_temp = RAM_Read()) != 0x00)
         {
-            SIO_SendCharCua(COMMAND_DATAGRAPH);
-            SIO_SendCharCua('0' + (stored_temp / 10));
-            SIO_SendCharCua('0' + (stored_temp % 10));
-            send_end_of_line();
+            send_temperature(stored_temp);
         }
-        else
-        {
-            SIO_SendCharCua(COMMAND_FINISH);
-            send_end_of_line();
-            menu_state = MENU_STATE_WAIT_COMMAND;
-        }
+
+        // Send finish command
+        SIO_SendCharCua(COMMAND_FINISH);
+        send_end_of_line();
+        menu_state = MENU_STATE_WAIT_COMMAND;
     }
     break;
     }
@@ -164,25 +171,6 @@ BYTE MENU_GetSamplingTime(void)
     return config.samplingTime;
 }
 
-const BYTE *MENU_GetInitialTimeString(void)
-{
-    return config.initialTime;
-}
-
-void MENU_TEST_SetDefaultConfig(void)
-{
-    config.isConfigured = TRUE;
-    config.thresholds[0] = 20;
-    config.thresholds[1] = 25;
-    config.thresholds[2] = 30;
-    config.samplingTime = 1;
-
-    const BYTE *defaultTime = (const BYTE *)"00000001012025";
-    for (BYTE i = 0; i < 14; i++)
-        config.initialTime[i] = defaultTime[i];
-    config.initialTime[14] = '\0';
-}
-
 /* =======================================
  *         PRIVATE FUNCTION BODIES
  * ======================================= */
@@ -198,6 +186,7 @@ static BYTE prepare_command_and_get_next_state(BYTE command)
     case COMMAND_GET_LOGS:
         logs_remaining = EEPROM_GetAmountOfStoredLogs();
         current_log_section = EEPROM_GetFirstSection();
+        TiResetTics(timer_sio);
         return MENU_STATE_SEND_LOGS;
 
     case COMMAND_GET_GRAPH:
@@ -250,14 +239,29 @@ static void send_timestamp_update(void)
 
 static void reset_config(void)
 {
-    MENU_Init();
-    TiInit(); // The goal is to clear the stored timers, but should check if it's ok
+    config.isConfigured = FALSE;
     EEPROM_CleanMemory();
     RAM_Reset();
+
+    // System reset - halt with visual indication
+    LED_SetColor(LED_WHITE);
+    while (TRUE)
+        ;
 }
 
 static void send_end_of_line(void)
 {
     SIO_SendCharCua(EOC1);
     SIO_SendCharCua(EOC2);
+}
+
+static void send_temperature(BYTE stored_temp)
+{
+    while (TiGetTics(timer_sio) < 2) // Wait 4ms
+        ;
+    SIO_SendCharCua(COMMAND_DATAGRAPH);
+    SIO_SendCharCua('0' + (stored_temp / 10));
+    SIO_SendCharCua('0' + (stored_temp % 10));
+    send_end_of_line();
+    TiResetTics(timer_sio);
 }

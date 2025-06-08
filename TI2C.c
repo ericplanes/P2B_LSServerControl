@@ -22,6 +22,7 @@ static void ds3231_write_raw(BYTE h, BYTE m, BYTE s, BYTE dow, BYTE d, BYTE mo, 
 static void ds3231_update_raw(BYTE h, BYTE m);
 static void ds3231_clear_alarm_flag(void);
 static void fill_timestamp(BYTE *log, BYTE sec, BYTE min, BYTE hour, BYTE day, BYTE month, BYTE year);
+static void ds3231_init_alarm_1s(void);
 
 /* =======================================
  *         PUBLIC FUNCTION BODIES
@@ -40,6 +41,8 @@ void I2C_Init(void)
   SSPADD = I2C_BAUDRATE;
   PIE1bits.SSPIE = 1;
   PIR1bits.SSPIF = 0;
+
+  ds3231_init_alarm_1s();
 }
 
 void I2C_ReadTimestamp(BYTE *timestamp)
@@ -54,45 +57,32 @@ void I2C_SetTimestamp(BYTE hour, BYTE min, BYTE sec, BYTE weekday, BYTE day, BYT
   ds3231_write_raw(hour, min, sec, weekday, day, month, year);
 }
 
-void I2C_TEST_PrintTimestamp(void)
+void I2C_UpdateTimestamp(BYTE hour, BYTE min)
 {
-  BYTE s, m, h, dow, d, mo, y;
-  char buffer[6];
-
-  if (!PORTBbits.RB1)
-    ds3231_clear_alarm_flag();
-
-  ds3231_read_raw(&h, &m, &s, &dow, &d, &mo, &y);
-
-  SIO_PrintString("\r\n");
-  itoa(d, buffer, 10);
-  SIO_PrintString(buffer);
-  SIO_SafePrint('/');
-  itoa(mo, buffer, 10);
-  SIO_PrintString(buffer);
-  SIO_SafePrint('/');
-  itoa(y, buffer, 10);
-  SIO_PrintString(buffer);
-  SIO_PrintString(" ");
-  itoa(h, buffer, 10);
-  SIO_PrintString(buffer);
-  SIO_SafePrint(':');
-  itoa(m, buffer, 10);
-  SIO_PrintString(buffer);
-  SIO_SafePrint(':');
-  itoa(s, buffer, 10);
-  SIO_PrintString(buffer);
-  SIO_PrintString("\r\n");
+  ds3231_update_raw(hour, min);
 }
 
-void I2C_TEST_Wait1S(void)
+BOOL I2C_OneMinutePassed(void)
 {
-  while (PORTBbits.RB1)
-    ; // Wait for alarm flag (falling edge on RB1)
-  ds3231_clear_alarm_flag();
+  if (SECOND_PASSED < 7) // Check if one minute has passed
+    return FALSE;        // Indicate that one minute has not passed yet
+  SECOND_PASSED = 0;     // Reset the second passed counter
+  return TRUE;           // Indicate that one minute has passed
 }
 
-void I2C_TEST_InitAlarmEverySecond(void)
+void I2C_CheckCounter1S(void)
+{
+  if (PORTBbits.RB1 != 0) // Check if alarm flag is set (RB1 low)
+    return;
+  ds3231_clear_alarm_flag(); // Clear the alarm flag
+  SECOND_PASSED++;           // Set the flag indicating one second has passed
+}
+
+/* =======================================
+ *         PRIVATE FUNCTION BODIES
+ * ======================================= */
+
+void ds3231_init_alarm_1s(void)
 {
   // Set Alarm1 registers to trigger every second (A1Mx = 1)
   i2c_start(DS3231_ADDRESS);
@@ -112,15 +102,6 @@ void I2C_TEST_InitAlarmEverySecond(void)
   // Clear Alarm1 flag (A1F bit in status register 0x0F)
   ds3231_clear_alarm_flag();
 }
-
-void I2C_UpdateTimestamp(BYTE hour, BYTE min)
-{
-  ds3231_update_raw(hour, min);
-}
-
-/* =======================================
- *         PRIVATE FUNCTION BODIES
- * ======================================= */
 
 static void i2c_ready(void)
 {
@@ -151,17 +132,6 @@ static char i2c_start(char address)
 {
   SSPCON2bits.SEN = 1;
   while (SSPCON2bits.SEN)
-    ;
-  PIR1bits.SSPIF = 0;
-  if (!(SSPSTATbits.S))
-    return 0;
-  return i2c_write(address);
-}
-
-static char i2c_restart(char address)
-{
-  SSPCON2bits.RSEN = 1;
-  while (SSPCON2bits.RSEN)
     ;
   PIR1bits.SSPIF = 0;
   if (!(SSPSTATbits.S))
@@ -257,7 +227,8 @@ static void ds3231_write_raw(BYTE h, BYTE m, BYTE s, BYTE dow, BYTE d, BYTE mo, 
 static void ds3231_update_raw(BYTE h, BYTE m)
 {
   i2c_start(DS3231_ADDRESS);
-  i2c_write(0x01);
+  i2c_write(0x00);
+  i2c_write(bin_to_bcd(0x00 & 0x7F));
   i2c_write(bin_to_bcd(m & 0x7F));
   i2c_write(bin_to_bcd(h & 0x3F));
   i2c_stop(); // End I2C comunication
@@ -279,20 +250,4 @@ static void fill_timestamp(BYTE *log, BYTE sec, BYTE min, BYTE hour, BYTE day, B
   log[11] = '0';
   log[12] = '0' + (year / 10);
   log[13] = '0' + (year % 10);
-}
-
-BOOL ds3231_HAS_ONE_MINUTE_PASSED_YET(void)
-{
-  if(SECOND_PASSED < 59) // Check if one minute has passed
-    return FALSE; // Indicate that one minute has not passed yet
-  SECOND_PASSED = 0; // Reset the second passed counter
-  return TRUE; // Indicate that one minute has passed
-}
-
-void ds3231_HAS_ONE_SECOND_PASSED_YET(void)
-{
-  if(PORTBbits.RB1 != 0) // Check if alarm flag is set (RB1 low)
-    return;
-  ds3231_clear_alarm_flag(); // Clear the alarm flag
-  SECOND_PASSED++; // Set the flag indicating one second has passed
 }
