@@ -11,10 +11,10 @@
 
 // Java → PIC commands
 #define COMMAND_INITIALIZE 'N'
-#define COMMAND_SET_TIME 'X'
+#define COMMAND_SET_TIME 'I'
 #define COMMAND_GET_LOGS 'G'
 #define COMMAND_GET_GRAPH 'E'
-#define COMMAND_RESET 'I'
+#define COMMAND_RESET 'X'
 
 // PIC → Java commands
 #define COMMAND_FINISH 'F'
