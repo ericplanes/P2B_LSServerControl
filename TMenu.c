@@ -124,7 +124,7 @@ void MENU_Motor(void)
             send_end_of_line();
             menu_state = MENU_STATE_WAIT_COMMAND;
         }
-        else if (TiGetTics(timer_sio) > 1 && EEPROM_ReadLog(current_log_section, log_buffer) == TRUE)
+        else if (TiGetTics(timer_sio) > 9 && EEPROM_ReadLog(current_log_section, log_buffer) == TRUE) // Wait 20ms to send each log
         {
             TiResetTics(timer_sio);
             SIO_SendCharCua(COMMAND_DATALOGS);
