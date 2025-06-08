@@ -50,7 +50,10 @@ void CTR_Motor(void)
     // Global reset check - if menu is not configured, always return to wait config
     if (!MENU_isConfigured() && motor_state != S_WAIT_CONFIG)
     {
+        controller_status = SYS_STATUS_OFF;
+        previous_status = SYS_STATUS_OFF;
         motor_state = S_WAIT_CONFIG;
+        eeprom_can_write = FALSE;
         TiResetTics(timer_id); // Reset timer when returning to config wait
         TEMP_Init();
     }
