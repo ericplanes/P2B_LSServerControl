@@ -5,5 +5,6 @@
 
 void PWM_Init(void);
 void PWM_Motor(void);
+void PWM_Reset(void);
 
 #endif

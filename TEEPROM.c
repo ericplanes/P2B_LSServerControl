@@ -7,6 +7,7 @@
 #define EEPROM_WRITING 1
 #define EEPROM_READING 2
 
+#define ADDR_JUMP 3
 #define ADDR_STORED_LOGS 0x00
 #define ADDR_MEM_SECTION 0x01
 
@@ -20,6 +21,8 @@ static BYTE eeprom_state = EEPROM_IDLE;
  *       PRIVATE FUNCTION HEADERS
  * ======================================= */
 static BYTE read_byte(BYTE address);
+static BYTE read_stored_logs_count(void);
+static BYTE read_mem_section_safe(void);
 static void prepare_write_info(BYTE address, BYTE data);
 static void write_prepared_info(void);
 static void write_byte(BYTE address, BYTE data);
@@ -30,8 +33,8 @@ static void write_byte(BYTE address, BYTE data);
 
 void EEPROM_Init(void)
 {
-    amount_of_stored_logs = 0x00;
-    mem_section = 0x00;
+    amount_of_stored_logs = read_stored_logs_count();
+    mem_section = read_mem_section_safe();
     write_pos = 0;
     read_pos = 0;
     eeprom_state = EEPROM_IDLE;
@@ -47,7 +50,7 @@ void EEPROM_CleanMemory(void)
     eeprom_state = EEPROM_IDLE;
 
     // Total EEPROM space used:
-    BYTE total_bytes = (MAX_LOGS * LOG_SIZE) + 2;
+    BYTE total_bytes = (MAX_LOGS * LOG_SIZE) + ADDR_JUMP;
 
     // Clean all used EEPROM bytes
     for (BYTE addr = 0; addr < total_bytes; addr++)
@@ -69,7 +72,7 @@ BOOL EEPROM_StoreLog(const BYTE *log_data)
 
     if (write_pos < LOG_SIZE)
     {
-        write_byte(write_pos + (mem_section * LOG_SIZE) + 2, log_data[write_pos]);
+        write_byte(write_pos + (mem_section * LOG_SIZE) + ADDR_JUMP, log_data[write_pos]);
         write_pos++;
     }
 
@@ -105,7 +108,7 @@ BOOL EEPROM_ReadLog(BYTE section, BYTE *log_data)
 
     if (read_pos < LOG_SIZE)
     {
-        log_data[read_pos] = read_byte(read_pos + (section * LOG_SIZE) + 2);
+        log_data[read_pos] = read_byte(read_pos + (section * LOG_SIZE) + ADDR_JUMP);
         read_pos++;
     }
 
@@ -146,6 +149,34 @@ static BYTE read_byte(BYTE address)
     EECON1bits.CFGS = 0;
     EECON1bits.RD = 1;
     return EEDATA;
+}
+
+static BYTE read_stored_logs_count(void)
+{
+    BYTE count = read_byte(ADDR_STORED_LOGS);
+
+    // Check if corrupted (uninitialized EEPROM or invalid value)
+    if (count > MAX_LOGS)
+    {
+        count = 0;                       // Return safe default
+        write_byte(ADDR_STORED_LOGS, 0); // Correct the EEPROM
+    }
+
+    return count;
+}
+
+static BYTE read_mem_section_safe(void)
+{
+    BYTE section = read_byte(ADDR_MEM_SECTION);
+
+    // Check if corrupted (uninitialized EEPROM or invalid value)
+    if (section >= MAX_LOGS || section == 0xFF)
+    {
+        section = 0;                     // Return safe default
+        write_byte(ADDR_MEM_SECTION, 0); // Correct the EEPROM
+    }
+
+    return section;
 }
 
 static void prepare_write_info(BYTE address, BYTE data)

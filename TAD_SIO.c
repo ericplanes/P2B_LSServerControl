@@ -123,11 +123,11 @@ BYTE SIO_GetCommandAndValue(BYTE *value)
         break;
     case COMMAND_GET_LOGS:
     case COMMAND_GET_GRAPH:
-    case COMMAND_RESET:
         consume_EOC();
         return command;
     default:
-        return NO_COMMAND;
+        consume_EOC();
+        return COMMAND_RESET;
     }
 
     for (BYTE i = 0; i < len; i++)
@@ -174,8 +174,14 @@ static BYTE getLastByteReveived(void)
 
 static void consume_EOC(void)
 {
+    BYTE start_tail = rx_tail;
+    BYTE chars_consumed = 0;
     while (getCharQueue() != '\n')
-        ;
+    {
+        chars_consumed++;
+        if (chars_consumed >= MAX_LENGTH_CUA) // Prevent infinite loop
+            break;
+    }
 }
 
 static BOOL isCommandInBuffer(void)
@@ -190,7 +196,6 @@ static BOOL isCommandInBuffer(void)
     }
     return FALSE;
 }
-
 static void printString(const BYTE *text)
 {
     while (*text != '\0')

@@ -33,11 +33,7 @@ void CTR_Init(void)
 {
     TiNewTimer(&timer_id);
     TiResetTics(timer_id);
-
-    controller_status = SYS_STATUS_OFF;
-    previous_status = SYS_STATUS_OFF;
-    motor_state = S_WAIT_CONFIG;
-    eeprom_can_write = FALSE;
+    CTR_Reset();
 }
 
 SYS_STATUS CTR_GetStatus(void)
@@ -45,8 +41,23 @@ SYS_STATUS CTR_GetStatus(void)
     return controller_status;
 }
 
+void CTR_Reset(void)
+{
+    controller_status = SYS_STATUS_OFF;
+    previous_status = SYS_STATUS_OFF;
+    motor_state = S_WAIT_CONFIG;
+    eeprom_can_write = FALSE;
+    TiResetTics(timer_id);
+}
+
 void CTR_Motor(void)
 {
+    // Global reset check - if menu is not configured, always return to wait config
+    if (!MENU_isConfigured() && motor_state != S_WAIT_CONFIG)
+    {
+        CTR_Reset();
+    }
+
     switch (motor_state)
     {
     case S_WAIT_CONFIG:
@@ -62,10 +73,6 @@ void CTR_Motor(void)
         {
             TiResetTics(timer_id);
             motor_state = S_READ_TEMPERATURE;
-        }
-        if (!MENU_isConfigured()) // If reset, menu will not be configured anymore
-        {
-            motor_state = S_WAIT_CONFIG;
         }
         break;
 
@@ -102,3 +109,7 @@ void CTR_Motor(void)
         break;
     }
 }
+
+/* =======================================
+ *        PRIVATE FUNCTION BODIES
+ * ======================================= */

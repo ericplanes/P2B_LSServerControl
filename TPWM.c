@@ -23,6 +23,13 @@ static BYTE timerLED = TI_LED;
  *         PUBLIC FUNCTION BODIES
  * ======================================= */
 
+void PWM_Reset(void)
+{
+    FAN_SetPowerA(FALSE);
+    FAN_SetPowerB(FALSE);
+    LED_SetColor(LED_OFF);
+}
+
 void PWM_Init(void)
 {
     TiNewTimer(&timerFan);
@@ -31,9 +38,7 @@ void PWM_Init(void)
     TiNewTimer(&timerLED);
     TiResetTics(timerLED);
 
-    FAN_SetPowerA(FALSE);
-    FAN_SetPowerB(FALSE);
-    LED_SetColor(LED_OFF);
+    PWM_Reset();
 }
 
 void PWM_Motor(void)

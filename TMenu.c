@@ -5,7 +5,8 @@
 #include "TRAM.h"
 #include "TEEPROM.h"
 #include "TI2C.h"
-#include "TLed.h"
+#include "TPWM.h"
+#include "TController.h"
 #include <string.h> // Make sure this is included
 
 /* =======================================
@@ -140,17 +141,23 @@ void MENU_Motor(void)
 
     case MENU_STATE_SEND_GRAPH:
     {
-        // Read all RAM data in one atomic operation
-        BYTE stored_temp;
-        while ((stored_temp = RAM_Read()) != 0x00)
+        // Check if we've waited enough time - exit early if not
+        if (TiGetTics(timer_sio) <= 8) // Wait ~16ms between temperature readings
+            break;
+
+        BYTE stored_temp = RAM_Read();
+        if (stored_temp == 0x00) // No more data
         {
+            // Send finish command
+            SIO_SendCharCua(COMMAND_FINISH);
+            send_end_of_line();
+            menu_state = MENU_STATE_WAIT_COMMAND;
+        }
+        else
+        {
+            TiResetTics(timer_sio);
             send_temperature(stored_temp);
         }
-
-        // Send finish command
-        SIO_SendCharCua(COMMAND_FINISH);
-        send_end_of_line();
-        menu_state = MENU_STATE_WAIT_COMMAND;
     }
     break;
     }
@@ -191,6 +198,7 @@ static BYTE prepare_command_and_get_next_state(BYTE command)
 
     case COMMAND_GET_GRAPH:
         RAM_PrepareReadFrom0();
+        TiResetTics(timer_sio);
         return MENU_STATE_SEND_GRAPH;
 
     case COMMAND_SET_TIME:
@@ -240,13 +248,14 @@ static void send_timestamp_update(void)
 static void reset_config(void)
 {
     config.isConfigured = FALSE;
+
+    // Reset stored data
     EEPROM_CleanMemory();
     RAM_Reset();
 
-    // System reset - halt with visual indication
-    LED_SetColor(LED_WHITE);
-    while (TRUE)
-        ;
+    // Reset control modules
+    CTR_Reset();
+    PWM_Reset();
 }
 
 static void send_end_of_line(void)
@@ -257,11 +266,8 @@ static void send_end_of_line(void)
 
 static void send_temperature(BYTE stored_temp)
 {
-    while (TiGetTics(timer_sio) < 2) // Wait 4ms
-        ;
     SIO_SendCharCua(COMMAND_DATAGRAPH);
     SIO_SendCharCua('0' + (stored_temp / 10));
     SIO_SendCharCua('0' + (stored_temp % 10));
     send_end_of_line();
-    TiResetTics(timer_sio);
 }
