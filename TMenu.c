@@ -139,17 +139,17 @@ void MENU_Motor(void)
 
     case MENU_STATE_SEND_GRAPH:
     {
-        BYTE stored_temp = RAM_Read();
-        if (stored_temp != 0x00)
+        // Read all RAM data in one atomic operation
+        BYTE stored_temp;
+        while ((stored_temp = RAM_Read()) != 0x00)
         {
             send_temperature(stored_temp);
         }
-        else
-        {
-            SIO_SendCharCua(COMMAND_FINISH);
-            send_end_of_line();
-            menu_state = MENU_STATE_WAIT_COMMAND;
-        }
+
+        // Send finish command
+        SIO_SendCharCua(COMMAND_FINISH);
+        send_end_of_line();
+        menu_state = MENU_STATE_WAIT_COMMAND;
     }
     break;
     }
