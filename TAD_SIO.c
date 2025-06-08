@@ -123,11 +123,11 @@ BYTE SIO_GetCommandAndValue(BYTE *value)
         break;
     case COMMAND_GET_LOGS:
     case COMMAND_GET_GRAPH:
-    case COMMAND_RESET:
         consume_EOC();
         return command;
     default:
-        return NO_COMMAND;
+        consume_EOC();
+        return COMMAND_RESET;
     }
 
     for (BYTE i = 0; i < len; i++)
