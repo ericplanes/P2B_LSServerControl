@@ -12,11 +12,6 @@
 #define S_WRITE_RAM 5
 
 /* =======================================
- *       PRIVATE FUNCTION HEADERS
- * ======================================= */
-static void set_initial_state(void);
-
-/* =======================================
  *         PRIVATE VARIABLES
  * ======================================= */
 
@@ -38,7 +33,7 @@ void CTR_Init(void)
 {
     TiNewTimer(&timer_id);
     TiResetTics(timer_id);
-    set_initial_state();
+    CTR_Reset();
 }
 
 SYS_STATUS CTR_GetStatus(void)
@@ -46,14 +41,21 @@ SYS_STATUS CTR_GetStatus(void)
     return controller_status;
 }
 
+void CTR_Reset(void)
+{
+    controller_status = SYS_STATUS_OFF;
+    previous_status = SYS_STATUS_OFF;
+    motor_state = S_WAIT_CONFIG;
+    eeprom_can_write = FALSE;
+    TiResetTics(timer_id);
+}
+
 void CTR_Motor(void)
 {
     // Global reset check - if menu is not configured, always return to wait config
     if (!MENU_isConfigured() && motor_state != S_WAIT_CONFIG)
     {
-        set_initial_state();
-        TiResetTics(timer_id); // Reset timer when returning to config wait
-        TEMP_Init();
+        CTR_Reset();
     }
 
     switch (motor_state)
@@ -111,11 +113,3 @@ void CTR_Motor(void)
 /* =======================================
  *        PRIVATE FUNCTION BODIES
  * ======================================= */
-
-static void set_initial_state(void)
-{
-    controller_status = SYS_STATUS_OFF;
-    previous_status = SYS_STATUS_OFF;
-    motor_state = S_WAIT_CONFIG;
-    eeprom_can_write = FALSE;
-}
