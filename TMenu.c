@@ -196,6 +196,7 @@ static BYTE prepare_command_and_get_next_state(BYTE command)
 
     case COMMAND_GET_GRAPH:
         RAM_PrepareReadFrom0();
+        TiResetTics(timer_sio);
         return MENU_STATE_SEND_GRAPH;
 
     case COMMAND_SET_TIME:

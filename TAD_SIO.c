@@ -174,8 +174,14 @@ static BYTE getLastByteReveived(void)
 
 static void consume_EOC(void)
 {
+    BYTE start_tail = rx_tail;
+    BYTE chars_consumed = 0;
     while (getCharQueue() != '\n')
-        ;
+    {
+        chars_consumed++;
+        if (chars_consumed >= MAX_LENGTH_CUA) // Prevent infinite loop
+            break;
+    }
 }
 
 static BOOL isCommandInBuffer(void)
