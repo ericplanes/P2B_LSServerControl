@@ -193,11 +193,6 @@ static BYTE prepare_command_and_get_next_state(BYTE command)
         return MENU_STATE_SEND_GRAPH;
 
     case COMMAND_SET_TIME:
-        // Validate command buffer has minimum required length
-        if (command_buffer[0] == '\0' || command_buffer[2] != ':')
-        {
-            return MENU_STATE_CHECK_TIMER; // Invalid format, ignore command
-        }
         return MENU_STATE_UPDATE_TIME;
 
     case COMMAND_RESET:
@@ -205,11 +200,6 @@ static BYTE prepare_command_and_get_next_state(BYTE command)
         return MENU_STATE_WAIT_COMMAND;
 
     case COMMAND_INITIALIZE:
-        // Validate initialize command has minimum required data
-        if (command_buffer[0] == '\0')
-        {
-            return MENU_STATE_CHECK_TIMER; // Invalid format, ignore command
-        }
         return MENU_STATE_INIT;
 
     default:
@@ -261,14 +251,11 @@ static void send_end_of_line(void)
 
 static void send_temperature(BYTE stored_temp)
 {
-    // Non-blocking approach: Only send if enough time has passed
-    if (TiGetTics(timer_sio) >= 1) // Wait 2ms
-    {
-        SIO_SendCharCua(COMMAND_DATAGRAPH);
-        SIO_SendCharCua('0' + (stored_temp / 10));
-        SIO_SendCharCua('0' + (stored_temp % 10));
-        send_end_of_line();
-        TiResetTics(timer_sio);
-    }
-    // If not enough time has passed, just return without sending
+    while (TiGetTics(timer_sio) < 1) // Wait 2ms
+        ;
+    SIO_SendCharCua(COMMAND_DATAGRAPH);
+    SIO_SendCharCua('0' + (stored_temp / 10));
+    SIO_SendCharCua('0' + (stored_temp % 10));
+    send_end_of_line();
+    TiResetTics(timer_sio);
 }

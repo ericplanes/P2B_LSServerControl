@@ -19,20 +19,12 @@ static BYTE rx_head = 0, rx_tail = 0;
 static BYTE tx_buffer[MAX_LENGTH_CUA] = {0};
 static BYTE rx_buffer[MAX_LENGTH_CUA] = {0};
 
-// Error tracking variables
-static BYTE overrun_error_count = 0;
-static BYTE framing_error_count = 0;
-static BYTE buffer_overflow_count = 0;
-static BYTE tx_timeout_count = 0;
-
 static void consume_EOC(void);
 static void printString(const BYTE *text);
 static void safePrint(BYTE lletra);
 static BYTE getCharQueue(void);
 static BYTE getLastByteReveived(void);
 static BOOL isCommandInBuffer(void);
-static BOOL isValidCommand(BYTE command);
-static void clearRXBuffer(void);
 
 /* =======================================
  *         PUBLIC FUNCTION BODIES
@@ -64,47 +56,9 @@ void SIO_PseudoMotorRX(void)
 
     if (PIR1bits.RC1IF)
     {
-        // Check for UART hardware errors first
-        if (RCSTAbits.OERR) // Overrun error
-        {
-            // Clear overrun error by resetting receiver
-            RCSTAbits.CREN = 0;
-            RCSTAbits.CREN = 1;
-            // Flush any corrupt data
-            while (PIR1bits.RC1IF)
-            {
-                volatile BYTE dummy = RCREG;
-            }
-            LED_SetColor(LED_RED); // Visual indication of error
-            overrun_error_count++;
-            return;
-        }
-
-        if (RCSTAbits.FERR) // Framing error
-        {
-            // Clear framing error by reading RCREG
-            volatile BYTE dummy = RCREG;
-            LED_SetColor(LED_GREEN); // Visual indication of framing error
-            framing_error_count++;
-            return;
-        }
-
-        // Read data only if no errors
         BYTE c = RCREG;
-
-        // Check for buffer overflow before storing
-        BYTE next_head = (rx_head + 1) % MAX_LENGTH_CUA;
-        if (next_head == rx_tail)
-        {
-            // Buffer overflow - discard oldest data to make room
-            rx_tail = (rx_tail + 1) % MAX_LENGTH_CUA;
-            LED_SetColor(LED_MAGENTA); // Visual indication of buffer overflow
-            buffer_overflow_count++;
-        }
-
         rx_buffer[rx_head] = c;
-        rx_head = next_head;
-
+        rx_head = (rx_head + 1) % MAX_LENGTH_CUA;
         if (c == COMMAND_RESET)
         {
             LED_SetColor(LED_WHITE);
@@ -255,20 +209,4 @@ static void safePrint(BYTE lletra)
 {
     if (PIR1bits.TXIF == 1)
         TXREG = lletra;
-}
-
-static BOOL isValidCommand(BYTE command)
-{
-    return (command == COMMAND_INITIALIZE ||
-            command == COMMAND_SET_TIME ||
-            command == COMMAND_GET_LOGS ||
-            command == COMMAND_GET_GRAPH ||
-            command == COMMAND_RESET);
-}
-
-static void clearRXBuffer(void)
-{
-    rx_head = rx_tail = 0;
-    for (BYTE i = 0; i < MAX_LENGTH_CUA; i++)
-        rx_buffer[i] = 0;
 }
