@@ -132,7 +132,7 @@ BYTE EEPROM_GetFirstSection(void)
 
 BYTE EEPROM_GetNextSection(BYTE previous_section)
 {
-    return previous_section == MAX_LOGS ? 0 : previous_section + 1;
+    return (previous_section + 1) % MAX_LOGS;
 }
 
 /* =======================================
