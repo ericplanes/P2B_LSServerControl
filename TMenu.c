@@ -140,17 +140,23 @@ void MENU_Motor(void)
 
     case MENU_STATE_SEND_GRAPH:
     {
-        // Read all RAM data in one atomic operation
-        BYTE stored_temp;
-        while ((stored_temp = RAM_Read()) != 0x00)
+        // Check if we've waited enough time - exit early if not
+        if (TiGetTics(timer_sio) <= 3) // Wait ~6ms between temperature readings
+            break;
+
+        BYTE stored_temp = RAM_Read();
+        if (stored_temp == 0x00) // No more data
         {
+            // Send finish command
+            SIO_SendCharCua(COMMAND_FINISH);
+            send_end_of_line();
+            menu_state = MENU_STATE_WAIT_COMMAND;
+        }
+        else
+        {
+            TiResetTics(timer_sio);
             send_temperature(stored_temp);
         }
-
-        // Send finish command
-        SIO_SendCharCua(COMMAND_FINISH);
-        send_end_of_line();
-        menu_state = MENU_STATE_WAIT_COMMAND;
     }
     break;
     }
@@ -242,11 +248,6 @@ static void reset_config(void)
     config.isConfigured = FALSE;
     EEPROM_CleanMemory();
     RAM_Reset();
-
-    // System reset - halt with visual indication
-    LED_SetColor(LED_WHITE);
-    while (TRUE)
-        ;
 }
 
 static void send_end_of_line(void)
@@ -257,11 +258,8 @@ static void send_end_of_line(void)
 
 static void send_temperature(BYTE stored_temp)
 {
-    while (TiGetTics(timer_sio) < 4) // Wait 4ms
-        ;
     SIO_SendCharCua(COMMAND_DATAGRAPH);
     SIO_SendCharCua('0' + (stored_temp / 10));
     SIO_SendCharCua('0' + (stored_temp % 10));
     send_end_of_line();
-    TiResetTics(timer_sio);
 }

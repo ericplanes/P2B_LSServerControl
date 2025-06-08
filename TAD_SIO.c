@@ -190,7 +190,6 @@ static BOOL isCommandInBuffer(void)
     }
     return FALSE;
 }
-
 static void printString(const BYTE *text)
 {
     while (*text != '\0')
