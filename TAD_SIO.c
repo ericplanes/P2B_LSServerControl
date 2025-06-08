@@ -19,12 +19,22 @@ static BYTE rx_head = 0, rx_tail = 0;
 static BYTE tx_buffer[MAX_LENGTH_CUA] = {0};
 static BYTE rx_buffer[MAX_LENGTH_CUA] = {0};
 
+// Error tracking variables
+static BYTE overrun_error_count = 0;
+static BYTE framing_error_count = 0;
+static BYTE buffer_overflow_count = 0;
+static BYTE tx_timeout_count = 0;
+
 static void consume_EOC(void);
 static void printString(const BYTE *text);
 static void safePrint(BYTE lletra);
 static BYTE getCharQueue(void);
 static BYTE getLastByteReveived(void);
 static BOOL isCommandInBuffer(void);
+static BOOL isValidCommand(BYTE command);
+static void clearRXBuffer(void);
+static BOOL isValidDigit(BYTE c);
+static BYTE safeParseDigitPair(BYTE *value, BYTE index);
 
 /* =======================================
  *         PUBLIC FUNCTION BODIES
@@ -56,9 +66,47 @@ void SIO_PseudoMotorRX(void)
 
     if (PIR1bits.RC1IF)
     {
+        // Check for UART hardware errors first
+        if (RCSTAbits.OERR) // Overrun error
+        {
+            // Clear overrun error by resetting receiver
+            RCSTAbits.CREN = 0;
+            RCSTAbits.CREN = 1;
+            // Flush any corrupt data
+            while (PIR1bits.RC1IF)
+            {
+                volatile BYTE dummy = RCREG;
+            }
+            LED_SetColor(LED_RED); // Visual indication of error
+            overrun_error_count++;
+            return;
+        }
+
+        if (RCSTAbits.FERR) // Framing error
+        {
+            // Clear framing error by reading RCREG
+            volatile BYTE dummy = RCREG;
+            LED_SetColor(LED_GREEN); // Visual indication of framing error
+            framing_error_count++;
+            return;
+        }
+
+        // Read data only if no errors
         BYTE c = RCREG;
+
+        // Check for buffer overflow before storing
+        BYTE next_head = (rx_head + 1) % MAX_LENGTH_CUA;
+        if (next_head == rx_tail)
+        {
+            // Buffer overflow - discard oldest data to make room
+            rx_tail = (rx_tail + 1) % MAX_LENGTH_CUA;
+            LED_SetColor(LED_MAGENTA); // Visual indication of buffer overflow
+            buffer_overflow_count++;
+        }
+
         rx_buffer[rx_head] = c;
-        rx_head = (rx_head + 1) % MAX_LENGTH_CUA;
+        rx_head = next_head;
+
         if (c == COMMAND_RESET)
         {
             LED_SetColor(LED_WHITE);
@@ -145,21 +193,75 @@ BYTE SIO_GetCommandAndValue(BYTE *value)
 
 void SIO_parse_Initialize(BYTE *value, BYTE *hour, BYTE *min, BYTE *day, BYTE *month, BYTE *year, BYTE *pollingRate, BYTE *lowThreshold, BYTE *moderateThreshold, BYTE *highThreshold)
 {
-    *year = (value[2] - '0') * 10 + (value[3] - '0');
-    *month = (value[5] - '0') * 10 + (value[6] - '0');
-    *day = (value[8] - '0') * 10 + (value[9] - '0');
-    *hour = (value[11] - '0') * 10 + (value[12] - '0');
-    *min = (value[14] - '0') * 10 + (value[15] - '0');
-    *pollingRate = (value[17] - '0') * 10 + (value[18] - '0');
-    *lowThreshold = (value[20] - '0') * 10 + (value[21] - '0');
-    *moderateThreshold = (value[23] - '0') * 10 + (value[24] - '0');
-    *highThreshold = (value[26] - '0') * 10 + (value[27] - '0');
+    // Validate command length first
+    BYTE len = 0;
+    while (value[len] != '\0' && len < 35)
+        len++;
+    if (len < 28) // Minimum required length
+    {
+        // Set safe defaults for invalid input
+        *year = 24;
+        *month = 1;
+        *day = 1;
+        *hour = 0;
+        *min = 0;
+        *pollingRate = 10;
+        *lowThreshold = 20;
+        *moderateThreshold = 30;
+        *highThreshold = 40;
+        return;
+    }
+
+    *year = safeParseDigitPair(value, 2);
+    *month = safeParseDigitPair(value, 5);
+    *day = safeParseDigitPair(value, 8);
+    *hour = safeParseDigitPair(value, 11);
+    *min = safeParseDigitPair(value, 14);
+    *pollingRate = safeParseDigitPair(value, 17);
+    *lowThreshold = safeParseDigitPair(value, 20);
+    *moderateThreshold = safeParseDigitPair(value, 23);
+    *highThreshold = safeParseDigitPair(value, 26);
+
+    // Validate ranges
+    if (*month == 0 || *month > 12)
+        *month = 1;
+    if (*day == 0 || *day > 31)
+        *day = 1;
+    if (*hour > 23)
+        *hour = 0;
+    if (*min > 59)
+        *min = 0;
+    if (*pollingRate == 0 || *pollingRate > 60)
+        *pollingRate = 10;
+
+    // Ensure thresholds are in ascending order
+    if (*lowThreshold >= *moderateThreshold)
+        *moderateThreshold = *lowThreshold + 5;
+    if (*moderateThreshold >= *highThreshold)
+        *highThreshold = *moderateThreshold + 5;
 }
 
 void SIO_parse_SetTime(BYTE *value, BYTE *hour, BYTE *min)
 {
-    *hour = (value[0] - '0') * 10 + (value[1] - '0');
-    *min = (value[3] - '0') * 10 + (value[4] - '0');
+    // Validate command length first
+    BYTE len = 0;
+    while (value[len] != '\0' && len < 35)
+        len++;
+    if (len < 5) // Minimum required length "HH:MM"
+    {
+        *hour = 0;
+        *min = 0;
+        return;
+    }
+
+    *hour = safeParseDigitPair(value, 0);
+    *min = safeParseDigitPair(value, 3);
+
+    // Validate ranges
+    if (*hour > 23)
+        *hour = 0;
+    if (*min > 59)
+        *min = 0;
 }
 
 /* =======================================
@@ -209,4 +311,32 @@ static void safePrint(BYTE lletra)
 {
     if (PIR1bits.TXIF == 1)
         TXREG = lletra;
+}
+
+static BOOL isValidCommand(BYTE command)
+{
+    return (command == COMMAND_INITIALIZE ||
+            command == COMMAND_SET_TIME ||
+            command == COMMAND_GET_LOGS ||
+            command == COMMAND_GET_GRAPH ||
+            command == COMMAND_RESET);
+}
+
+static void clearRXBuffer(void)
+{
+    rx_head = rx_tail = 0;
+    for (BYTE i = 0; i < MAX_LENGTH_CUA; i++)
+        rx_buffer[i] = 0;
+}
+
+static BOOL isValidDigit(BYTE c)
+{
+    return (c >= '0' && c <= '9');
+}
+
+static BYTE safeParseDigitPair(BYTE *value, BYTE index)
+{
+    if (!isValidDigit(value[index]) || !isValidDigit(value[index + 1]))
+        return 0; // Return 0 for invalid input
+    return (value[index] - '0') * 10 + (value[index + 1] - '0');
 }

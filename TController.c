@@ -53,6 +53,10 @@ void CTR_Motor(void)
         if (MENU_isConfigured())
         {
             wait_sample_time = MENU_GetSamplingTime();
+            if (wait_sample_time == 0 || wait_sample_time > 60)
+            {
+                wait_sample_time = 10;
+            }
             motor_state = S_WAIT_SAMPLETIME;
         }
         break;
