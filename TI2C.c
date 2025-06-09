@@ -218,7 +218,7 @@ static void ds3231_write_raw(BYTE h, BYTE m, BYTE s, BYTE dow, BYTE d, BYTE mo, 
   i2c_write(bin_to_bcd(d & 0x3F));
   i2c_write(bin_to_bcd(mo & 0x1F));
   i2c_write(bin_to_bcd(y));
-  i2c_stop(); // End I2C comunication
+  i2c_stop(); // End I2C communication
 }
 
 /*
@@ -231,7 +231,7 @@ static void ds3231_update_raw(BYTE h, BYTE m)
   i2c_write(bin_to_bcd(0x00 & 0x7F));
   i2c_write(bin_to_bcd(m & 0x7F));
   i2c_write(bin_to_bcd(h & 0x3F));
-  i2c_stop(); // End I2C comunication
+  i2c_stop(); // End I2C communication
 }
 
 static void fill_timestamp(BYTE *log, BYTE sec, BYTE min, BYTE hour, BYTE day, BYTE month, BYTE year)
