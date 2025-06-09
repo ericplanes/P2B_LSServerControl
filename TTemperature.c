@@ -12,7 +12,6 @@ static BYTE compute_temperature_degrees(BYTE adc);
  * ======================================= */
 
 static BYTE temperature;
-static SYS_STATUS fake;
 
 /* =======================================
  *          PUBLIC FUNCTION BODIES
@@ -21,7 +20,6 @@ static SYS_STATUS fake;
 void TEMP_Init(void)
 {
     temperature = 0;
-    fake = SYS_STATUS_OFF;
 }
 
 /**
