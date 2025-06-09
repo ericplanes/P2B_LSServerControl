@@ -1,6 +1,6 @@
 #include "TLed.h"
 
-static BOOL color = FALSE;
+static BOOL toggle_state = FALSE;
 
 void LED_Init(void)
 {
@@ -38,31 +38,11 @@ void LED_SetColor(BYTE color)
         LATAbits.LATA4 = 1;
         break;
 
-    case LED_WHITE:
-        LATAbits.LATA3 = 1;
-        LATAbits.LATA5 = 1;
-        LATAbits.LATA4 = 1;
-        break;
-
     case LED_OFF:
     default:
         LATAbits.LATA3 = 0;
         LATAbits.LATA5 = 0;
         LATAbits.LATA4 = 0;
         break;
-    }
-}
-
-void LED_Toggle(void)
-{
-    if (color == TRUE)
-    {
-        LED_SetColor(LED_WHITE);
-        color = FALSE;
-    }
-    else
-    {
-        LED_SetColor(LED_OFF);
-        color = TRUE;
     }
 }
