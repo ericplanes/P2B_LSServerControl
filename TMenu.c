@@ -18,8 +18,7 @@
 #define MENU_STATE_SEND_LOGS 2
 #define MENU_STATE_SEND_GRAPH 3
 #define MENU_STATE_UPDATE_TIME 4
-#define MENU_STATE_RESET_SYSTEM 5
-#define MENU_STATE_CHECK_TIMER 6
+#define MENU_STATE_CHECK_TIMER 5
 
 /* =======================================
  *              CONFIG STRUCT
@@ -27,7 +26,6 @@
 
 typedef struct
 {
-    BYTE initialTime[15]; // "hhmmssDDMMYYYY" + '\0'
     BYTE samplingTime;
     BYTE thresholds[3];
     BOOL isConfigured;
@@ -43,7 +41,6 @@ static BYTE command_buffer[35] = {0};
 static BYTE log_buffer[TIMESTAMP_SIZE];
 static BYTE logs_remaining = 0;
 static BYTE current_log_section = 0;
-static BYTE time_timer = TI_TEST;
 static BYTE timer_sio = TI_SIO;
 static BYTE hour, min;
 static BYTE command;
@@ -70,11 +67,8 @@ void MENU_Init(void)
     config.thresholds[0] = 0;
     config.thresholds[1] = 0;
     config.thresholds[2] = 0;
-    config.initialTime[0] = '\0';
 
     menu_state = MENU_STATE_WAIT_COMMAND;
-    TiNewTimer(&time_timer);
-    TiResetTics(time_timer);
 
     TiNewTimer(&timer_sio);
     TiResetTics(timer_sio);
@@ -219,7 +213,7 @@ static BYTE prepare_command_and_get_next_state(BYTE command)
 static void initialize_system_with_config(void)
 {
     BYTE hour, min, day, month, year;
-    BYTE rate, low, mod, high, crit;
+    BYTE rate, low, mod, high;
 
     SIO_parse_Initialize(command_buffer, &hour, &min, &day, &month, &year, &rate, &low, &mod, &high);
 

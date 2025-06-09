@@ -1,5 +1,4 @@
 #include "TAD_SIO.h"
-#include "TLed.h"
 
 /* =======================================
  *           PRIVATE DEFINES
@@ -20,8 +19,6 @@ static BYTE tx_buffer[MAX_LENGTH_CUA] = {0};
 static BYTE rx_buffer[MAX_LENGTH_CUA] = {0};
 
 static void consume_EOC(void);
-static void printString(const BYTE *text);
-static void safePrint(BYTE lletra);
 static BYTE getCharQueue(void);
 static BYTE getLastByteReveived(void);
 static BOOL isCommandInBuffer(void);
@@ -90,7 +87,7 @@ void SIO_MotorTX(void)
 void SIO_SendCharCua(BYTE character)
 {
     BYTE next = (tx_head + 1) % MAX_LENGTH_CUA;
-    if (next != tx_tail) // Evita sobreescriure dades no llegides
+    if (next != tx_tail) // Avoid overwriting unread data
     {
         tx_buffer[tx_head] = character;
         tx_head = next;
@@ -110,8 +107,6 @@ BYTE SIO_GetCommandAndValue(BYTE *value)
 
     BYTE command = getCharQueue();
     BYTE len = 0;
-
-    LED_Toggle();
 
     switch (command)
     {
@@ -174,7 +169,6 @@ static BYTE getLastByteReveived(void)
 
 static void consume_EOC(void)
 {
-    BYTE start_tail = rx_tail;
     BYTE chars_consumed = 0;
     while (getCharQueue() != '\n')
     {
@@ -195,17 +189,4 @@ static BOOL isCommandInBuffer(void)
         i = (i + 1) % MAX_LENGTH_CUA;
     }
     return FALSE;
-}
-static void printString(const BYTE *text)
-{
-    while (*text != '\0')
-    {
-        safePrint(*text++);
-    }
-}
-
-static void safePrint(BYTE lletra)
-{
-    if (PIR1bits.TXIF == 1)
-        TXREG = lletra;
 }

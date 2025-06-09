@@ -18,15 +18,15 @@ static void inc_address(void);
 void RAM_Init(void)
 {
     // Configure directions and initial state of pins
-    TRISD = 0xFF;         // Port D com entrada (DATA)
+    TRISD = 0xFF;         // Port D as input (DATA)
     TRISBbits.TRISB0 = 0; // !WE (write enable)
     TRISBbits.TRISB3 = 0; // !OE (output enable)
     TRISCbits.TRISC0 = 0; // !RESET COUNTER
     TRISCbits.TRISC5 = 0; // COUNT (CLK)
 
-    LATBbits.LATB0 = 1; // !WE inactiu
-    LATBbits.LATB3 = 1; // !OE inactiu
-    LATCbits.LATC0 = 1; // RESET inactiu
+    LATBbits.LATB0 = 1; // !WE inactive
+    LATBbits.LATB3 = 1; // !OE inactive
+    LATCbits.LATC0 = 1; // RESET inactive
     RAM_Reset();        // Cleans all the previously recorded information
 }
 
@@ -35,13 +35,13 @@ void RAM_Init(void)
  */
 void RAM_Write(BYTE data)
 {
-    LATBbits.LATB0 = 0; // Activem !WE → mode escriptura
-    TRISD = 0x00;       // Port D com a sortida
-    LATD = data;        // Escrivim valor a la RAM
+    LATBbits.LATB0 = 0; // Activate !WE → write mode
+    TRISD = 0x00;       // Port D as output
+    LATD = data;        // Write value to RAM
 
-    TRISD = 0xFF;       // Port D com a entrada un altre cop
-    LATBbits.LATB0 = 1; // Desactivem !WE → idle
-    inc_address();      // Incrementem adreça
+    TRISD = 0xFF;       // Port D as input again
+    LATBbits.LATB0 = 1; // Deactivate !WE → idle
+    inc_address();      // Increment address
 }
 
 /*
@@ -49,13 +49,13 @@ void RAM_Write(BYTE data)
  */
 BYTE RAM_Read(void)
 {
-    TRISD = 0xFF;       // Port D com entrada
-    LATBbits.LATB3 = 0; // Activem !OE → mode lectura
-    BYTE data = PORTD;  // Llegim dades
+    TRISD = 0xFF;       // Port D as input
+    LATBbits.LATB3 = 0; // Activate !OE → read mode
+    BYTE data = PORTD;  // Read data
 
-    LATBbits.LATB3 = 1; // Desactivem !OE
+    LATBbits.LATB3 = 1; // Deactivate !OE
     if (data != 0 && data != 0x00)
-        inc_address(); // Incrementem adreça si no hem llegit un 0
+        inc_address(); // Increment address if we haven't read a 0
     return data;
 }
 

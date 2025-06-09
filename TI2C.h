@@ -16,10 +16,4 @@ void I2C_UpdateTimestamp(BYTE hour, BYTE min);
 void I2C_CheckCounter1S(void);
 BOOL I2C_OneMinutePassed(void);
 
-// Testing
-void I2C_TEST_PrintTimestamp(void);
-
-// Added functions
-void I2C_ReadTimestamp(BYTE *hhmmssDDMMYYYY);
-
 #endif

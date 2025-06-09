@@ -197,9 +197,9 @@ static void write_prepared_info(void)
     EECON1bits.WR = 1; // Start write
 
     while (EECON1bits.WR)
-        ;                // Espera que WR es posi a 0 (final de l'escriptura)
-    PIR2bits.EEIF = 0;   // Neteja el flag d'escriptura
-    EECON1bits.WREN = 0; // Desactiva escriptura
+        ;                // Wait for WR to become 0 (end of write operation)
+    PIR2bits.EEIF = 0;   // Clear the write flag
+    EECON1bits.WREN = 0; // Disable write
 }
 
 static void write_byte(BYTE address, BYTE data)
