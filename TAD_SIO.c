@@ -1,5 +1,4 @@
 #include "TAD_SIO.h"
-#include "TLed.h"
 
 /* =======================================
  *           PRIVATE DEFINES
@@ -109,8 +108,6 @@ BYTE SIO_GetCommandAndValue(BYTE *value)
     BYTE command = getCharQueue();
     BYTE len = 0;
 
-    LED_Toggle();
-
     switch (command)
     {
     case COMMAND_INITIALIZE:
@@ -172,7 +169,6 @@ static BYTE getLastByteReveived(void)
 
 static void consume_EOC(void)
 {
-    BYTE start_tail = rx_tail;
     BYTE chars_consumed = 0;
     while (getCharQueue() != '\n')
     {

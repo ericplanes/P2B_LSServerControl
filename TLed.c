@@ -1,7 +1,5 @@
 #include "TLed.h"
 
-static BOOL toggle_state = FALSE;
-
 void LED_Init(void)
 {
     TRISAbits.TRISA3 = 0; // Red

@@ -11,7 +11,6 @@ static void i2c_ready(void);
 static void i2c_ack(void);
 static void i2c_nack(void);
 static char i2c_start(char address);
-static char i2c_restart(char address);
 static char i2c_write(BYTE data);
 static char i2c_stop(void);
 static char i2c_read(char ack);
